@@ -42,4 +42,4 @@ If you have modified some of the slides, e.g. pages 2 and 3, you can apply the p
 
 ----
 ## License
-[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+ - [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
