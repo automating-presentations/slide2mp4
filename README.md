@@ -14,7 +14,7 @@ slide2mp4 uses Amazon Polly, Text-to-Speech (TTS) service.
  - [Python 3](https://www.python.org/)
  - [xmllint](http://xmlsoft.org/xmllint.html)
 
-If you use Linux or macOS(including M1 Mac), you can install AWS CLI, FFmpeg, GraphicsMagick, Ghostscript with [Homebrew](https://brew.sh/).
+If you use Linux or macOS(including M1 Mac), you can install AWS CLI, FFmpeg, Ghostscript, GraphicsMagick, with [Homebrew](https://brew.sh/).
 
 ```
 brew install awscli ffmpeg ghostscript graphicsmagick
