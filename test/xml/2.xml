@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<speak version="1.1">
+
+<prosody rate="110%">
+これはテストスライドです。
+サンプルテキストが読み上げられます。
+サンプルテキストの読み上げを終了します。
+</prosody>
+
+</speak>
