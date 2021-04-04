@@ -69,8 +69,8 @@ fi
 for i in $PDF_FILE $TXT_FILE; do file $i > check_$i.txt; done
 CHECK_PDF=$(grep -i pdf check_$PDF_FILE.txt 2> /dev/null); rm -f check_$PDF_FILE.txt
 CHECK_TXT=$(grep -i text check_$TXT_FILE.txt 2> /dev/null); rm -f check_$TXT_FILE.txt
-xmllint $LEXICON_FILE 1> /dev/null 2> check_xml_error.txt
-CHECK_XML=$(grep -i error check_xml_error.txt); rm -f check_xml_error.txt
+xmllint $LEXICON_FILE 1> /dev/null 2> check_$LEXICON_FILE_error.txt
+CHECK_XML=$(grep -i error check_$LEXICON_FILE_error.txt); rm -f check_$LEXICON_FILE_error.txt
 if [ -z "$CHECK_PDF" ]; then
 	echo "This is not PDF file. Please check PDF file."
 	exit
