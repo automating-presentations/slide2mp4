@@ -1,6 +1,6 @@
 # Slide2mp4
 
-Slide2mp4 is a conversion tool, PDF slides to mp4 with audio and subtitles.   
+Slide2mp4 is a conversion tool, PDF slides to MP4 with audio and subtitles.   
 Slide2mp4 uses Amazon Polly, Text-to-Speech (TTS) service.
 
 ----
