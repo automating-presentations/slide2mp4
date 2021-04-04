@@ -26,8 +26,10 @@ brew install awscli ffmpeg ghostscript graphicsmagick
 The following command creates one mp4 file with audio and subtitles, named "test-output.mp4".
 
 ```
-chmod u+x slide2mp4.sh
-./slide2mp4.sh test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4
+git clone https://github.com/h-kojima/slide2mp4
+chmod u+x slide2mp4/slide2mp4.sh
+cd slide2mp4/test
+../slide2mp4.sh test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4
 ```
 
 If you have modified some of the slides, e.g. pages 2 and 3, you can apply the patch to "test-output.mp4" with the following command.
