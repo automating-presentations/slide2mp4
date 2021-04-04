@@ -14,7 +14,7 @@ chmod u+x slide2mp4.sh
 ./slide2mp4.sh test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4
 ```
 
-If you have modified some of the slides, e.g. pages 2 and 3, you can apply the patch to the mp4 file with the following command.
+If you have modified some of the slides, e.g. pages 2 and 3, you can apply the patch to the "test-output.mp4" with the following command.
 
 ```
 ./slide2mp4.sh test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 "2 3"
