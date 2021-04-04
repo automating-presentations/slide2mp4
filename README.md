@@ -1,10 +1,13 @@
 # Slide2mp4
 
-Slide2mp4 is a conversion tool, PDF slides to mp4 with audio and subtitles. Slide2mp4 uses Amazon Polly, Text-to-Speech (TTS) service.
+Slide2mp4 is a conversion tool, PDF slides to mp4 with audio and subtitles.   
+Slide2mp4 uses Amazon Polly, Text-to-Speech (TTS) service.
 
 ----
 
 ## To start using slide2mp4
+
+The following command creates one mp4 file with audio and subtitles, named "sample-output.mp4".
 
 ```
 chmod u+x slide2mp4.sh
