@@ -53,8 +53,9 @@ cat << EOF  > test.xml
 <speak version="1.1"> 
 
 <prosody rate="110%">
-これはタイトルスライドです。
+これはタイトルスライドであり、
 これから、サンプルスライドをご紹介します。
+OpenShiftとVirtualizationの読み上げテストもします。
 </prosody>
 
 </speak>
@@ -79,14 +80,14 @@ cat << EOF  > test-lexicon.pls
       alphabet="ipa" xml:lang="ja-JP">
 
   <lexeme> 
-    <grapheme>Virtualization</grapheme>
-    <alias>バーチャライゼーション</alias>
-  </lexeme>
-
-  <lexeme> 
     <grapheme>OpenShift</grapheme>
     <grapheme>openshift</grapheme>
     <alias>オープンシフト</alias>
+  </lexeme>
+
+  <lexeme> 
+    <grapheme>Virtualization</grapheme>
+    <alias>バーチャライゼーション</alias>
   </lexeme>
 
 </lexicon>
@@ -189,8 +190,8 @@ done
 
 ```
 cat json/1.json 
-{"time":0,"type":"sentence","start":299,"end":341,"value":"これはタイトルスライドです。"}
-{"time":2278,"type":"sentence","start":342,"end":405,"value":"これから、サンプルスライドをご紹介します。"}
+{"time":0,"type":"sentence","start":84,"end":193,"value":"これはタイトルスライドであり、\nこれから、サンプルスライドをご紹介します。"}
+{"time":5227,"type":"sentence","start":194,"end":259,"value":"OpenShiftとVirtualizationの読み上げテストもします。"}
 ```
 
 ----
@@ -257,12 +258,13 @@ for i in $PAGES; do python3 json2srt.py json/$i.json srt/$i.srt; done
 ```
 $ cat srt/1.srt 
 1
-00:00:00,500 --> 00:00:02,000
-これはタイトルスライドです。
+00:00:00,500 --> 00:00:05,000
+これはタイトルスライドであり、
+これから、サンプルスライドをご紹介します。
 
 2
-00:00:03,000 --> 00:00:00,000
-これから、サンプルスライドをご紹介します。
+00:00:06,000 --> 00:00:00,000
+OpenShiftとVirtualizationの読み上げテストもします。
 ```
 
 ----
@@ -292,7 +294,7 @@ for i in {1..3}; do ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -vcodec h264_v
 ----
 ### 8. 動画ファイルの無劣化結合
 分割作成した動画ファイル(mp4/{1..3}.mp4})を無劣化結合します。これにより、test-output.mp4という字幕及び音声付き動画ファイルが作成されます。
-結合するmp4ファイルのリストを記載したテキストファイルを作成して、それをもとに、`ffmpeg -f concat`で動画を結合します。
+結合するmp4ファイルをリスト化したテキストファイルを作成して、それをもとに、`ffmpeg -f concat`で動画を結合します。
 
 Linuxの場合:
 ```
@@ -321,7 +323,7 @@ slide2mp4.sh PDF_FILE TXT_FILE LEXICON_FILE OUTPUT_MP4 <"page_num1 page_num2..."
 
 末尾のページ番号指定はオプションで、一部のスライドやトークスクリプトを修正して、そこだけjson, srt, mp3, mp4を新しくして動画にパッチを入れたい場合に使います。
 既存の mp3, mp4, srt ファイルを使い回すことで、aws polly, ffmpeg の実行時間を短縮できます。
-ただし、ページの追加/削除をした場合は、全体的にページ番号が変わるので、全部のスライドを対象にして、slide2mp4.sh を実行してください。
+ただし、ページの追加/削除をした場合は、全体的にページ番号が変わるので、全スライドを対象にして、slide2mp4.sh を実行してください。
 
 例. 2, 5, 12 ページのみを修正してDLしたPDF, テキストファイルを利用して、動画にパッチを当てる場合:
 ```
