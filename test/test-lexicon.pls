@@ -7,14 +7,14 @@
       alphabet="ipa" xml:lang="ja-JP">
 
   <lexeme> 
-    <grapheme>Virtualization</grapheme>
-    <alias>バーチャライゼーション</alias>
-  </lexeme>
-
-  <lexeme> 
     <grapheme>OpenShift</grapheme>
     <grapheme>openshift</grapheme>
     <alias>オープンシフト</alias>
+  </lexeme>
+
+  <lexeme> 
+    <grapheme>Virtualization</grapheme>
+    <alias>バーチャライゼーション</alias>
   </lexeme>
 
 </lexicon>
