@@ -7,9 +7,9 @@ Slide2mp4 uses Amazon Polly, Text-to-Speech (TTS) service.
 
 ## To start using slide2mp4
 
-The following command creates one mp4 file with audio and subtitles, named "sample-output.mp4".
+The following command creates one mp4 file with audio and subtitles, named "test-output.mp4".
 
 ```
 chmod u+x slide2mp4.sh
-./slide2mp4.sh sample-slides.pdf sample-slides.txt sample-lexicon.pls sample-output.mp4
+./slide2mp4.sh test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4
 ```
