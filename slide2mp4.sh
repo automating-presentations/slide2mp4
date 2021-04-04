@@ -39,7 +39,7 @@ FPS="25"
 print_usage ()
 {
 	echo "Description:"
-	echo "	$(basename $0) is a conversion tool, PDF_of_slides to mp4 with audio and subtitles."
+	echo "	$(basename $0) is a conversion tool, PDF slides to mp4 with audio and subtitles."
 	echo "	$(basename $0) uses Amazon Polly, Text-to-Speech (TTS) service."
 	echo "	$(basename $0) requires the following commands, aws polly, ffmpeg, gm convert, python3, xmllint."
 	echo "Usage:"
