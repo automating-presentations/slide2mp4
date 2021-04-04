@@ -6,7 +6,7 @@ Slide2mp4 uses Amazon Polly, Text-to-Speech (TTS) service.
 ----
 ## Requirements
 
- - [AWS CLI version 2](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+ - [AWS CLI version 2](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) (version 1 has not been tested.)
  - Permission to run [Amazon Polly](https://aws.amazon.com/jp/polly/) service with AWS CLI
  - [FFmpeg](https://www.ffmpeg.org/)
  - [GraphicsMagick](http://www.graphicsmagick.org/index.html)
