@@ -35,7 +35,7 @@ cd slide2mp4/test
 If you have modified some of the slides, e.g. pages 2 and 3, you can apply the patch to "test-output.mp4" with the following command.
 
 ```
-./slide2mp4.sh test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 "2 3"
+../slide2mp4.sh test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 "2 3"
 ```
 
 ----
