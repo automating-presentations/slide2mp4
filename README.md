@@ -38,6 +38,7 @@ If you have modified some of the slides, e.g. pages 2 and 3, you can apply the p
 
 ----
 ## Documentation
+ - [Japanese User Guide](https://github.com/h-kojima/slide2mp4/blob/main/doc/userguide-ja.md)
 
 ----
 ## License
