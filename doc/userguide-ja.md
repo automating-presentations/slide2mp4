@@ -117,7 +117,7 @@ mkdir -p json mp3 mp4 png srt xml
 
 ```
 rm -f png/*
-gm convert -density 300 -geometry 1280x720 +adjoin test-slides.pdf png:png/%01d-tmp.png
+gm convert -density 600 -geometry 1280x720 +adjoin test-slides.pdf png:png/%01d-tmp.png
 for i in {0..2}; do mv png/$i-tmp.png png/$(($i+1)).png; done
 ```
 

@@ -24,7 +24,7 @@ PAGES=$5
 
 XML_HEADER="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 VOICE_ID="Mizuki"
-DENSITY="300"
+DENSITY="600"
 GEOMETRY="1280x720"
 LEXICON_NAME="test"
 FONT_NAME="NotoSansCJKjp-Medium"
