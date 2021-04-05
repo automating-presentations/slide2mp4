@@ -248,7 +248,7 @@ with open(srt_file, 'w') as f:
 				print(i+1, '\n', timecode[i*2+1], ' --> ', timecode[i*2+2], '\n', message[i], '\n', sep='', file=f)
 			i+=1
 EOF
-for i in $PAGES; do python3 json2srt.py json/$i.json srt/$i.srt; done
+for i in {1..3}; do python3 json2srt.py json/$i.json srt/$i.srt; done
 ```
 
 作成されるsrtファイルは、↓ のようになります。  
