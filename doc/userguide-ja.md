@@ -148,9 +148,9 @@ with open(xml_txt, 'r') as f:
     line = f.readline()
     while line:
         if line == '<?xml version="1.0" encoding="UTF-8"?>\n':
-                    i+=1
+        	i+=1
         with open('xml/' + str(int(i)) + '.xml', 'a') as g:
-            print(line, end='', file=g)
+        	print(line, end='', file=g)
         line = f.readline()
 EOF
 rm -f xml/*
