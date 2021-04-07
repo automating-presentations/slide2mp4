@@ -202,16 +202,20 @@ jsonファイルからsrtファイルへ変換し、srtディレクトリに保�
 cat << EOF  > json2srt.py
 #!/usr/bin/python3
 # Usage: python3 json2srt.py polly_output.json srt_file.srt
+
 import json
 import os
 import sys
+
 def getTimeCode(time_seconds):
 	seconds, mseconds = str(time_seconds).split('.')
 	mins = int(seconds) / 60
 	tseconds = int(seconds) % 60
 	return str( "%02d:%02d:%02d,%03d" % (00, mins, tseconds, int(0) ))
+
 json_file = sys.argv[1]
 srt_file = sys.argv[2]
+
 i = 0
 with open(json_file, 'r') as f:
 	line = f.readline()
@@ -221,6 +225,7 @@ with open(json_file, 'r') as f:
 		line = f.readline()
 		num = i
 		i+=1
+
 timecode = []
 message = []
 i = 0
@@ -234,6 +239,7 @@ while i <= num:
 		message.append(json_load['value'])
 	os.remove('tmp' + str(i) + '.json')
 	i+=1
+
 i = 0
 with open(srt_file, 'w') as f:
 	if num == 0:
