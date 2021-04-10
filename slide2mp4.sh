@@ -207,6 +207,7 @@ EOF
 for i in $PAGES; do python3 json2srt.py json/$i.json srt/$i.srt; done
 
 
+# If you don't want to add subtitles, run ffmpeg without the options '-vf "subtitles=...$FONT_SIZE'"'.
 for i in $PAGES; do ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf "subtitles=srt/$i.srt:force_style='FontName=$FONT_NAME,FontSize=$FONT_SIZE'" mp4/$i.mp4; done
 
 
