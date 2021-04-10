@@ -281,7 +281,7 @@ OpenShiftとVirtualizationの読み上げテストもします。
 for i in {1..3}; do ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf "subtitles=srt/$i.srt:force_style='FontName=NotoSansCJKjp-Medium,FontSize=14'" mp4/$i.mp4; done
 ```
 
-上記コマンドは、ソフトウェアエンコーダ libx264 (`-vcodec libx264`)を指定していますが、ffmpegの[ハードウェアエンコーディング](https://trac.ffmpeg.org/wiki/HWAccelIntro)を利用したい場合は、libx264 より画質が粗くなるので、画像ビットレート ( -vb 1M など)  を明示的に指定する必要があります。その場合、動画のサイズも大きくなりますが、GPUによるエンコーディングが実行されることで、CPUの負荷を減らせます。
+上記コマンドは、ソフトウェアエンコーダ libx264 (`-vcodec libx264`) を指定していますが、ffmpegの[ハードウェアエンコーディング](https://trac.ffmpeg.org/wiki/HWAccelIntro)を利用したい場合は、libx264 より画質が粗くなるので、画像ビットレート (`-vb 1M`など) を明示的に指定する必要があります。その場合、動画のサイズも大きくなりますが、GPUによるエンコーディングが実行されることで、CPUの負荷を減らせます。
 
 ```
 ffmpeg -encoders |grep -i h264   ← h264 (mp4) で利用できるencoderを確認
