@@ -275,7 +275,7 @@ OpenShiftとVirtualizationの読み上げテストもします。
 
 ----
 ### 7. 作成した画像ファイル(png), 音声ファイル(mp3), 字幕ファイル(srt)の合成
-3.で作成した画像ファイル(png)と、5.で作成した音声ファイル(mp3)と、6.で作成した字幕ファイル(srt)を合成して、mp4ディレクトリに保存します。 字幕のフォントはNotoSansCJKjp-Mediumの14サイズを指定していますが、これは適宜変更してください。
+3.で作成した画像ファイル(png)と、5.で作成した音声ファイル(mp3)と、6.で作成した字幕ファイル(srt)を合成して、mp4ディレクトリに保存します。 字幕のフォントはNotoSansCJKjp-Mediumの14サイズを指定していますが、これは適宜変更してください。もし、字幕を付けたくない場合は、`-vf`オプションを削除(↓の例だと`-vf "subtitles=srt/$i.srt:force_style='FontName=NotoSansCJKjp-Medium,FontSize=14'"`を削除)して、ffmpegを実行するようにしてください。
 
 ```
 for i in {1..3}; do ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf "subtitles=srt/$i.srt:force_style='FontName=NotoSansCJKjp-Medium,FontSize=14'" mp4/$i.mp4; done
