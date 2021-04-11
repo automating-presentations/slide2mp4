@@ -20,7 +20,7 @@ cd slide2mp4/test
 
 入力ファイル:
  - Google Slides
-   - Google SlidesからDLした、PDFとPlain Textファイルが必要。ただし、スライドのPDFと下記のスライドノートがまとめられたテキストファイルが用意できるのであれば、Google Slideを利用する必要なし
+   - Google SlidesからDLした、PDFとPlain Textファイルが必要。ただし、スライドのPDFと下記のスライドノートがまとめられたテキストファイルを用意できるのであれば、Google Slideを利用する必要なし
    - Google Slidesでは、スライドノートを一括保存可能。スライド左上メニューの [File] -> [Download] -> [Plain Text] により、
      スライドとスライドノートのテキスト部分が 1つのテキストファイルにまとめられたものをDL可能
    - PDFのDL時にフォントが崩れる場合は、一度pptxでDLした後に、PowerPointを開いてPDF Export
