@@ -20,12 +20,12 @@ cd slide2mp4/test
 
 入力ファイル:
  - Google Slides
-   - Google SlidesからDLした、PDFとPlain Textファイルが必要。ただし、スライドのPDFと下記のスピーカーノートがまとめられたテキストファイルが用意できるのであれば、Google Slideを利用する必要なし
-   - Google Slidesでは、スピーカーノートを一括保存可能。スライド左上メニューの [File] -> [Download] -> [Plain Text] により、
-     スライドとスピーカーノートのテキスト部分が 1つのテキストファイルにまとめられたものをDL可能
+   - Google SlidesからDLした、PDFとPlain Textファイルが必要。ただし、スライドのPDFと下記のスライドノートがまとめられたテキストファイルが用意できるのであれば、Google Slideを利用する必要なし
+   - Google Slidesでは、スライドノートを一括保存可能。スライド左上メニューの [File] -> [Download] -> [Plain Text] により、
+     スライドとスライドノートのテキスト部分が 1つのテキストファイルにまとめられたものをDL可能
    - PDFのDL時にフォントが崩れる場合は、一度pptxでDLした後に、PowerPointを開いてPDF Export
-   - LibreOfficeを利用している場合は、pptx形式で保存した後に、Google DriveにアップロードしてGoogle Slidesでpptxファイルを開くと、上記と同様にスピーカーノートの一括保存が可能
- - SSML情報を含んだXMLで書かれたトークスクリプト (Google Slidesのスピーカーノート内に記載)
+   - LibreOfficeを利用している場合は、pptx形式で保存した後に、Google DriveにアップロードしてGoogle Slidesでpptxファイルを開くと、上記と同様にスライドノートの一括保存が可能
+ - SSML情報を含んだXMLで書かれたトークスクリプト (Google Slidesのスライドノート内に記載)
  - 発音エイリアスを記載した[lexicon](https://docs.aws.amazon.com/ja_jp/polly/latest/dg/managing-lexicons.html)
    - 日本語音声だと、英字の製品名をうまく読んでくれない時があるので、予めエイリアスを記載したファイルを作成しておく必要あり
 
