@@ -87,7 +87,7 @@ echo "Format checking of input files is completed."
 mkdir -p json mp3 mp4 png srt xml
 
 
-cat $TXT_FILE |awk '/\<\?xml/,/\<\/speak\>/' > tmp.txt
+cat $TXT_FILE |awk '/<\?xml/,/<\/speak>/' > tmp.txt
 cat << EOF   > txt2xml.py
 #!/usr/bin/python3
 # Usage: python3 txt2xml.py xml_txt
