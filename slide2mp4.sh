@@ -16,18 +16,18 @@
 # limitations under the License.
 
 
-PDF_FILE=$1
-TXT_FILE=$2
-LEXICON_FILE=$3
-OUTPUT_MP4=$4
-PAGES=$5
+PDF_FILE="$1"
+TXT_FILE="$2"
+LEXICON_FILE="$3"
+OUTPUT_MP4="$4"
+PAGES="$5"
 
 XML_HEADER="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 VOICE_ID="Mizuki"
 DENSITY="600"
 GEOMETRY="1280x720"
 LEXICON_NAME="test"
-FONT_NAME="NotoSansCJKjp-Medium"
+FONT_NAME="NotoSansCJKjp-Regular"
 FONT_SIZE="14"
 FPS="25"
 
@@ -51,9 +51,9 @@ print_usage ()
 
 
 if [ $# -ne 0 ]; then
-	if [ $1 == "-h" ]; then
+	if [ "$1" == "-h" ]; then
 		print_usage
-	elif [ $1 == "--help" ]; then
+	elif [ "$1" == "--help" ]; then
 		print_usage
 	fi
 fi
@@ -66,11 +66,12 @@ if [ $# -ne 4 ]; then
 fi
 
 
-for i in $PDF_FILE $TXT_FILE; do file $i > check_$i.txt; done
-CHECK_PDF=$(grep -i pdf check_$PDF_FILE.txt 2> /dev/null); rm -f check_$PDF_FILE.txt
-CHECK_TXT=$(grep -i text check_$TXT_FILE.txt 2> /dev/null); rm -f check_$TXT_FILE.txt
-xmllint $LEXICON_FILE 1> /dev/null 2> check_$LEXICON_FILE_error.txt
-CHECK_XML=$(grep -i error check_$LEXICON_FILE_error.txt); rm -f check_$LEXICON_FILE_error.txt
+file "$PDF_FILE" > check_pdf_slide2mp4.txt; file "$TXT_FILE" > check_txt_slide2mp4.txt
+CHECK_PDF=$(grep -i pdf check_pdf_slide2mp4.txt 2> /dev/null)
+CHECK_TXT=$(grep -i text check_txt_slide2mp4.txt 2> /dev/null)
+xmllint "$LEXICON_FILE" 1> /dev/null 2> check_lexicon_error_slide2mp4.txt
+CHECK_XML=$(grep -i error check_lexicon_error_slide2mp4.txt)
+rm -f check_*_slide2mp4.txt
 if [ -z "$CHECK_PDF" ]; then
 	echo "This is not PDF file. Please check PDF file."
 	exit
@@ -87,7 +88,7 @@ echo "Format checking of input files is completed."
 mkdir -p json mp3 mp4 png srt xml
 
 
-cat $TXT_FILE |awk '/<\?xml/,/<\/speak>/' > tmp.txt
+cat "$TXT_FILE" |awk '/<\?xml/,/<\/speak>/' > tmp.txt
 cat << EOF   > txt2xml.py
 #!/usr/bin/python3
 # Usage: python3 txt2xml.py xml_txt
@@ -115,11 +116,11 @@ fi
 
 
 rm -f png/*
-gm convert -density $DENSITY -geometry $GEOMETRY +adjoin $PDF_FILE png:png/%01d-tmp.png
+gm convert -density $DENSITY -geometry $GEOMETRY +adjoin "$PDF_FILE" png:png/%01d-tmp.png
 for i in `seq 0 $(($page_num-1))`; do mv png/$i-tmp.png png/$(($i+1)).png; done
 
 
-aws polly put-lexicon --name $LEXICON_NAME --content file://$LEXICON_FILE
+aws polly put-lexicon --name $LEXICON_NAME --content file://"$LEXICON_FILE"
 for i in $PAGES;
 do aws polly synthesize-speech \
        --lexicon-names $LEXICON_NAME \
@@ -212,5 +213,5 @@ for i in $PAGES; do ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -r $FPS -vcode
 
 
 rm -f list.txt; for i in `seq 1 $page_num`; do echo "file mp4/$i.mp4" >> list.txt; done
-ffmpeg -y -f concat -i list.txt -c copy $OUTPUT_MP4
+ffmpeg -y -f concat -i list.txt -c copy "$OUTPUT_MP4"
 
