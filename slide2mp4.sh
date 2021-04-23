@@ -125,11 +125,10 @@ for i in $PAGES;
 do aws polly synthesize-speech \
        --lexicon-names $LEXICON_NAME \
        --text-type ssml \
-       --output-format json \
+       --output-format mp3 \
        --voice-id $VOICE_ID \
-       --speech-mark-types='["sentence"]' \
        --text file://xml/$i.xml \
-       json/$i.json 2> tmp.txt;
+       mp3/$i.mp3 2> tmp.txt;
    
    if [ -s tmp.txt ]; then
         echo "There is the following error in executing aws polly, with xml/$i.xml."
@@ -141,10 +140,11 @@ do aws polly synthesize-speech \
    aws polly synthesize-speech \
        --lexicon-names $LEXICON_NAME \
        --text-type ssml \
-       --output-format mp3 \
+       --output-format json \
        --voice-id $VOICE_ID \
+       --speech-mark-types='["sentence"]' \
        --text file://xml/$i.xml \
-       mp3/$i.mp3;
+       json/$i.json;
 done
 rm -f tmp.txt
 aws polly delete-lexicon --name $LEXICON_NAME
