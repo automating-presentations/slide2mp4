@@ -65,6 +65,12 @@ print_usage ()
 	echo "Options:"
 	echo "	-h, --help		print this message."
 	echo "	-ns, --no-subtitles	convert without subtitles."
+	echo "Example1: The following command creates one mp4 file with audio and subtitles, named "test-output.mp4"."
+	echo "	$(basename $0) test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4"
+	echo "Example2: If you have modified some of the slides, e.g. pages 2 and 3, you can apply the patch to "test-output.mp4" with the following command."
+	echo "	$(basename $0) test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 "2 3""
+	echo "Example3: No subtitles option is also available, e.g. mp4 files on pages 1 and 3 are without subtitles."
+	echo "	$(basename $0) -ns test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 "1 3""
 	exit
 }
 
