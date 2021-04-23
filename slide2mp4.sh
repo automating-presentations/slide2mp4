@@ -16,11 +16,29 @@
 # limitations under the License.
 
 
-PDF_FILE="$1"
-TXT_FILE="$2"
-LEXICON_FILE="$3"
-OUTPUT_MP4="$4"
-PAGES="$5"
+if [ "$1" == "-ns" ]; then
+	PDF_FILE="$2"
+	TXT_FILE="$3"
+	LEXICON_FILE="$4"
+	OUTPUT_MP4="$5"
+	PAGES="$6"
+	NS_FLAG=1
+elif [ "$1" == "--no-subtitles" ]; then
+	PDF_FILE="$2"
+	TXT_FILE="$3"
+	LEXICON_FILE="$4"
+	OUTPUT_MP4="$5"
+	PAGES="$6"
+	NS_FLAG=1
+else
+	PDF_FILE="$1"
+	TXT_FILE="$2"
+	LEXICON_FILE="$3"
+	OUTPUT_MP4="$4"
+	PAGES="$5"
+	NS_FLAG=0
+fi
+
 
 XML_HEADER="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 VOICE_ID="Mizuki"
@@ -45,8 +63,71 @@ print_usage ()
 	echo "Usage:"
 	echo "	$(basename $0) PDF_FILE TXT_FILE LEXICON_FILE OUTPUT_MP4 <"page_num1 page_num2...">"
 	echo "Options:"
-	echo "	-h, --help    print this message."
+	echo "	-h, --help		print this message."
+	echo "	-ns, --no-subtitles	convert without subtitles."
 	exit
+}
+
+
+cat_json2srt_py ()
+{
+
+cat << EOF  > json2srt.py
+#!/usr/bin/python3
+# Usage: python3 json2srt.py polly_output.json srt_file.srt
+
+import json
+import os
+import sys
+
+def getTimeCode(time_seconds):
+	seconds, mseconds = str(time_seconds).split('.')
+	mins = int(seconds) / 60
+	tseconds = int(seconds) % 60
+	return str( "%02d:%02d:%02d,%03d" % (00, mins, tseconds, int(0) ))
+
+json_file = sys.argv[1]
+srt_file = sys.argv[2]
+
+i = 0
+with open(json_file, 'r') as f:
+	line = f.readline()
+	while line:
+		with open('tmp' + str(i) + '.json', 'w') as g:
+			print(line, file=g)
+		line = f.readline()
+		num = i
+		i+=1
+
+timecode = []
+message = []
+i = 0
+while i <= num:
+	with open('tmp' + str(i) + '.json', 'r') as f:
+		json_load = json.load(f)
+		time_seconds1 = float(json_load['time'] / 1000)
+		time_seconds2 = time_seconds1 + 1
+		timecode.append(getTimeCode(time_seconds1))
+		timecode.append(getTimeCode(time_seconds2))
+		message.append(json_load['value'])
+	os.remove('tmp' + str(i) + '.json')
+	i+=1
+
+i = 0
+with open(srt_file, 'w') as f:
+	if num == 0:
+		print(i+1, '\n', '00:00:00,500', ' --> ', timecode[0], '\n', message[i], sep='', file=f)
+	else:
+		print(i+1, '\n', '00:00:00,500', ' --> ', timecode[i*2+2], '\n', message[i], '\n', sep='', file=f)
+		i+=1
+		while i <= num:
+			if i == num:
+				print(i+1, '\n', timecode[i*2+1], ' --> ', timecode[0], '\n', message[i], sep='', file=f)
+			else:
+				print(i+1, '\n', timecode[i*2+1], ' --> ', timecode[i*2+2], '\n', message[i], '\n', sep='', file=f)
+			i+=1
+EOF
+
 }
 
 
@@ -59,9 +140,11 @@ if [ $# -ne 0 ]; then
 fi
 if [ $# -ne 4 ]; then
 	if [ $# -ne 5  ]; then
-		echo "Too few or many arguments. Please check whether the number of arguments is 4 or 5."
-		echo "Please check '$(basename $0) -h' or '$(basename $0) --help'."
-		exit
+		if [ $# -ne 6  ]; then
+			echo "Too few or many arguments. Please check whether the number of arguments is 4 or 5 or 6."
+			echo "Please check '$(basename $0) -h' or '$(basename $0) --help'."
+			exit
+		fi
 	fi
 fi
 
@@ -137,79 +220,32 @@ do aws polly synthesize-speech \
         exit
    fi
    
-   aws polly synthesize-speech \
-       --lexicon-names $LEXICON_NAME \
-       --text-type ssml \
-       --output-format json \
-       --voice-id $VOICE_ID \
-       --speech-mark-types='["sentence"]' \
-       --text file://xml/$i.xml \
-       json/$i.json;
+   if [ $NS_FLAG -eq 0 ]; then
+   	aws polly synthesize-speech \
+            --lexicon-names $LEXICON_NAME \
+            --text-type ssml \
+            --output-format json \
+            --voice-id $VOICE_ID \
+            --speech-mark-types='["sentence"]' \
+            --text file://xml/$i.xml \
+            json/$i.json;
+   fi
 done
 rm -f tmp.txt
 aws polly delete-lexicon --name $LEXICON_NAME
 
 
-cat << EOF  > json2srt.py
-#!/usr/bin/python3
-# Usage: python3 json2srt.py polly_output.json srt_file.srt
-
-import json
-import os
-import sys
-
-def getTimeCode(time_seconds):
-	seconds, mseconds = str(time_seconds).split('.')
-	mins = int(seconds) / 60
-	tseconds = int(seconds) % 60
-	return str( "%02d:%02d:%02d,%03d" % (00, mins, tseconds, int(0) ))
-
-json_file = sys.argv[1]
-srt_file = sys.argv[2]
-
-i = 0
-with open(json_file, 'r') as f:
-	line = f.readline()
-	while line:
-		with open('tmp' + str(i) + '.json', 'w') as g:
-			print(line, file=g)
-		line = f.readline()
-		num = i
-		i+=1
-
-timecode = []
-message = []
-i = 0
-while i <= num:
-	with open('tmp' + str(i) + '.json', 'r') as f:
-		json_load = json.load(f)
-		time_seconds1 = float(json_load['time'] / 1000)
-		time_seconds2 = time_seconds1 + 1
-		timecode.append(getTimeCode(time_seconds1))
-		timecode.append(getTimeCode(time_seconds2))
-		message.append(json_load['value'])
-	os.remove('tmp' + str(i) + '.json')
-	i+=1
-
-i = 0
-with open(srt_file, 'w') as f:
-	if num == 0:
-		print(i+1, '\n', '00:00:00,500', ' --> ', timecode[0], '\n', message[i], sep='', file=f)
-	else:
-		print(i+1, '\n', '00:00:00,500', ' --> ', timecode[i*2+2], '\n', message[i], '\n', sep='', file=f)
-		i+=1
-		while i <= num:
-			if i == num:
-				print(i+1, '\n', timecode[i*2+1], ' --> ', timecode[0], '\n', message[i], sep='', file=f)
-			else:
-				print(i+1, '\n', timecode[i*2+1], ' --> ', timecode[i*2+2], '\n', message[i], '\n', sep='', file=f)
-			i+=1
-EOF
-for i in $PAGES; do python3 json2srt.py json/$i.json srt/$i.srt; done
+if [ $NS_FLAG -eq 0 ]; then
+	cat_json2srt_py
+	for i in $PAGES; do python3 json2srt.py json/$i.json srt/$i.srt; done
+fi
 
 
-# If you don't want to add subtitles, run the following command without the '-vf "subtitles=...$FONT_SIZE'"' option.
-for i in $PAGES; do ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf "subtitles=srt/$i.srt:force_style='FontName=$FONT_NAME,FontSize=$FONT_SIZE'" mp4/$i.mp4; done
+if [ $NS_FLAG -eq 0 ]; then
+	for i in $PAGES; do ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf "subtitles=srt/$i.srt:force_style='FontName=$FONT_NAME,FontSize=$FONT_SIZE'" mp4/$i.mp4; done
+else
+	for i in $PAGES; do ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest mp4/$i.mp4; done
+fi
 
 
 rm -f list.txt; for i in `seq 1 $page_num`; do echo "file mp4/$i.mp4" >> list.txt; done
