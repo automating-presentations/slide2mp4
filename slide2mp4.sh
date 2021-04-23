@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: slide2mp4.sh PDF_FILE TXT_FILE LEXICON_FILE OUTPUT_MP4 <"page_num1 page_num2...">
+# Usage: slide2mp4.sh [option] PDF_FILE TXT_FILE LEXICON_FILE OUTPUT_MP4 ["page_num1 page_num2..."]
 #
 # Copyright (C) 2021 Hirofumi Kojima
 #
@@ -61,7 +61,7 @@ print_usage ()
 	echo "	$(basename $0) uses Amazon Polly, Text-to-Speech (TTS) service."
 	echo "	$(basename $0) requires the following commands, aws polly, ffmpeg, gm convert, python3, xmllint."
 	echo "Usage:"
-	echo "	$(basename $0) PDF_FILE TXT_FILE LEXICON_FILE OUTPUT_MP4 <"page_num1 page_num2...">"
+	echo "	$(basename $0) [option] PDF_FILE TXT_FILE LEXICON_FILE OUTPUT_MP4 ["page_num1 page_num2..."]"
 	echo "Options:"
 	echo "	-h, --help		print this message."
 	echo "	-ns, --no-subtitles	convert without subtitles."
