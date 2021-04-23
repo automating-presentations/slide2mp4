@@ -38,6 +38,11 @@ If you have modified some of the slides, e.g. pages 2 and 3, you can apply the p
 ../slide2mp4.sh test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 "2 3"
 ```
 
+No subtitles option is also available, e.g. mp4 files on pages 1 and 2 are without subtitles.
+```
+../slide2mp4.sh -ns test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 "1 2"
+```
+
 ----
 ## Documentation
  - [Japanese User Guide](https://github.com/h-kojima/slide2mp4/blob/main/doc/userguide-ja.md)
