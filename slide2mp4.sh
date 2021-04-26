@@ -158,10 +158,11 @@ if [ $# -ne 4 ]; then
 fi
 
 
-file "$PDF_FILE" > check_pdf_slide2mp4.txt; file "$TXT_FILE" > check_txt_slide2mp4.txt
+file "$PDF_FILE" > check_pdf_slide2mp4.txt
+file "$TXT_FILE" > check_txt_slide2mp4.txt
+xmllint "$LEXICON_FILE" 1> /dev/null 2> check_lexicon_error_slide2mp4.txt
 CHECK_PDF=$(grep -i pdf check_pdf_slide2mp4.txt 2> /dev/null)
 CHECK_TXT=$(grep -i text check_txt_slide2mp4.txt 2> /dev/null)
-xmllint "$LEXICON_FILE" 1> /dev/null 2> check_lexicon_error_slide2mp4.txt
 CHECK_XML=$(grep -i error check_lexicon_error_slide2mp4.txt)
 rm -f check_*_slide2mp4.txt
 if [ -z "$CHECK_PDF" ]; then
