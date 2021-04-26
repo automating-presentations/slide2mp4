@@ -41,10 +41,10 @@ fi
 
 
 XML_HEADER="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-VOICE_ID="Mizuki"
 DENSITY="600"
 GEOMETRY="1280x720"
 LEXICON_NAME="test"
+VOICE_ID="Mizuki"
 FONT_NAME="NotoSansCJKjp-Regular"
 FONT_SIZE="14"
 FPS="25"
