@@ -258,6 +258,21 @@ else
 fi
 
 
-rm -f list.txt; for i in `seq 1 $page_num`; do echo "file mp4/$i.mp4" >> list.txt; done
+PARTIALLY_MODE=0
+for i in `seq 1 $page_num`
+do
+	if [ ! -e "mp4/$i.mp4" ]; then
+		PARTIALLY_MODE=1
+		break
+	fi
+done
+rm -f list.txt
+if [ $PARTIALLY_MODE -eq 0 ]; then
+	for i in `seq 1 $page_num`; do echo "file mp4/$i.mp4" >> list.txt; done
+else
+	for i in $PAGES; do echo "file mp4/$i.mp4" >> list.txt; done
+fi
+
+
 ffmpeg -y -f concat -i list.txt -c copy "$OUTPUT_MP4"
 
