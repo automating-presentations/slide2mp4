@@ -14,11 +14,13 @@
 # limitations under the License.
 
 
+TIMESTAMPS_TXT="$1"
 ((mp4_num=$(ls -F mp4/ | grep -v / | wc -l)-1))
 
-rm -f timestamp.txt
-echo "Chapters:" >> timestamp.txt
-echo "0:00 1.mp4" >> timestamp.txt
+
+rm -f "$TIMESTAMPS_TXT"
+echo "Chapters:" >> "$TIMESTAMPS_TXT"
+echo "0:00 1.mp4" >> "$TIMESTAMPS_TXT"
 
 timeinfo=0
 for i in `seq 1 $mp4_num`
@@ -32,8 +34,8 @@ do
 
 	((min_timestamp=timestamp / 60 ))
 	((sec_timestamp=timestamp % 60 ))
-	echo -n "$min_timestamp:" >> timestamp.txt
-	printf "%02d" "${sec_timestamp}" >> timestamp.txt
-	echo " $(($i+1)).mp4" >> timestamp.txt
+	echo -n "$min_timestamp:" >> "$TIMESTAMPS_TXT"
+	printf "%02d" "${sec_timestamp}" >> "$TIMESTAMPS_TXT"
+	echo " $(($i+1)).mp4" >> "$TIMESTAMPS_TXT"
 done
 
