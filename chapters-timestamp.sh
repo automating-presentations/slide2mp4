@@ -48,7 +48,7 @@ do
 		count=1
 		echo "Chapters:" >> "$TIMESTAMPS_TXT"
 		echo "0:00 "$MP4_DIR"/$line" >> "$TIMESTAMPS_TXT"
-		cal_and_print_timestamp "$MP4_DIR"/"$line" "$TIMESTAMPS_TXT"
+		cal_and_print_timestamp ""$MP4_DIR"/$line" "$TIMESTAMPS_TXT"
 	else
 		echo " "$MP4_DIR"/$line" >> "$TIMESTAMPS_TXT"
 		cal_and_print_timestamp ""$MP4_DIR"/$line" "$TIMESTAMPS_TXT"
