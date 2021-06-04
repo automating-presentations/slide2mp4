@@ -22,6 +22,16 @@ timeinfo=0
 count=0
 
 
+print_usage ()
+{
+	echo "Description:"
+	echo "	$(basename $0) creates a text file with timestamp for each chapter."
+	echo "Usage:"
+	echo "	$(basename $0) PATH_OF_MP4_DIRECTORY OUTPUT_TXT"
+	exit
+}
+
+
 cal_and_print_timestamp ()
 {
 	var=$(ffprobe -hide_banner -show_entries format=duration "$1" |grep -i duration |sed -e 's/duration=//')
@@ -36,6 +46,20 @@ cal_and_print_timestamp ()
 	echo -n "$min_timestamp:" >> "$2"
 	printf "%02d" "${sec_timestamp}" >> "$2"
 }
+
+
+if [ $# -ne 0 ]; then
+	if [ "$1" == "-h" ]; then
+		print_usage
+	elif [ "$1" == "--help" ]; then
+		print_usage
+	fi
+fi
+if [ $# -ne 2 ]; then
+	echo "Too few or many arguments. Please check whether the number of arguments is 2."
+	echo "Please check '$(basename $0) -h' or '$(basename $0) --help'."
+	exit
+fi
 
 
 rm -f "$TIMESTAMPS_TXT"
