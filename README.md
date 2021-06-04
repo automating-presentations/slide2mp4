@@ -46,7 +46,7 @@ No subtitles option is also available, e.g. mp4 files on pages 1 and 3 are witho
 Optionally, once you've created mp4 files, "test-output.mp4" in the above example, you can create a text file with timestamp for each chapter, named "test-timestamps.txt" in the following example. This text file with timestamps can be used to [turn on chapters for your videos on YouTube](https://support.google.com/youtube/answer/9884579?hl=en). Chapters-timestamp.sh requires [ffprobe](https://ffmpeg.org/ffprobe.html), and needs to be run with the PATH of the directory including mp4 files and the output text file.
 ```
 cd slide2mp4/test
-../chapters-timestamp.sh mp4 test-timestamps.txt
+../tools/chapters-timestamp.sh mp4 test-timestamps.txt
 ```
 
 ----
