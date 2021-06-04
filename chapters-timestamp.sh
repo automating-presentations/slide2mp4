@@ -32,7 +32,7 @@ print_usage ()
 }
 
 
-cal_and_print_timestamp ()
+calc_and_print_timestamp ()
 {
 	var=$(ffprobe -hide_banner -show_entries format=duration "$1" |grep -i duration |sed -e 's/duration=//')
 	timeinfo=`echo "scale=6; $timeinfo + $var" |bc`
@@ -72,10 +72,10 @@ do
 		count=1
 		echo "Chapters:" >> "$TIMESTAMPS_TXT"
 		echo "0:00 "$MP4_DIR"/$line" >> "$TIMESTAMPS_TXT"
-		cal_and_print_timestamp ""$MP4_DIR"/$line" "$TIMESTAMPS_TXT"
+		calc_and_print_timestamp ""$MP4_DIR"/$line" "$TIMESTAMPS_TXT"
 	else
 		echo " "$MP4_DIR"/$line" >> "$TIMESTAMPS_TXT"
-		cal_and_print_timestamp ""$MP4_DIR"/$line" "$TIMESTAMPS_TXT"
+		calc_and_print_timestamp ""$MP4_DIR"/$line" "$TIMESTAMPS_TXT"
 	fi
 done < sort_tmp.txt
 
