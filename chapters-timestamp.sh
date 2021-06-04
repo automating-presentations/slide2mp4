@@ -14,28 +14,48 @@
 # limitations under the License.
 
 
-TIMESTAMPS_TXT="$1"
-((mp4_num=$(ls -F mp4/ | grep -v / | wc -l)-1))
+MP4_DIR="$1"
+TIMESTAMPS_TXT="$2"
 
-
-rm -f "$TIMESTAMPS_TXT"
-echo "Chapters:" >> "$TIMESTAMPS_TXT"
-echo "0:00 1.mp4" >> "$TIMESTAMPS_TXT"
 
 timeinfo=0
-for i in `seq 1 $mp4_num`
-do
-	var=$(ffprobe -hide_banner -show_entries format=duration mp4/$i.mp4 |grep -i duration |sed -e 's/duration=//')
+count=0
+
+
+cal_and_print_timestamp ()
+{
+	var=$(ffprobe -hide_banner -show_entries format=duration "$1" |grep -i duration |sed -e 's/duration=//')
 	timeinfo=`echo "scale=6; $timeinfo + $var" |bc`
 
 	tmpvalue=`echo "scale=6; $timeinfo + 0.999999" |bc`
 	timestamp=${tmpvalue%.*}
-	# timestamp=$(printf '%.0f\n' $timeinfo)
 
 	((min_timestamp=timestamp / 60 ))
 	((sec_timestamp=timestamp % 60 ))
-	echo -n "$min_timestamp:" >> "$TIMESTAMPS_TXT"
-	printf "%02d" "${sec_timestamp}" >> "$TIMESTAMPS_TXT"
-	echo " $(($i+1)).mp4" >> "$TIMESTAMPS_TXT"
-done
+
+	echo -n "$min_timestamp:" >> "$2"
+	printf "%02d" "${sec_timestamp}" >> "$2"
+}
+
+
+rm -f "$TIMESTAMPS_TXT"
+ls "$MP4_DIR" |sort -n > sort_tmp.txt
+
+
+while read line
+do
+	if [ $count -eq 0 ]; then
+		count=1
+		echo "Chapters:" >> "$TIMESTAMPS_TXT"
+		echo "0:00 "$MP4_DIR"/$line" >> "$TIMESTAMPS_TXT"
+		cal_and_print_timestamp "$MP4_DIR"/"$line" "$TIMESTAMPS_TXT"
+	else
+		echo " "$MP4_DIR"/$line" >> "$TIMESTAMPS_TXT"
+		cal_and_print_timestamp ""$MP4_DIR"/$line" "$TIMESTAMPS_TXT"
+	fi
+done < sort_tmp.txt
+
+
+sed -ie '$d' "$TIMESTAMPS_TXT"
+rm -f "$TIMESTAMPS_TXT"e sort_tmp.txt
 
