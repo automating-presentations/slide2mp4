@@ -43,7 +43,7 @@ No subtitles option is also available, e.g. mp4 files on pages 1 and 3 are witho
 ../slide2mp4.sh -ns test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 "1 3"
 ```
 
-Optionally, once you've created mp4 files, "test-output.mp4" in the above example, you can create a text file with timestamp for each chapter, named "test-timestamps.txt" in the following example. This text file with timestamps can be used to [turn on chapters for your videos on YouTube](https://support.google.com/youtube/answer/9884579?hl=en). Chapters-timestamp.sh needs to be run with the PATH of the mp4 directory and the output text file.
+Optionally, once you've created mp4 files, "test-output.mp4" in the above example, you can create a text file with timestamp for each chapter, named "test-timestamps.txt" in the following example. This text file with timestamps can be used to [turn on chapters for your videos on YouTube](https://support.google.com/youtube/answer/9884579?hl=en). Chapters-timestamp.sh needs to be run with the PATH of the mp4 directory (mp4/{1..N}.mp4) and the output text file.
 ```
 cd slide2mp4/test
 ../chapters-timestamp.sh mp4 test-timestamps.txt
