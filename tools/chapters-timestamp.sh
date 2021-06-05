@@ -63,7 +63,6 @@ if [ $# -ne 2 ]; then
 fi
 
 
-rm -f "$TIMESTAMPS_TXT"
 ls "$MP4_DIR" |sort -n > sort_mp4_dir_tmp.txt
 
 
@@ -71,7 +70,7 @@ while read line
 do
 	if [ $count -eq 0 ]; then
 		count=1
-		echo "Chapters:" >> "$TIMESTAMPS_TXT"
+		echo "Chapters:" > "$TIMESTAMPS_TXT"
 		echo "0:00 "$MP4_DIR"/$line" >> "$TIMESTAMPS_TXT"
 		calc_and_print_timestamp ""$MP4_DIR"/$line" "$TIMESTAMPS_TXT"
 	else
