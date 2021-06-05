@@ -44,7 +44,7 @@ if [ $# -ne 3 ]; then
 fi
 
 
-cat "$DIC_TXT" | grep -v '^#' | sed '/^$/d' > tmp-dic-"$(date)".txt
+cat "$DIC_TXT" |grep -v '^#' |sed '/^$/d' > tmp-dic-"$(date)".txt
 cat "$TALK_SCRIPT_TXT" |awk '/<\?xml/,/<\/speak>/' > tmp-talkscript-"$(date)".txt
 
 
