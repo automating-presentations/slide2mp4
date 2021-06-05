@@ -20,7 +20,6 @@ TIMESTAMPS_TXT="$2"
 
 
 timeinfo=0
-count=0
 
 
 print_usage ()
@@ -67,17 +66,12 @@ fi
 ls "$MP4_DIR" |sort -n > sort_mp4_dir_tmp.txt
 
 
+echo "Chapters:" > "$TIMESTAMPS_TXT"
+echo -n "0:00" >> "$TIMESTAMPS_TXT"
 while read line
 do
-	if [ $count -eq 0 ]; then
-		count=1
-		echo "Chapters:" > "$TIMESTAMPS_TXT"
-		echo "0:00 "$MP4_DIR"/$line" >> "$TIMESTAMPS_TXT"
-		calc_and_print_timestamp ""$MP4_DIR"/$line" "$TIMESTAMPS_TXT"
-	else
-		echo " "$MP4_DIR"/$line" >> "$TIMESTAMPS_TXT"
-		calc_and_print_timestamp ""$MP4_DIR"/$line" "$TIMESTAMPS_TXT"
-	fi
+	echo " "$MP4_DIR"/$line" >> "$TIMESTAMPS_TXT"
+	calc_and_print_timestamp ""$MP4_DIR"/$line" "$TIMESTAMPS_TXT"
 done < sort_mp4_dir_tmp.txt
 
 
