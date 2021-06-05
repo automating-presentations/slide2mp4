@@ -104,6 +104,21 @@ aws polly delete-lexicon --name test
 aws polly list-lexicons    ← test lexiconが削除されたことを確認
 ```
 
+このlexiconについては、[lexicon-generate.sh](https://github.com/h-kojima/slide2mp4/blob/main/tools/lexicon-generate.sh)を利用して、ユーザが作成した辞書ファイルから自動的に作成することもできます。辞書ファイルは単語と発音を記載したテキストファイルであり、単語と発音の間はタブかスペースで区切る必要があります。辞書ファイルでは、「#」から始まる行はコメントとして認識されます。下記は、test-dic.txtという名前の辞書ファイルと、Google Slidesからダウンロードしたトークスクリプトtest-slides.txtから、lexiconを自動的に作成するコマンド例です。
+
+```
+cat << EOF   > test-dic.txt
+######
+## word			pronunciation
+######
+
+OpenShift		オープンシフト
+openshift		オープンシフト
+Virtualization		バーチャライゼーション
+EOF
+./lexicon-generate.sh test-dic.txt test-slides.txt test-sample-lexicon.pls
+```
+
 ----
 ### 2. json/mp3/mp4/png/srt/xml ファイルを保存するディレクトリを作成
 ```
