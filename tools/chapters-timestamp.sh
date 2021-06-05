@@ -64,7 +64,7 @@ fi
 
 
 rm -f "$TIMESTAMPS_TXT"
-ls "$MP4_DIR" |sort -n > sort_"$MP4_DIR"_tmp.txt
+ls "$MP4_DIR" |sort -n > sort_mp4_dir_tmp.txt
 
 
 while read line
@@ -78,9 +78,9 @@ do
 		echo " "$MP4_DIR"/$line" >> "$TIMESTAMPS_TXT"
 		calc_and_print_timestamp ""$MP4_DIR"/$line" "$TIMESTAMPS_TXT"
 	fi
-done < sort_"$MP4_DIR"_tmp.txt
+done < sort_mp4_dir_tmp.txt
 
 
 sed -ie '$d' "$TIMESTAMPS_TXT"
-rm -f "$TIMESTAMPS_TXT"e sort_"$MP4_DIR"_tmp.txt
+rm -f "$TIMESTAMPS_TXT"e sort_mp4_dir_tmp.txt
 

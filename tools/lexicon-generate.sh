@@ -44,8 +44,8 @@ if [ $# -ne 3 ]; then
 fi
 
 
-cat "$DIC_TXT" |grep -v '^#' |sed '/^$/d' > tmp-dic-"$(date)".txt
-cat "$TALK_SCRIPT_TXT" |awk '/<\?xml/,/<\/speak>/' > tmp-talkscript-"$(date)".txt
+cat "$DIC_TXT" |grep -v '^#' |sed '/^$/d' > tmp-DIC_TXT.txt
+cat "$TALK_SCRIPT_TXT" |awk '/<\?xml/,/<\/speak>/' > tmp-TALK_SCRIPT_TXT.txt
 
 
 echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" > "$LEXICON_FILE"
@@ -62,7 +62,7 @@ while read line
 do
 	set ${line}
 	word=${1}; alias=${2}
-	check_word=$(grep "$word" tmp-talkscript-"$(date)".txt 2> /dev/null)
+	check_word=$(grep "$word" tmp-TALK_SCRIPT_TXT.txt 2> /dev/null)
 	if [ -n "$check_word" ]; then
 		echo "  <lexeme>" >> "$LEXICON_FILE"
 		echo "    <grapheme>"$word"</grapheme>" >> "$LEXICON_FILE"
@@ -70,9 +70,9 @@ do
 		echo "  </lexeme>" >> "$LEXICON_FILE"
 		echo >> "$LEXICON_FILE"
 	fi
-done < tmp-dic-"$(date)".txt
+done < tmp-DIC_TXT.txt
 echo "</lexicon>" >> "$LEXICON_FILE"
 
 
-rm -f tmp-dic-"$(date)".txt tmp-talkscript-"$(date)".txt
+rm -f tmp-DIC_TXT.txt tmp-TALK_SCRIPT_TXT.txt
 
