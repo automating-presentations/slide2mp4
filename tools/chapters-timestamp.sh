@@ -27,6 +27,7 @@ print_usage ()
 {
 	echo "Description:"
 	echo "	$(basename $0) creates a text file with timestamp for each chapter."
+	echo "	$(basename $0) requires the following commands, ffprobe."
 	echo "Usage:"
 	echo "	$(basename $0) PATH_OF_MP4_DIRECTORY OUTPUT_TXT"
 	exit
