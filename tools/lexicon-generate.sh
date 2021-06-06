@@ -62,13 +62,15 @@ while read line
 do
 	set ${line}
 	word=${1}; alias=${2}
-	check_word=$(grep "$word" tmp-TALK_SCRIPT_TXT.txt 2> /dev/null)
-	if [ -n "$check_word" ]; then
-		echo "  <lexeme>" >> "$LEXICON_FILE"
-		echo "    <grapheme>"$word"</grapheme>" >> "$LEXICON_FILE"
-		echo "    <alias>"$alias"</alias>" >> "$LEXICON_FILE"
-		echo "  </lexeme>" >> "$LEXICON_FILE"
-		echo >> "$LEXICON_FILE"
+	if [ -n "$word"  ]; then
+		check_word=$(grep "$word" tmp-TALK_SCRIPT_TXT.txt 2> /dev/null)
+		if [ -n "$check_word" ]; then
+			echo "  <lexeme>" >> "$LEXICON_FILE"
+			echo "    <grapheme>"$word"</grapheme>" >> "$LEXICON_FILE"
+			echo "    <alias>"$alias"</alias>" >> "$LEXICON_FILE"
+			echo "  </lexeme>" >> "$LEXICON_FILE"
+			echo >> "$LEXICON_FILE"
+		fi
 	fi
 done < tmp-DIC_TXT.txt
 echo "</lexicon>" >> "$LEXICON_FILE"
