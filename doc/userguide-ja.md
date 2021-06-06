@@ -109,7 +109,7 @@ EOF
 lexicon-generate.sh test-dic.txt test-slides.txt test-sample-lexicon.pls
 ```
 
-また、[lexicon2dic.sh](https://github.com/h-kojima/slide2mp4/blob/main/tools/lexicon2dic.sh)を利用して、既存のlexiconを上記フォーマットに沿った辞書ファイルに変換することもできます。
+また、[lexicon2dic.sh](https://github.com/h-kojima/slide2mp4/blob/main/tools/lexicon2dic.sh)を利用して、既存のlexiconを上記フォーマットに沿った辞書ファイルに変換できます。
 ```
 lexicon2dic.sh test-lexicon.pls test-dic.txt
 ```
