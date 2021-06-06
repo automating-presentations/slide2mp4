@@ -92,16 +92,6 @@ cat << EOF  > test-lexicon.pls
 
 </lexicon>
 EOF
-
-# test という名前でlexiconを保存
-aws polly put-lexicon --name test --content file://test-lexicon.pls
-```
-
-登録した lexiconを削除する場合は、下記を実行してください。
-
-```
-aws polly delete-lexicon --name test
-aws polly list-lexicons    ← test lexiconが削除されたことを確認
 ```
 
 このlexiconについては、[lexicon-generate.sh](https://github.com/h-kojima/slide2mp4/blob/main/tools/lexicon-generate.sh)を利用して、ユーザが作成した辞書ファイルから自動的に作成することもできます。辞書ファイルは単語と発音を記載したテキストファイルであり、単語と発音の間はタブかスペースで区切る必要があります。辞書ファイルでは、「#」から始まる行はコメントとして認識されます。下記は、test-dic.txtという名前の辞書ファイルと、Google Slidesからダウンロードしたトークスクリプトtest-slides.txtから、lexiconを自動的に作成するコマンド例です。
@@ -179,12 +169,13 @@ python3 txt2xml.py tmp.txt; rm -f tmp.txt
 
 ----
 ### 5. トークスクリプト(xml)からjson, mp3ファイルの作成
-トークスクリプト(xml)からスピーチノート付きのjsonファイル, mp3ファイルを作成して、{json,mp3}ディレクトリに保存します。  
-Voice IDは日本語女性(Mizuki)を指定していますが、必要に応じて適宜変更してください。
-既知の制限として、`aws polly`でxmlファイルを読み込ませる際に、「&」などがそのままだとパースできないというエラーになりますので、ご注意ください。  
+1.で作成したlexiconとトークスクリプト(xml)から、スピーチノート付きのjsonファイル, mp3ファイルを作成して、{json,mp3}ディレクトリに保存します。Voice IDは日本語女性(Mizuki)を指定していますが、必要に応じて適宜変更してください。既知の制限として、`aws polly`でxmlファイルを読み込ませる際に、「&」などがそのままだとパースできないというエラーになりますので、ご注意ください。  
 (「Q&A対応」などがエラーになります)
 
 ```
+# test という名前でlexiconを保存
+aws polly put-lexicon --name test --content file://test-lexicon.pls
+
 for i in {1..3}; 
 do aws polly synthesize-speech \
     --lexicon-names test \
@@ -212,6 +203,13 @@ done
 cat json/1.json 
 {"time":0,"type":"sentence","start":84,"end":193,"value":"これはタイトルスライドであり、\nこれから、サンプルスライドをご紹介します。"}
 {"time":5227,"type":"sentence","start":194,"end":259,"value":"OpenShiftとVirtualizationの読み上げテストもします。"}
+```
+
+登録したlexiconを削除する場合は、下記を実行してください。
+
+```
+aws polly delete-lexicon --name test
+aws polly list-lexicons    ← test という名前のlexiconが削除されたことを確認
 ```
 
 ----
