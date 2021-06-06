@@ -44,7 +44,7 @@ if [ $# -ne 3 ]; then
 fi
 
 
-cat "$DIC_TXT" |grep -v '^#' |sed '/^$/d' > tmp-DIC_TXT.txt
+cat "$DIC_TXT" |grep -v '^#' |grep -v "^\s*$" |sed '/^$/d' > tmp-DIC_TXT.txt
 cat "$TALK_SCRIPT_TXT" |awk '/<\?xml/,/<\/speak>/' > tmp-TALK_SCRIPT_TXT.txt
 
 
