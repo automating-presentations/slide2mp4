@@ -52,10 +52,10 @@ do
 	check_grapheme=$(echo "$line" |grep grapheme 2> /dev/null)
 	if [ -n "$check_grapheme" ]; then
 		wi=$(($wi+1)); count=$(($count+1))
-		word[wi]=$(echo "$line" |sed -e "s/<\/*grapheme>//g" -e "s/ //g")
+		word[wi]=$(echo "$line" |sed -e "s/<\/*grapheme>//g" -e "s/ //g" -e "s/\t//g")
 	else
 		wj=$(($wj+1))
-		alias[wj]=$(echo "$line" |sed -e "s/<\/*alias>//g" -e "s/ //g")
+		alias[wj]=$(echo "$line" |sed -e "s/<\/*alias>//g" -e "s/ //g" -e "s/\t//g")
 		word_count[wj]=$count; count=0
 	fi
 done < tmp-LEXICON_FILE.txt
