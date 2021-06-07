@@ -94,7 +94,7 @@ cat << EOF  > test-lexicon.pls
 EOF
 ```
 
-このlexiconについては、[lexicon-generate.sh](https://github.com/h-kojima/slide2mp4/blob/main/tools/lexicon-generate.sh)を利用して、ユーザが作成した辞書ファイルから自動的に作成することもできます。辞書ファイルは単語と発音を記載したテキストファイルであり、単語と発音の間はタブかスペースで区切る必要があります。辞書ファイルでは、「#」から始まる行はコメントとして認識されます。下記は、test-dic.txtという名前の辞書ファイルと、Google Slidesからダウンロードしたトークスクリプトtest-slides.txtから、lexiconを自動的に作成するコマンド例です。このコマンドにより、予め作成した辞書ファイルにある単語のうち、トークスクリプトに記載される単語のみを記載したlexiconが自動的に作成されます。
+このlexiconについては、[lexicon-generate.sh](https://github.com/h-kojima/slide2mp4/blob/main/tools/lexicon-generate.sh)を利用して、ユーザが作成した辞書ファイルから自動的に作成することもできます。辞書ファイルは単語と発音を記載したテキストファイルであり、単語と発音の間はタブかスペースで区切る必要があります。辞書ファイルでは、「#」から始まる行はコメントとして認識されます。下記は、test-dic.txtという名前の辞書ファイルと、Google Slidesからダウンロードしたトークスクリプトtest-slides.txtから、lexiconを自動的に作成するコマンド例です。このコマンドにより、予め作成した辞書ファイルにある単語のうち、トークスクリプトに記載される単語のみを抽出したlexiconが自動的に作成されます。
 
 ```
 cat << EOF   > test-dic.txt
