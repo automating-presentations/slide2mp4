@@ -44,7 +44,8 @@ calc_and_print_timestamp ()
 	((min_timestamp=timestamp / 60 ))
 	((sec_timestamp=timestamp % 60 ))
 
-	echo -n "$min_timestamp:" >> "$2"
+	printf "%02d" "${min_timestamp}" >> "$2"
+	echo -n ":" >> "$2"
 	printf "%02d" "${sec_timestamp}" >> "$2"
 }
 
@@ -65,7 +66,7 @@ ls "$MP4_DIR" |sort -n > sort_mp4_dir_tmp.txt
 
 
 echo "Chapters:" > "$TIMESTAMPS_TXT"
-echo -n "0:00" >> "$TIMESTAMPS_TXT"
+echo -n "00:00" >> "$TIMESTAMPS_TXT"
 while read line
 do
 	echo " "$MP4_DIR"/$line" >> "$TIMESTAMPS_TXT"
