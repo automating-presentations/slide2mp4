@@ -16,30 +16,6 @@
 # limitations under the License.
 
 
-if [ "$1" == "-ns" ]; then
-	PDF_FILE="$2"
-	TXT_FILE="$3"
-	LEXICON_FILE="$4"
-	OUTPUT_MP4="$5"
-	PAGES="$6"
-	NS_FLAG=1
-elif [ "$1" == "--no-subtitles" ]; then
-	PDF_FILE="$2"
-	TXT_FILE="$3"
-	LEXICON_FILE="$4"
-	OUTPUT_MP4="$5"
-	PAGES="$6"
-	NS_FLAG=1
-else
-	PDF_FILE="$1"
-	TXT_FILE="$2"
-	LEXICON_FILE="$3"
-	OUTPUT_MP4="$4"
-	PAGES="$5"
-	NS_FLAG=0
-fi
-
-
 XML_HEADER="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 DENSITY="600"
 GEOMETRY="1280x720"
@@ -145,15 +121,26 @@ if [ $# -ne 0 ]; then
 		print_usage
 	fi
 fi
-if [ $# -ne 4 ]; then
-	if [ $# -ne 5  ]; then
-		if [ $# -ne 6  ]; then
-			echo "Too few or many arguments. Please check whether the number of arguments is 4 or 5 or 6."
-			echo "Please check '$(basename $0) -h' or '$(basename $0) --help'."
-			exit
-		fi
-	fi
+if [ $# -ne 4 -a $# -ne 5 -a $# -ne 6 ]; then
+	echo "Too few or many arguments. Please check whether the number of arguments is 4 or 5 or 6."
+	echo "Please check '$(basename $0) -h' or '$(basename $0) --help'."
+	exit
 fi
+
+
+NS_FLAG=0; i=0
+while [ $# -gt 0 ]
+do
+	if [ "$1" == "-ns" -o "$1" == "--no-subtitles" ]; then
+		NS_FLAG=1; shift
+	fi
+	i=$(($i+1)); arg[i]="$1"; shift
+done
+PDF_FILE="${arg[1]}"
+TXT_FILE="${arg[2]}"
+LEXICON_FILE="${arg[3]}"
+OUTPUT_MP4="${arg[4]}"
+PAGES="${arg[5]}"
 
 
 file "$PDF_FILE" > check_pdf_slide2mp4.txt
@@ -171,6 +158,9 @@ elif [ -z "$CHECK_TXT" ]; then
 	exit
 elif [ -n "$CHECK_XML" ]; then
 	echo "XML file parse error. Please check xml file."
+	exit
+elif [ ${OUTPUT_MP4##*.} != "mp4" ]; then
+	echo "Please specify the name of the mp4 file to output."
 	exit
 fi
 echo "Format checking of input files is completed."
