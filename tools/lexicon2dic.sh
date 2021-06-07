@@ -30,9 +30,7 @@ print_usage ()
 
 
 if [ $# -ne 0 ]; then
-	if [ "$1" == "-h" ]; then
-		print_usage
-	elif [ "$1" == "--help" ]; then
+	if [ "$1" == "-h" -o "$1" == "--help" ]; then
 		print_usage
 	fi
 fi
