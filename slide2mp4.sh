@@ -159,6 +159,9 @@ elif [ -z "$CHECK_TXT" ]; then
 elif [ -n "$CHECK_XML" ]; then
 	echo "XML file parse error. Please check xml file."
 	exit
+elif [ -z "$OUTPUT_MP4" ]; then
+	echo "Please specify the name of the mp4 file to output."
+	exit
 elif [ ${OUTPUT_MP4##*.} != "mp4" ]; then
 	echo "Please specify the name of the mp4 file to output."
 	exit
