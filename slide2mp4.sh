@@ -24,6 +24,7 @@ VOICE_ID="Mizuki"
 FONT_NAME="NotoSansCJKjp-Regular"
 FONT_SIZE="14"
 FPS="25"
+SUBTITLES_INTERVAL_SECONDS="1"
 
 
 # rm -f json2srt.py list.txt txt2xml.py
@@ -91,7 +92,7 @@ while i <= num:
 	with open('tmp' + str(i) + '.json', 'r') as f:
 		json_load = json.load(f)
 		time_seconds1 = float(json_load['time'] / 1000)
-		time_seconds2 = time_seconds1 + 1
+		time_seconds2 = time_seconds1 + $SUBTITLES_INTERVAL_SECONDS
 		timecode.append(getTimeCode(time_seconds1))
 		timecode.append(getTimeCode(time_seconds2))
 		message.append(json_load['value'])
