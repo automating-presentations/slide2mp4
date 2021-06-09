@@ -60,15 +60,18 @@ done < tmp-LEXICON_FILE.txt
 rm -f tmp-LEXICON_FILE.txt
 
 
-echo "# word	pronunciation" > "$DIC_TXT"
-echo >> "$DIC_TXT" 
+echo "# word	pronunciation" > tmp-dic.txt
 wj=1
 for i in ${!word[@]}
 do
-	printf "${word[$i]}\t${alias[$wj]}\n" >> "$DIC_TXT"
+	printf "${word[$i]}\t${alias[$wj]}\n" >> tmp-dic.txt
 	word_count[wj]=$((${word_count[$wj]}-1))
 	if [ ${word_count[$wj]} -eq 0 ]; then
 		wj=$(($wj+1))
 	fi
 done
+
+
+awk '!dicline[$0]++' tmp-dic.txt |sort > "$DIC_TXT"
+rm -f tmp-dic.txt
 
