@@ -1,11 +1,9 @@
-FROM quay.io/centos/centos:stream8
+FROM fedora:34
 LABEL maintainer="Hirofumi Kojima"
 # podman build -t slide2mp4:latest <PATH_OF_DOCKERFILE>
 
 
-RUN dnf -y install epel-release
-RUN dnf -y install https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm
-RUN dnf config-manager --set-enabled powertools
+RUN dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-34.noarch.rpm
 RUN dnf -y install awscli ffmpeg ghostscript git GraphicsMagick python3 libxml2
 RUN dnf -y update
 RUN dnf clean all
