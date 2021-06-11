@@ -4,7 +4,7 @@ LABEL maintainer="Hirofumi Kojima"
 
 
 RUN dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-34.noarch.rpm
-RUN dnf -y install awscli ffmpeg ghostscript git GraphicsMagick python3 libxml2
+RUN dnf -y install awscli ffmpeg ghostscript git google-noto-sans*-cjk-jp-fonts GraphicsMagick python3 libxml2
 RUN dnf -y update
 RUN dnf clean all
 
