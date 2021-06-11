@@ -1,5 +1,5 @@
 FROM quay.io/centos/centos:stream8
-MAINTAINER Hirofumi Kojima
+LABEL maintainer="Hirofumi Kojima"
 # podman build -t slide2mp4:latest <PATH_OF_DOCKERFILE>
 
 
@@ -18,3 +18,4 @@ RUN cp slide2mp4/tools/lexicon-generate.sh /usr/local/bin/lexicon-generate
 RUN cp slide2mp4/tools/lexicon2dic.sh /usr/local/bin/lexicon2dic
 RUN chmod +x /usr/local/bin/*
 RUN rm -rf slide2mp4
+
