@@ -6,7 +6,7 @@ slide2mp4.sh の変数や処理の変更などは、本ガイドを参考にし�
 ----
 ## テストデータの利用方法
 
-[システム要件](https://github.com/h-kojima/slide2mp4#requirements)を満たしている場合、テストデータを利用したテストを実行できます。slide2mp4.sh では字幕のデフォルトフォントを「NotoSansCJKjp-Medium, 14サイズ」と指定しています。フォントが無い場合はシステムデフォルトのフォントが使われると思いますが、その場合は、slide2mp4.sh のフォントに関する変数を適宜変更してください。
+[システム要件](https://github.com/h-kojima/slide2mp4#requirements)を満たしている場合、テストデータを利用したテストを実行できます。slide2mp4.sh では字幕のデフォルトフォントを「NotoSansCJKjp-Regular, 14サイズ」と指定しています。[Noto Sans CJK JP](https://www.google.com/get/noto/help/cjk/)のフォントが無い場合はシステムデフォルトのフォントが使われると思いますが、その場合は、slide2mp4.sh のフォントに関する変数を適宜変更してください。
 
 ```
 git clone https://github.com/h-kojima/slide2mp4
