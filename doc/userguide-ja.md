@@ -139,7 +139,7 @@ Google SlidesからPlain Text形式でDLしたtest-slides.txtに含まれる、�
 
 ```
 # awkでエスケープ文字を使う場合:  \074: <, \076: >, \077: ?
-cat test-slides.txt |awk '/\<\?xml/,/\<\/speak\>/' > tmp.txt
+cat test-slides.txt |awk '/<\?xml/,/<\/speak>/' > tmp.txt
 ```
 
 tmp.txtに抽出されたトークスクリプトを分割して、 xml/{1..3}.xml ファイルに保存します
