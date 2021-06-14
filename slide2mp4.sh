@@ -41,6 +41,7 @@ print_usage ()
 	echo "Options:"
 	echo "	-h, --help		print this message."
 	echo "	-ns, --no-subtitles	convert without subtitles."
+	echo "	-npc, --no-pdf-convert	don't convert PDF to png."
 	echo ""
 	echo "Example1: The following command creates one mp4 file with audio and subtitles, named \"test-output.mp4\"."
 	echo "	$(basename $0) test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4"
@@ -50,6 +51,9 @@ print_usage ()
 	echo ""
 	echo "Example3: No subtitles option is also available, e.g. mp4 files on pages 1 and 3 are without subtitles."
 	echo "	$(basename $0) -ns test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 \"1 3\""
+	echo ""
+	echo "Example4: No PDF converting option is also available, e.g. in the case of changing the talk script on pages 1 and 3."
+	echo "	$(basename $0) -npc -ns test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 \"1 3\""
 	exit
 }
 
@@ -121,8 +125,8 @@ if [ $# -ne 0 ]; then
 		print_usage
 	fi
 fi
-if [ $# -ne 4 -a $# -ne 5 -a $# -ne 6 ]; then
-	echo "Too few or many arguments. Please check whether the number of arguments is 4 or 5 or 6."
+if [ $# -lt 4 -o $# -gt 7 ]; then
+	echo "Too few or many arguments. Please check whether the number of arguments is between 4 and 7."
 	echo "Please check '$(basename $0) -h' or '$(basename $0) --help'."
 	exit
 fi
