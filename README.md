@@ -45,6 +45,12 @@ cd slide2mp4/test
 ../slide2mp4.sh -ns test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 "1 3"
 ```
 
+No PDF converting option is also available, e.g. in the case of changing the talk script on pages 1 and 3.
+```
+cd slide2mp4/test
+../slide2mp4.sh -npc -ns test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 "1 3"
+```
+
 You can create a lexicon file automatically. Once you've created a dictionary file, "test-dic.txt" in the following example, you can create a lexicon file, named "test-sample-lexicon.pls" with the following command.
 ```
 cd slide2mp4/test
