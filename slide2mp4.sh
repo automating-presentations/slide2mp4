@@ -27,7 +27,6 @@ FPS="25"
 SUBTITLES_INTERVAL_SECONDS="1"
 
 
-# rm -f json2srt.py list.txt txt2xml.py
 # rm -rf json mp3 mp4 png srt xml
 
 
@@ -129,11 +128,14 @@ if [ $# -ne 4 -a $# -ne 5 -a $# -ne 6 ]; then
 fi
 
 
-NS_FLAG=0; i=0
+NS_FLAG=0; CONVERT_FLAG=1; i=0
 while [ $# -gt 0 ]
 do
 	if [ "$1" == "-ns" -o "$1" == "--no-subtitles" ]; then
 		NS_FLAG=1; shift
+	fi
+	if [ "$1" == "-npc" -o "$1" == "--no-pdf-convert" ]; then
+		CONVERT_FLAG=0; shift
 	fi
 	i=$(($i+1)); arg[i]="$1"; shift
 done
@@ -200,9 +202,11 @@ if [ -z "$PAGES" ]; then
 fi
 
 
-rm -f png/*
-gm convert -density $DENSITY -geometry $GEOMETRY +adjoin "$PDF_FILE" png:png/%01d-tmp.png
-for i in `seq 0 $(($page_num-1))`; do mv png/$i-tmp.png png/$(($i+1)).png; done
+if [ $CONVERT_FLAG -eq 1 ]; then
+	rm -f png/*
+	gm convert -density $DENSITY -geometry $GEOMETRY +adjoin "$PDF_FILE" png:png/%01d-tmp.png
+	for i in `seq 0 $(($page_num-1))`; do mv png/$i-tmp.png png/$(($i+1)).png; done
+fi
 
 
 aws polly put-lexicon --name $LEXICON_NAME --content file://"$LEXICON_FILE"
@@ -267,4 +271,8 @@ fi
 
 
 ffmpeg -y -f concat -i list.txt -c copy "$OUTPUT_MP4"
+
+
+rm -f json2srt.py list.txt txt2xml.py
+rm -rf json xml
 
