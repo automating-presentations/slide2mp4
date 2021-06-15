@@ -1,12 +1,12 @@
 name: Build and Publish container image
 
-on: [ workflow_dispatch ]
-  #push: 
-    #branches:
-    #  - master
-    #path:
-    #  - '**.sh'
-    #  - '**.py'
+on: #[ workflow_dispatch ]
+  push: 
+    branches:
+      - master
+    path:
+      - '**.sh'
+      - '**.py'
 
 jobs:
   build_and_push:
