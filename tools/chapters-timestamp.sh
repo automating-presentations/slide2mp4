@@ -17,7 +17,7 @@
 
 MP4_DIR="$1"
 TIMESTAMPS_TXT="$2"
-# test comment.
+
 
 timeinfo=0
 
