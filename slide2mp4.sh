@@ -193,5 +193,5 @@ fi
 
 
 ffmpeg -y -f concat -i list.txt -c copy "$OUTPUT_MP4"
-rm -rf list.txt json xml
+rm -rf list.txt xml
 
