@@ -15,5 +15,6 @@ RUN cp slide2mp4/tools/chapters-timestamp.sh /usr/local/bin/chapters-timestamp
 RUN cp slide2mp4/tools/lexicon-generate.sh /usr/local/bin/lexicon-generate
 RUN cp slide2mp4/tools/lexicon2dic.sh /usr/local/bin/lexicon2dic
 RUN chmod +x /usr/local/bin/*
+RUN cp -r slide2mp4/lib /usr/local/bin/
 RUN rm -rf slide2mp4
 

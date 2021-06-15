@@ -16,7 +16,6 @@
 # limitations under the License.
 
 
-XML_HEADER="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 DENSITY="600"
 GEOMETRY="1280x720"
 LEXICON_NAME="test"
@@ -24,7 +23,6 @@ VOICE_ID="Mizuki"
 FONT_NAME="NotoSansCJKjp-Regular"
 FONT_SIZE="14"
 FPS="25"
-SUBTITLES_INTERVAL_SECONDS="1"
 
 
 # rm -rf json mp3 mp4 png srt xml
@@ -58,68 +56,6 @@ print_usage ()
 }
 
 
-cat_json2srt_py ()
-{
-
-cat << EOF  > json2srt.py
-#!/usr/bin/python3
-# Usage: python3 json2srt.py polly_output.json srt_file.srt
-
-import json
-import os
-import sys
-
-def getTimeCode(time_seconds):
-	seconds, mseconds = str(time_seconds).split('.')
-	mins = int(seconds) / 60
-	tseconds = int(seconds) % 60
-	return str( "%02d:%02d:%02d,%03d" % (00, mins, tseconds, int(0) ))
-
-json_file = sys.argv[1]
-srt_file = sys.argv[2]
-
-i = 0
-with open(json_file, 'r') as f:
-	line = f.readline()
-	while line:
-		with open('tmp' + str(i) + '.json', 'w') as g:
-			print(line, file=g)
-		line = f.readline()
-		num = i
-		i+=1
-
-timecode = []
-message = []
-i = 0
-while i <= num:
-	with open('tmp' + str(i) + '.json', 'r') as f:
-		json_load = json.load(f)
-		time_seconds1 = float(json_load['time'] / 1000)
-		time_seconds2 = time_seconds1 + $SUBTITLES_INTERVAL_SECONDS
-		timecode.append(getTimeCode(time_seconds1))
-		timecode.append(getTimeCode(time_seconds2))
-		message.append(json_load['value'])
-	os.remove('tmp' + str(i) + '.json')
-	i+=1
-
-i = 0
-with open(srt_file, 'w') as f:
-	if num == 0:
-		print(i+1, '\n', '00:00:00,500', ' --> ', timecode[0], '\n', message[i], sep='', file=f)
-	else:
-		print(i+1, '\n', '00:00:00,500', ' --> ', timecode[i*2+2], '\n', message[i], '\n', sep='', file=f)
-		i+=1
-		while i <= num:
-			if i == num:
-				print(i+1, '\n', timecode[i*2+1], ' --> ', timecode[0], '\n', message[i], sep='', file=f)
-			else:
-				print(i+1, '\n', timecode[i*2+1], ' --> ', timecode[i*2+2], '\n', message[i], '\n', sep='', file=f)
-			i+=1
-EOF
-
-}
-
-
 if [ $# -ne 0 ]; then
 	if [ "$1" == "-h" -o "$1" == "--help" ]; then
 		print_usage
@@ -132,22 +68,23 @@ if [ $# -lt 4 -o $# -gt 7 ]; then
 fi
 
 
-NS_FLAG=0; CONVERT_FLAG=1; i=0
+NS_FLAG=0; NO_CONVERT_FLAG=0; i=0
 while [ $# -gt 0 ]
 do
 	if [ "$1" == "-ns" -o "$1" == "--no-subtitles" ]; then
 		NS_FLAG=1; shift
+	elif [ "$1" == "-npc" -o "$1" == "--no-pdf-convert" ]; then
+		NO_CONVERT_FLAG=1; shift
+	else
+		i=$(($i+1)); arg[i]="$1"; shift
 	fi
-	if [ "$1" == "-npc" -o "$1" == "--no-pdf-convert" ]; then
-		CONVERT_FLAG=0; shift
-	fi
-	i=$(($i+1)); arg[i]="$1"; shift
 done
 PDF_FILE="${arg[1]}"
 TXT_FILE="${arg[2]}"
 LEXICON_FILE="${arg[3]}"
 OUTPUT_MP4="${arg[4]}"
 PAGES="${arg[5]}"
+SLIDE2MP4_DIR=$(cd $(dirname $0); pwd)
 
 
 file "$PDF_FILE" > check_pdf_slide2mp4.txt
@@ -180,33 +117,15 @@ mkdir -p json mp3 mp4 png srt xml
 
 
 cat "$TXT_FILE" |awk '/<\?xml/,/<\/speak>/' > tmp.txt
-cat << EOF   > txt2xml.py
-#!/usr/bin/python3
-# Usage: python3 txt2xml.py xml_txt
-
-import sys
-
-xml_txt = sys.argv[1]
-
-i = 0
-with open(xml_txt, 'r') as f:
-    line = f.readline()
-    while line:
-        if line == '$XML_HEADER':
-        	i+=1
-        with open('xml/' + str(int(i)) + '.xml', 'a') as g:
-        	print(line, end='', file=g)
-        line = f.readline()
-EOF
 rm -f xml/*
-python3 txt2xml.py tmp.txt; rm -f tmp.txt
+python3 $SLIDE2MP4_DIR/lib/txt2xml.py tmp.txt; rm -f tmp.txt
 page_num=$(ls -F xml/ | grep -v / | wc -l)
 if [ -z "$PAGES" ]; then
         PAGES=`seq 1 $page_num`
 fi
 
 
-if [ $CONVERT_FLAG -eq 1 ]; then
+if [ $NO_CONVERT_FLAG -eq 0 ]; then
 	rm -f png/*
 	gm convert -density $DENSITY -geometry $GEOMETRY +adjoin "$PDF_FILE" png:png/%01d-tmp.png
 	for i in `seq 0 $(($page_num-1))`; do mv png/$i-tmp.png png/$(($i+1)).png; done
@@ -246,8 +165,7 @@ aws polly delete-lexicon --name $LEXICON_NAME
 
 
 if [ $NS_FLAG -eq 0 ]; then
-	cat_json2srt_py
-	for i in $PAGES; do python3 json2srt.py json/$i.json srt/$i.srt; done
+	for i in $PAGES; do python3 $SLIDE2MP4_DIR/lib/json2srt.py json/$i.json srt/$i.srt; done
 fi
 
 
@@ -275,8 +193,5 @@ fi
 
 
 ffmpeg -y -f concat -i list.txt -c copy "$OUTPUT_MP4"
-
-
-rm -f json2srt.py list.txt txt2xml.py
-rm -rf json xml
+rm -rf list.txt json xml
 
