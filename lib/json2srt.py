@@ -20,7 +20,7 @@ import os
 import sys
 
 SUBTITLES_INTERVAL_SECONDS = 1
-
+#test comment.
 def getTimeCode(time_seconds):
 	seconds, mseconds = str(time_seconds).split('.')
 	mins = int(seconds) / 60
