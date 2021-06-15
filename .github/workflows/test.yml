@@ -1,0 +1,16 @@
+name: test workflow
+
+on: #[ workflow_dispatch ]
+  push: 
+    branches:
+      - main
+    paths:
+      - '**.sh'
+      - '**.py'
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: my-step
+        run: echo "hello!!"
