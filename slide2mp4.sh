@@ -26,7 +26,6 @@ FPS="25"
 
 
 # rm -rf json mp3 mp4 png srt xml
-# test comment.
 
 
 print_usage ()
