@@ -26,6 +26,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.KOJIMA_PAT }}
+          logout: false
 
       - name: Build and push
         uses: docker/build-push-action@v2
