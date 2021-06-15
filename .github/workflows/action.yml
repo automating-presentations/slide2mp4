@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - master
-    path:
-      - '**.sh'
-      - '**.py'
+    #path:
+    #  - '**.sh'
+    #  - '**.py'
 
 jobs:
   build_and_push:
