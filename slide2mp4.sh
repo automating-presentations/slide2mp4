@@ -56,22 +56,13 @@ print_usage ()
 }
 
 
-if [ $# -ne 0 ]; then
-	if [ "$1" == "-h" -o "$1" == "--help" ]; then
-		print_usage
-	fi
-fi
-if [ $# -lt 4 -o $# -gt 7 ]; then
-	echo "Too few or many arguments. Please check whether the number of arguments is between 4 and 7."
-	echo "Please check '$(basename $0) -h' or '$(basename $0) --help'."
-	exit
-fi
-
-
-NS_FLAG=0; NO_CONVERT_FLAG=0; i=0
+NS_FLAG=0; NO_CONVERT_FLAG=0
+i=0; arg_num=$#
 while [ $# -gt 0 ]
 do
-	if [ "$1" == "-ns" -o "$1" == "--no-subtitles" ]; then
+	if [ "$1" == "-h" -o "$1" == "--help" ]; then
+		print_usage
+	elif [ "$1" == "-ns" -o "$1" == "--no-subtitles" ]; then
 		NS_FLAG=1; shift
 	elif [ "$1" == "-npc" -o "$1" == "--no-pdf-convert" ]; then
 		NO_CONVERT_FLAG=1; shift
@@ -85,6 +76,13 @@ LEXICON_FILE="${arg[3]}"
 OUTPUT_MP4="${arg[4]}"
 PAGES="${arg[5]}"
 SLIDE2MP4_DIR=$(cd $(dirname $0); pwd)
+
+
+if [ $arg_num -lt 4  -o  $arg_num -gt 7 ]; then
+	echo "Too few or many arguments. Please check whether the number of arguments is between 4 and 7."
+	echo "Please check '$(basename $0) -h' or '$(basename $0) --help'."
+	exit
+fi
 
 
 file "$PDF_FILE" > check_pdf_slide2mp4.txt
