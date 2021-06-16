@@ -20,6 +20,11 @@ If you use Linux or macOS(including M1 Mac), you can install AWS CLI, FFmpeg, Gh
 brew install awscli ffmpeg ghostscript graphicsmagick
 ```
 
+If you don't want to make any changes to your local environment, you can download a container image with a complete environment for using slide2mp4.
+```
+docker pull ghcr.io/h-kojima/slide2mp4:latest
+```
+
 ----
 ## How to use
 
