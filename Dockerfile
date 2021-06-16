@@ -17,11 +17,3 @@ RUN cp slide2mp4/tools/lexicon2dic.sh /usr/local/bin/lexicon2dic
 RUN chmod +x /usr/local/bin/*
 RUN cp -r slide2mp4/lib /usr/local/bin/
 RUN rm -rf slide2mp4
-
-
-RUN echo "%slide2mp4-sudoers ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/slide2mp4_sudoers
-RUN groupadd slide2mp4-sudoers
-RUN useradd localuser01 && usermod -aG slide2mp4-sudoers localuser01
-USER localuser01
-WORKDIR /home/localuser01
-
