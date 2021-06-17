@@ -168,16 +168,32 @@ fi
 
 
 if [ $NS_FLAG -eq 0 ]; then
-	for i in $PAGES; do ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf "subtitles=srt/$i.srt:force_style='FontName=$FONT_NAME,FontSize=$FONT_SIZE'" mp4/$i.mp4; done
+	for i in $PAGES
+	do 
+		ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf "subtitles=srt/$i.srt:force_style='FontName=$FONT_NAME,FontSize=$FONT_SIZE'" mp4/$i.mp4
+		if [ ! -s mp4/$i.mp4 ]; then
+			echo; echo
+			echo "FFmpeg job for creating mp4/$i.mp4 has been failed. Please check your pdf or talk script file."
+			exit
+		fi
+	done
 else
-	for i in $PAGES; do ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest mp4/$i.mp4; done
+	for i in $PAGES
+	do
+		ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest mp4/$i.mp4
+		if [ ! -s mp4/$i.mp4 ]; then
+			echo; echo
+			echo "FFmpeg job for creating mp4/$i.mp4 has been failed. Please check your pdf or talk script file."
+			exit
+		fi
+	done
 fi
 
 
 PARTIALLY_MODE=0
 for i in `seq 1 $page_num`
 do
-	if [ ! -e "mp4/$i.mp4" ]; then
+	if [ ! -s "mp4/$i.mp4" ]; then
 		PARTIALLY_MODE=1
 		break
 	fi
