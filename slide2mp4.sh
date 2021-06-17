@@ -193,3 +193,8 @@ fi
 ffmpeg -y -f concat -i list.txt -c copy "$OUTPUT_MP4"
 rm -rf list.txt xml
 
+
+echo; echo
+echo "The conversion from PDF slides to mp4 files has been successfully completed."
+echo "Please check $OUTPUT_MP4."
+
