@@ -173,7 +173,11 @@ aws polly delete-lexicon --name $LEXICON_NAME
 
 
 if [ $NS_FLAG -eq 0 ]; then
-	for i in $PAGES; do python3 "$SLIDE2MP4_DIR"/lib/json2srt.py json/$i.json srt/$i.srt; done
+	for i in $PAGES;
+	do
+		python3 "$SLIDE2MP4_DIR"/lib/json2srt.py json/$i.json srt/$i.srt
+		echo "srt/$i.srt has been created."
+	done
 fi
 
 
