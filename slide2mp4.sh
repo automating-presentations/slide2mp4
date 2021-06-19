@@ -92,6 +92,7 @@ CHECK_PDF=$(grep -i pdf check_pdf_slide2mp4.txt 2> /dev/null)
 CHECK_TXT=$(grep -i text check_txt_slide2mp4.txt 2> /dev/null)
 CHECK_XML=$(grep -i error check_lexicon_error_slide2mp4.txt)
 rm -f check_*_slide2mp4.txt
+OUTPUT_MP4_NO_SPACE="$(echo -e "${OUTPUT_MP4}" |tr -d '[:space:]')"
 if [ -z "$CHECK_PDF" ]; then
 	echo "This is not PDF file. Please check PDF file."
 	exit
@@ -101,14 +102,14 @@ elif [ -z "$CHECK_TXT" ]; then
 elif [ -n "$CHECK_XML" ]; then
 	echo "XML file parse error. Please check xml file."
 	exit
-elif [ -z "$OUTPUT_MP4" ]; then
+elif [ -z "$OUTPUT_MP4_NO_SPACE" ]; then
 	echo "Please specify the name of the mp4 file to output."
 	exit
-elif [ ${OUTPUT_MP4##*.} != "mp4" ]; then
+elif [ ${OUTPUT_MP4_NO_SPACE##*.} != "mp4" ]; then
 	echo "Please specify the name of the mp4 file to output."
 	exit
 fi
-echo "Format checking of input files is completed."
+echo "Format checking of input files has been completed."
 
 
 mkdir -p json mp3 mp4 png srt xml
@@ -124,9 +125,11 @@ fi
 
 
 if [ $NO_CONVERT_FLAG -eq 0 ]; then
+	echo "The conversion from PDF to PNG starts now."
 	rm -f png/*
 	gm convert -density $DENSITY -geometry $GEOMETRY +adjoin "$PDF_FILE" png:png/%01d-tmp.png
 	for i in `seq 0 $(($page_num-1))`; do mv png/$i-tmp.png png/$(($i+1)).png; done
+	echo "The conversion from PDF to PNG has been successfully completed."
 fi
 
 
