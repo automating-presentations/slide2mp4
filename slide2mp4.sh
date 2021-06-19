@@ -37,9 +37,10 @@ print_usage ()
 	echo "Usage:"
 	echo "	$(basename $0) [option] PDF_FILE TXT_FILE LEXICON_FILE OUTPUT_MP4 ["page_num1 page_num2..."]"
 	echo "Options:"
-	echo "	-h, --help		print this message."
-	echo "	-ns, --no-subtitles	convert without subtitles."
-	echo "	-npc, --no-pdf-convert	don't convert PDF to png."
+	echo "	-h, --help				print this message."
+	echo "	-le, --ffmpeg-log-level-error		ffmpeg log level is error. (default level is info)"
+	echo "	-ns, --no-subtitles			convert without subtitles."
+	echo "	-npc, --no-pdf-convert			don't convert PDF to png."
 	echo ""
 	echo "Example1: The following command creates one mp4 file with audio and subtitles, named \"test-output.mp4\"."
 	echo "	$(basename $0) test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4"
@@ -57,6 +58,7 @@ print_usage ()
 
 
 NS_FLAG=0; NO_CONVERT_FLAG=0
+FFMPEG_LOG_LEVEL="-loglevel info"
 i=0; arg_num=$#
 while [ $# -gt 0 ]
 do
@@ -66,6 +68,8 @@ do
 		NS_FLAG=1; shift
 	elif [ "$1" == "-npc" -o "$1" == "--no-pdf-convert" ]; then
 		NO_CONVERT_FLAG=1; shift
+	elif [ "$1" == "-le" -o "$1" == "--ffmpeg-log-level-error" ]; then
+		FFMPEG_LOG_LEVEL="-loglevel error"; shift
 	else
 		i=$(($i+1)); arg[i]="$1"; shift
 	fi
@@ -78,8 +82,8 @@ PAGES="${arg[5]}"
 SLIDE2MP4_DIR=$(cd $(dirname $0); pwd)
 
 
-if [ $arg_num -lt 4  -o  $arg_num -gt 7 ]; then
-	echo "Too few or many arguments. Please check whether the number of arguments is between 4 and 7."
+if [ $arg_num -lt 4  -o  $arg_num -gt 8 ]; then
+	echo "Too few or many arguments. Please check whether the number of arguments is between 4 and 8."
 	echo "Please check '$(basename $0) -h' or '$(basename $0) --help'."
 	exit
 fi
@@ -117,7 +121,7 @@ mkdir -p json mp3 mp4 png srt xml
 
 cat "$TXT_FILE" |awk '/<\?xml/,/<\/speak>/' > tmp.txt
 rm -f xml/*
-python3 $SLIDE2MP4_DIR/lib/txt2xml.py tmp.txt; rm -f tmp.txt
+python3 "$SLIDE2MP4_DIR"/lib/txt2xml.py tmp.txt; rm -f tmp.txt
 page_num=$(ls -F xml/ | grep -v / | wc -l)
 if [ -z "$PAGES" ]; then
         PAGES=`seq 1 $page_num`
@@ -141,7 +145,7 @@ do aws polly synthesize-speech \
        --output-format mp3 \
        --voice-id $VOICE_ID \
        --text file://xml/$i.xml \
-       mp3/$i.mp3 2> tmp.txt;
+       mp3/$i.mp3 1> /dev/null 2> tmp.txt;
    
    if [ -s tmp.txt ]; then
         echo "There is the following error in executing aws polly, with xml/$i.xml."
@@ -149,7 +153,9 @@ do aws polly synthesize-speech \
         aws polly delete-lexicon --name $LEXICON_NAME
         exit
    fi
-   
+
+   echo "mp3/$i.mp3 has been created."   
+
    if [ $NS_FLAG -eq 0 ]; then
    	aws polly synthesize-speech \
             --lexicon-names $LEXICON_NAME \
@@ -158,7 +164,8 @@ do aws polly synthesize-speech \
             --voice-id $VOICE_ID \
             --speech-mark-types='["sentence"]' \
             --text file://xml/$i.xml \
-            json/$i.json;
+            json/$i.json &> /dev/null;
+	echo "json/$i.json has been created."
    fi
 done
 rm -f tmp.txt
@@ -166,31 +173,29 @@ aws polly delete-lexicon --name $LEXICON_NAME
 
 
 if [ $NS_FLAG -eq 0 ]; then
-	for i in $PAGES; do python3 $SLIDE2MP4_DIR/lib/json2srt.py json/$i.json srt/$i.srt; done
+	for i in $PAGES; do python3 "$SLIDE2MP4_DIR"/lib/json2srt.py json/$i.json srt/$i.srt; done
 fi
 
 
-if [ $NS_FLAG -eq 0 ]; then
-	for i in $PAGES
-	do 
-		ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf "subtitles=srt/$i.srt:force_style='FontName=$FONT_NAME,FontSize=$FONT_SIZE'" mp4/$i.mp4
-		if [ ! -s mp4/$i.mp4 ]; then
-			echo; echo
-			echo "FFmpeg job for creating mp4/$i.mp4 has been failed. Please check your pdf or talk script file."
-			exit
-		fi
-	done
-else
-	for i in $PAGES
-	do
-		ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest mp4/$i.mp4
-		if [ ! -s mp4/$i.mp4 ]; then
-			echo; echo
-			echo "FFmpeg job for creating mp4/$i.mp4 has been failed. Please check your pdf or talk script file."
-			exit
-		fi
-	done
-fi
+for i in $PAGES
+do
+	if [ $NS_FLAG -eq 0 ]; then
+		ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf "subtitles=srt/$i.srt:force_style='FontName=$FONT_NAME,FontSize=$FONT_SIZE'" mp4/$i.mp4
+	else
+		ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest mp4/$i.mp4
+	fi
+
+	if [ ! -s mp4/$i.mp4 ]; then
+		echo; echo
+		echo "FFmpeg job for creating mp4/$i.mp4 has been failed. Please check your pdf or talk script file."
+		exit
+	fi
+
+	if [ "$FFMPEG_LOG_LEVEL" == "-loglevel info" ]; then
+		echo; echo
+	fi
+	echo "mp4/$i.mp4 has been created."
+done
 
 
 PARTIALLY_MODE=0
@@ -209,7 +214,7 @@ else
 fi
 
 
-ffmpeg -y -f concat -i list.txt -c copy "$OUTPUT_MP4"
+ffmpeg $FFMPEG_LOG_LEVEL -y -f concat -i list.txt -c copy "$OUTPUT_MP4"
 rm -rf list.txt xml
 
 
