@@ -79,7 +79,7 @@ TXT_FILE="${arg[2]}"
 LEXICON_FILE="${arg[3]}"
 OUTPUT_MP4="${arg[4]}"
 PAGES="${arg[5]}"
-SLIDE2MP4_DIR=$(cd $(dirname $0); pwd)
+SLIDE2MP4_DIR="$(cd "$(dirname "$0")"; pwd)"
 
 
 if [ $arg_num -lt 4  -o  $arg_num -gt 8 ]; then
