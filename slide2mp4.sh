@@ -38,7 +38,7 @@ print_usage ()
 	echo "	$(basename $0) [option] PDF_FILE TXT_FILE LEXICON_FILE OUTPUT_MP4 ["page_num1 page_num2..."]"
 	echo "Options:"
 	echo "	-h, --help				print this message."
-	echo "	-le, --ffmpeg-log-level-error		ffmpeg log level is error. (default level is info)"
+	echo "	-le, --ffmpeg-loglevel-error		ffmpeg loglevel is error. (default level is info)"
 	echo "	-npc, --no-pdf-convert			don't convert PDF to png."
 	echo "	-ns, --no-subtitles			convert without subtitles."
 	echo ""
@@ -68,7 +68,7 @@ do
 		NS_FLAG=1; shift
 	elif [ "$1" == "-npc" -o "$1" == "--no-pdf-convert" ]; then
 		NO_CONVERT_FLAG=1; shift
-	elif [ "$1" == "-le" -o "$1" == "--ffmpeg-log-level-error" ]; then
+	elif [ "$1" == "-le" -o "$1" == "--ffmpeg-loglevel-error" ]; then
 		FFMPEG_LOG_LEVEL="-loglevel error"; shift
 	else
 		i=$(($i+1)); arg[i]="$1"; shift

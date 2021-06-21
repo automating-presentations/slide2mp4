@@ -35,7 +35,7 @@ print_usage ()
 
 calc_and_print_timestamp ()
 {
-	var=$(ffprobe -hide_banner -show_entries format=duration "$1" |grep -i duration |sed -e 's/duration=//')
+	var=$(ffprobe -loglevel error -hide_banner -show_entries format=duration "$1" |grep -i duration |sed -e 's/duration=//')
 	timeinfo=`echo "scale=6; $timeinfo + $var" |bc`
 
 	tmpvalue=`echo "scale=6; $timeinfo + 0.999999" |bc`
