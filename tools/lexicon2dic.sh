@@ -72,6 +72,7 @@ do
 done
 
 
-awk '!dicline[$0]++' tmp-DIC_TXT.txt |sort > "$DIC_TXT"
-rm -f tmp-DIC_TXT.txt
+cat tmp-DIC_TXT.txt >> "$DIC_TXT"; rm -f tmp-DIC_TXT.txt
+awk '!dicline[$0]++' "$DIC_TXT" |sort > sort-tmp-DIC_TXT.txt
+mv sort-tmp-DIC_TXT.txt "$DIC_TXT"
 
