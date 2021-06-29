@@ -22,7 +22,7 @@ brew install awscli ffmpeg ghostscript graphicsmagick
 
 If you don't want to make any changes to your local environment, you can download a container image with a complete environment for using slide2mp4.
 ```
-docker pull ghcr.io/h-kojima/slide2mp4:latest
+docker pull ghcr.io/automating-presentations/slide2mp4:latest
 ```
 
 ----
@@ -31,7 +31,7 @@ docker pull ghcr.io/h-kojima/slide2mp4:latest
 The following command creates one mp4 file with audio and subtitles, named "test-output.mp4".
 
 ```
-git clone https://github.com/h-kojima/slide2mp4
+git clone https://github.com/automating-presentations/slide2mp4
 chmod u+x slide2mp4/slide2mp4.sh
 cd slide2mp4/test
 ../slide2mp4.sh test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4
