@@ -76,7 +76,7 @@ cd slide2mp4/test
 
 ----
 ## Documentation
- - [Japanese User Guide](https://github.com/h-kojima/slide2mp4/blob/main/doc/userguide-ja.md)
+ - [Japanese User Guide](https://github.com/automating-presentations/slide2mp4/blob/main/doc/userguide-ja.md)
 
 ----
 ## License
