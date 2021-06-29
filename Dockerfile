@@ -9,7 +9,7 @@ RUN dnf -y update
 RUN dnf clean all
 
 
-RUN git clone --depth 1 https://github.com/h-kojima/slide2mp4
+RUN git clone --depth 1 https://github.com/automating-presentations/slide2mp4
 RUN cp slide2mp4/slide2mp4.sh /usr/local/bin/slide2mp4
 RUN cp slide2mp4/tools/chapters-timestamp.sh /usr/local/bin/chapters-timestamp
 RUN cp slide2mp4/tools/lexicon-generate.sh /usr/local/bin/lexicon-generate
