@@ -20,7 +20,7 @@ If you use Linux or macOS(including M1 Mac), you can install AWS CLI, FFmpeg, Gh
 brew install awscli ffmpeg ghostscript graphicsmagick
 ```
 
-If you don't want to make any changes to your local environment, you can download a container image with a complete environment for using slide2mp4.
+If you don't would like to make any changes to your local environment, you can download a container image with a complete environment for using slide2mp4.
 ```
 docker pull ghcr.io/automating-presentations/slide2mp4:latest
 ```
@@ -62,7 +62,7 @@ cd slide2mp4/test
 ../tools/lexicon-generate.sh test-dic.txt test-slides.txt test-sample-lexicon.pls
 ```
 
-You can convert the existing lexicon file to a dictionary file with the following command. Please note that if the word and pronounciation in your lexicon file contain spaces and tabs, the spaces and tabs will be removed. If you want to use the existing dictionary files, please refer to [slide2mp4-dictionary](https://github.com/automating-presentations/slide2mp4-dictionary).
+You can convert the existing lexicon file to a dictionary file with the following command. Please note that if the word and pronounciation in your lexicon file contain spaces and tabs, the spaces and tabs will be removed. If you would like to use the existing dictionary files, please refer to [slide2mp4-dictionary](https://github.com/automating-presentations/slide2mp4-dictionary).
 ```
 cd slide2mp4/test
 ../tools/lexicon2dic.sh test-lexicon.pls test-sample-dic.txt
