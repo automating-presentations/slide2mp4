@@ -114,6 +114,8 @@ lexicon-generate.sh test-dic.txt test-slides.txt test-sample-lexicon.pls
 lexicon2dic.sh test-lexicon.pls test-dic.txt
 ```
 
+既存の辞書ファイルを使いたい場合は、[slide2mp4-dictionary](https://github.com/automating-presentations/slide2mp4-dictionary)を参照してください。
+
 ----
 ### 2. json/mp3/mp4/png/srt/xml ファイルを保存するディレクトリを作成
 ```
