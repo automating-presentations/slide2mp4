@@ -62,7 +62,7 @@ cd slide2mp4/test
 ../tools/lexicon-generate.sh test-dic.txt test-slides.txt test-sample-lexicon.pls
 ```
 
-You can convert the existing lexicon file to a dictionary file with the following command.
+You can convert the existing lexicon file to a dictionary file with the following command. Please note that if the word and pronounciation in your lexicon file contain spaces and tabs, the spaces and tabs will be removed. If you want to use the existing dictionary files, please refer to [slide2mp4-dictionary](https://github.com/automating-presentations/slide2mp4-dictionary).
 ```
 cd slide2mp4/test
 ../tools/lexicon2dic.sh test-lexicon.pls test-sample-dic.txt
