@@ -6,7 +6,7 @@ slide2mp4.sh の変数や処理の変更などは、本ガイドを参考にし�
 ----
 ## テストデータの利用方法
 
-[システム要件](https://github.com/h-kojima/slide2mp4#requirements)を満たしている場合、テストデータを利用したテストを実行できます。slide2mp4.sh では字幕のデフォルトフォントを「NotoSansCJKjp-Regular, 14サイズ」と指定しています。[Noto Sans CJK JP](https://www.google.com/get/noto/help/cjk/)のフォントが無い場合はシステムデフォルトのフォントが使われると思いますが、その場合は、slide2mp4.sh のフォントに関する変数を適宜変更してください。
+[システム要件](https://github.com/automating-presentations/slide2mp4#requirements)を満たしている場合、テストデータを利用したテストを実行できます。slide2mp4.sh では字幕のデフォルトフォントを「NotoSansCJKjp-Regular, 14サイズ」と指定しています。[Noto Sans CJK JP](https://www.google.com/get/noto/help/cjk/)のフォントが無い場合はシステムデフォルトのフォントが使われると思いますが、その場合は、slide2mp4.sh のフォントに関する変数を適宜変更してください。
 
 ```
 git clone https://github.com/automating-presentations/slide2mp4
@@ -94,7 +94,7 @@ cat << EOF  > test-lexicon.pls
 EOF
 ```
 
-このlexiconについては、[lexicon-generate.sh](https://github.com/h-kojima/slide2mp4/blob/main/tools/lexicon-generate.sh)を利用して、ユーザが作成した辞書ファイルから自動的に作成することもできます。辞書ファイルは単語と発音を記載したテキストファイルであり、単語と発音の間はタブかスペースで区切る必要があります。辞書ファイルでは、「#」から始まる行はコメントとして認識されます。下記は、test-dic.txtという名前の辞書ファイルと、Google Slidesからダウンロードしたトークスクリプトtest-slides.txtから、lexiconを自動的に作成するコマンド例です。このコマンドにより、予め作成した辞書ファイルにある単語のうち、トークスクリプトに記載される単語のみを抽出したlexiconが自動的に作成されます。
+このlexiconについては、[lexicon-generate.sh](https://github.com/automating-presentations/slide2mp4/blob/main/tools/lexicon-generate.sh)を利用して、ユーザが作成した辞書ファイルから自動的に作成することもできます。辞書ファイルは単語と発音を記載したテキストファイルであり、単語と発音の間はタブかスペースで区切る必要があります。辞書ファイルでは、「#」から始まる行はコメントとして認識されます。下記は、test-dic.txtという名前の辞書ファイルと、Google Slidesからダウンロードしたトークスクリプトtest-slides.txtから、lexiconを自動的に作成するコマンド例です。このコマンドにより、予め作成した辞書ファイルにある単語のうち、トークスクリプトに記載される単語のみを抽出したlexiconが自動的に作成されます。
 
 ```
 cat << EOF   > test-dic.txt
@@ -109,7 +109,7 @@ EOF
 lexicon-generate.sh test-dic.txt test-slides.txt test-sample-lexicon.pls
 ```
 
-また、[lexicon2dic.sh](https://github.com/h-kojima/slide2mp4/blob/main/tools/lexicon2dic.sh)を利用して、既存のlexiconを上記フォーマットに沿った辞書ファイルに変換できます。
+また、[lexicon2dic.sh](https://github.com/automating-presentations/slide2mp4/blob/main/tools/lexicon2dic.sh)を利用して、既存のlexiconを上記フォーマットに沿った辞書ファイルに変換できます。
 ```
 lexicon2dic.sh test-lexicon.pls test-dic.txt
 ```
