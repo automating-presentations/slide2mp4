@@ -1,8 +1,4 @@
-######
-## word pronunciation
-######
-
-OpenShift オープンシフト
-openshift オープンシフト
-Virtualization  バーチャライゼーション
-
+# word	pronunciation
+OpenShift	オープンシフト
+openshift	オープンシフト
+Virtualization	バーチャライゼーション

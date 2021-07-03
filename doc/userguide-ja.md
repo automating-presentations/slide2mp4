@@ -98,13 +98,10 @@ EOF
 
 ```
 cat << EOF   > test-dic.txt
-######
-## word			pronunciation
-######
-
-OpenShift		オープンシフト
-openshift		オープンシフト
-Virtualization		バーチャライゼーション
+# word	pronunciation
+OpenShift	オープンシフト
+openshift	オープンシフト
+Virtualization	バーチャライゼーション
 EOF
 lexicon-generate.sh test-dic.txt test-slides.txt test-sample-lexicon.pls
 ```
