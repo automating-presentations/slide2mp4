@@ -1,5 +1,5 @@
 ######
-## word			pronunciation
+## word pronunciation
 ######
 
 OpenShift オープンシフト
