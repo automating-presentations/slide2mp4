@@ -72,16 +72,18 @@ do
 done
 
 
-rm -f tmp-spaces_tabs-deleted.txt
-while read line
-do
-	set ${line}
-	word=${1}; alias=${2}
-	if [ "$word" != "#" ]; then
-		echo -e ""$word"\t"$alias"" >> tmp-spaces_tabs-deleted.txt
-	fi
-done < "$DIC_TXT"
-mv tmp-spaces_tabs-deleted.txt "$DIC_TXT"
+if [ -s "$DIC_TXT" ]; then
+	rm -f tmp-spaces_tabs-deleted.txt
+	while read line
+	do
+		set ${line}
+		word=${1}; alias=${2}
+		if [ "$word" != "#" ]; then
+			echo -e ""$word"\t"$alias"" >> tmp-spaces_tabs-deleted.txt
+		fi
+	done < "$DIC_TXT"
+	mv tmp-spaces_tabs-deleted.txt "$DIC_TXT"
+fi
 
 
 cat tmp-DIC_TXT.txt >> "$DIC_TXT"; rm -f tmp-DIC_TXT.txt
