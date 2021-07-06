@@ -23,6 +23,7 @@ print_usage ()
 {
 	echo "Description:"
 	echo "	$(basename $0) converts a lexicon file to a dictionary file."
+	echo "	$(basename $0) adds the contents of the lexicon file to the dictionary file, and removes duplicate lines and sorts the dictionary file."
 	echo "Usage:"
 	echo "	$(basename $0) LEXICON_FILE DIC_TXT"
 	exit
