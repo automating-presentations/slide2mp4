@@ -72,6 +72,18 @@ do
 done
 
 
+rm -f tmp-spaces_tabs-deleted.txt
+while read line
+do
+	set ${line}
+	word=${1}; alias=${2}
+	if [ "$word" != "#" ]; then
+		echo -e ""$word"\t"$alias"" >> tmp-spaces_tabs-deleted.txt
+	fi
+done < "$DIC_TXT"
+mv tmp-spaces_tabs-deleted.txt "$DIC_TXT"
+
+
 cat tmp-DIC_TXT.txt >> "$DIC_TXT"; rm -f tmp-DIC_TXT.txt
 awk '!dicline[$0]++' "$DIC_TXT" |sort > sort-tmp-DIC_TXT.txt
 mv sort-tmp-DIC_TXT.txt "$DIC_TXT"
