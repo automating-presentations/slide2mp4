@@ -68,7 +68,8 @@ EOF
 
 また、英字の製品名などで機械音声でうまく読み上げられないものについては、予めlexiconを利用して発音のエイリアスを作っておきます。
 ↓ では、OpenShiftとVirtualizationの発音エイリアスを登録しています。
-
+なお、登録する発音のエイリアスがない場合は、lexiconの空ファイルを利用します。
+その場合は、レキシコンファイルの`<lexeme>`から`</lexeme>`までを全部削除してください。
 ```
 cat << EOF  > test-lexicon.pls
 <?xml version="1.0" encoding="UTF-8"?>
