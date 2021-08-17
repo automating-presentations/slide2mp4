@@ -16,6 +16,7 @@
 # limitations under the License.
 
 
+# The following variables are to be modified by the user as appropriate.
 DENSITY="600"
 GEOMETRY="1280x720"
 LEXICON_NAME="test"
