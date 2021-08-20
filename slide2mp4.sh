@@ -39,9 +39,11 @@ print_usage ()
 	echo "	$(basename $0) [option] PDF_FILE TXT_FILE LEXICON_FILE OUTPUT_MP4 ["page_num1 page_num2..."]"
 	echo "Options:"
 	echo "	-h, --help				print this message."
-	echo "	-le, --ffmpeg-loglevel-error		ffmpeg loglevel is error. (default level is info)"
+	echo "	-geo, --geometry			specify the geometry. (default geometry is \"1280x720\")"
+	echo "	-le, --ffmpeg-loglevel-error		ffmpeg loglevel is error. (default level is \"info\")"
 	echo "	-npc, --no-pdf-convert			don't convert PDF to png."
 	echo "	-ns, --no-subtitles			convert without subtitles."
+	echo "	-vid, --voice-id			specify Amazon Polly voice ID. (default voice ID is \"Mizuki\", Japanese Female)"
 	echo ""
 	echo "Example1: The following command creates one mp4 file with audio and subtitles, named \"test-output.mp4\"."
 	echo "	$(basename $0) test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4"
@@ -71,6 +73,10 @@ do
 		NO_CONVERT_FLAG=1; shift
 	elif [ "$1" == "-le" -o "$1" == "--ffmpeg-loglevel-error" ]; then
 		FFMPEG_LOG_LEVEL="-loglevel error"; shift
+	elif [ "$1" == "-geo" -o "$1" == "--geometry" ]; then
+		shift; GEOMETRY="$1"; shift
+	elif [ "$1" == "-vid" -o "$1" == "--voice-id" ]; then
+		shift; VOICE_ID="$1"; shift
 	else
 		i=$(($i+1)); arg[i]="$1"; shift
 	fi
@@ -99,13 +105,13 @@ CHECK_XML=$(grep -i error check_lexicon_error_slide2mp4.txt)
 rm -f check_*_slide2mp4.txt
 OUTPUT_MP4_NO_SPACE="$(echo -e "${OUTPUT_MP4}" |tr -d '[:space:]')"
 if [ -z "$CHECK_PDF" ]; then
-	echo "This is not PDF file. Please check PDF file."
+	echo "This "$PDF_FILE" is not PDF file. Please check PDF file."
 	exit
 elif [ -z "$CHECK_TXT" ]; then
-	echo "This is not text file. Please check text file."
+	echo "This "$TXT_FILE" is not text file. Please check text file."
 	exit
 elif [ -n "$CHECK_XML" ]; then
-	echo "XML file parse error. Please check xml file."
+	echo "There is xml file parse error in "$LEXICON_FILE". Please check xml file."
 	exit
 elif [ -z "$OUTPUT_MP4_NO_SPACE" ]; then
 	echo "Please specify the name of the mp4 file to output."
