@@ -89,7 +89,7 @@ PAGES="${arg[5]}"
 SLIDE2MP4_DIR="$(cd "$(dirname "$0")"; pwd)"
 
 
-if [ $arg_num -lt 4  -o  $arg_num -gt 8 ]; then
+if [ $arg_num -lt 4  -o  $arg_num -gt 12 ]; then
 	echo "Too few or many arguments. Please check whether the number of arguments is between 4 and 8."
 	echo "Please check '$(basename $0) -h' or '$(basename $0) --help'."
 	exit
