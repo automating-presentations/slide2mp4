@@ -39,9 +39,9 @@ print_usage ()
 	echo "	$(basename $0) [option] PDF_FILE TXT_FILE LEXICON_FILE OUTPUT_MP4 ["page_num1 page_num2..."]"
 	echo "Options:"
 	echo "	-h, --help				print this message."
-	echo "	-geo, --geometry			specify the geometry of mp4 files. (default geometry is \"1280x720\")"
+	echo "	-geo, --geometry			specify the geometry of output mp4 files. (default geometry is \"1280x720\")"
 	echo "	-le, --ffmpeg-loglevel-error		ffmpeg loglevel is \"error\". (default level is \"info\")"
-	echo "	-neural					use neural engine, if possible."
+	echo "	-neural					use Neural format, if possible."
 	echo "	-npc, --no-pdf-convert			don't convert PDF to png."
 	echo "	-ns, --no-subtitles			convert without subtitles."
 	echo "	-vid, --voice-id			specify Amazon Polly voice ID. (default voice ID is \"Mizuki\", Japanese Female)"
@@ -57,6 +57,9 @@ print_usage ()
 	echo ""
 	echo "Example4: No PDF converting option is also available, e.g. in the case of changing the talk script on pages 1 and 3."
 	echo "	$(basename $0) -npc -ns test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 \"1 3\""
+	echo ""
+	echo "Example5: Specify the Neural format, the geometry of output mp4 files (1080p) and Amazon Polly voice ID, Matthew (Male, English, US). Note that the Neural format only works with some voice IDs."
+	echo "	$(basename $0) -geo 1920x1080 -vid Matthew -neural test.pdf test.txt lexicon.pls output.mp4"
 	exit
 }
 
