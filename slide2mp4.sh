@@ -41,6 +41,7 @@ print_usage ()
 	echo "	-h, --help				print this message."
 	echo "	-geo, --geometry			specify the geometry of mp4 files. (default geometry is \"1280x720\")"
 	echo "	-le, --ffmpeg-loglevel-error		ffmpeg loglevel is \"error\". (default level is \"info\")"
+	echo "	-neural					use neural engine, if possible."
 	echo "	-npc, --no-pdf-convert			don't convert PDF to png."
 	echo "	-ns, --no-subtitles			convert without subtitles."
 	echo "	-vid, --voice-id			specify Amazon Polly voice ID. (default voice ID is \"Mizuki\", Japanese Female)"
@@ -60,7 +61,7 @@ print_usage ()
 }
 
 
-NS_FLAG=0; NO_CONVERT_FLAG=0
+NS_FLAG=0; NO_CONVERT_FLAG=0; NEURAL_FLAG=0
 FFMPEG_LOG_LEVEL="-loglevel info"
 i=0; arg_num=$#
 while [ $# -gt 0 ]
@@ -77,6 +78,8 @@ do
 		shift; GEOMETRY="$1"; shift
 	elif [ "$1" == "-vid" -o "$1" == "--voice-id" ]; then
 		shift; VOICE_ID="$1"; shift
+	elif [ "$1" == "-neural" ]; then
+		NEURAL_FLAG=1; shift
 	else
 		i=$(($i+1)); arg[i]="$1"; shift
 	fi
@@ -89,8 +92,8 @@ PAGES="${arg[5]}"
 SLIDE2MP4_DIR="$(cd "$(dirname "$0")"; pwd)"
 
 
-if [ $arg_num -lt 4  -o  $arg_num -gt 12 ]; then
-	echo "Too few or many arguments. Please check whether the number of arguments is between 4 and 12."
+if [ $arg_num -lt 4 ]; then
+	echo "Too few arguments. Please check whether the number of arguments is 4 or more."
 	echo "Please check '$(basename $0) -h' or '$(basename $0) --help'."
 	exit
 fi
@@ -145,8 +148,12 @@ fi
 
 
 aws polly put-lexicon --name $LEXICON_NAME --content file://"$LEXICON_FILE"
+ENGINE=""
+if [ $NEURAL_FLAG -eq 1 ]; then
+	ENGINE="--engine neural"
+fi
 for i in $PAGES;
-do aws polly synthesize-speech \
+do aws polly synthesize-speech $ENGINE \
        --lexicon-names $LEXICON_NAME \
        --text-type ssml \
        --output-format mp3 \
@@ -164,7 +171,7 @@ do aws polly synthesize-speech \
    echo "mp3/$i.mp3 has been created."   
 
    if [ $NS_FLAG -eq 0 ]; then
-   	aws polly synthesize-speech \
+   	aws polly synthesize-speech $ENGINE \
             --lexicon-names $LEXICON_NAME \
             --text-type ssml \
             --output-format json \
