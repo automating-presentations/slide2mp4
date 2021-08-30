@@ -19,7 +19,6 @@
 # The following variables are to be modified by the user as appropriate.
 DENSITY="600"
 GEOMETRY="1280x720"
-LEXICON_NAME="test"
 VOICE_ID="Mizuki"
 FONT_NAME="NotoSansCJKjp-Regular"
 FONT_SIZE="14"
@@ -64,6 +63,10 @@ print_usage ()
 }
 
 
+# Random String
+RS=$(cat /dev/urandom |base64 |tr -cd "a-zA-Z0-9" |fold -w 16 |head -n 1)
+
+
 NS_FLAG=0; NO_CONVERT_FLAG=0; NEURAL_FLAG=0
 FFMPEG_LOG_LEVEL="-loglevel info"
 i=0; arg_num=$#
@@ -102,13 +105,13 @@ if [ $arg_num -lt 4 ]; then
 fi
 
 
-file "$PDF_FILE" > check_pdf_slide2mp4.txt
-file "$TXT_FILE" > check_txt_slide2mp4.txt
-xmllint "$LEXICON_FILE" 1> /dev/null 2> check_lexicon_error_slide2mp4.txt
-CHECK_PDF=$(grep -i pdf check_pdf_slide2mp4.txt 2> /dev/null)
-CHECK_TXT=$(grep -i text check_txt_slide2mp4.txt 2> /dev/null)
-CHECK_XML=$(grep -i error check_lexicon_error_slide2mp4.txt)
-rm -f check_*_slide2mp4.txt
+file "$PDF_FILE" > check_pdf_slide2mp4-$RS.txt
+file "$TXT_FILE" > check_txt_slide2mp4-$RS.txt
+xmllint "$LEXICON_FILE" 1> /dev/null 2> check_lexicon_error_slide2mp4-$RS.txt
+CHECK_PDF=$(grep -i pdf check_pdf_slide2mp4-$RS.txt 2> /dev/null)
+CHECK_TXT=$(grep -i text check_txt_slide2mp4-$RS.txt 2> /dev/null)
+CHECK_XML=$(grep -i error check_lexicon_error_slide2mp4-$RS.txt)
+rm -f check_*_slide2mp4-$RS.txt
 OUTPUT_MP4_NO_SPACE="$(echo -e "${OUTPUT_MP4}" |tr -d '[:space:]')"
 if [ -z "$CHECK_PDF" ]; then
 	echo "This "$PDF_FILE" is not PDF file. Please check PDF file."
@@ -132,9 +135,9 @@ echo "Format checking of input files has been completed."
 mkdir -p json mp3 mp4 png srt xml
 
 
-cat "$TXT_FILE" |awk '/<\?xml/,/<\/speak>/' > tmp.txt
+cat "$TXT_FILE" |awk '/<\?xml/,/<\/speak>/' > tmp-$RS.txt
 rm -f xml/*
-python3 "$SLIDE2MP4_DIR"/lib/txt2xml.py tmp.txt; rm -f tmp.txt
+python3 "$SLIDE2MP4_DIR"/lib/txt2xml.py tmp-$RS.txt; rm -f tmp-$RS.txt
 page_num=$(ls -F xml/ | grep -v / | wc -l)
 if [ -z "$PAGES" ]; then
         PAGES=`seq 1 $page_num`
@@ -150,6 +153,7 @@ if [ $NO_CONVERT_FLAG -eq 0 ]; then
 fi
 
 
+LEXICON_NAME=$RS
 aws polly put-lexicon --name $LEXICON_NAME --content file://"$LEXICON_FILE"
 ENGINE=""
 if [ $NEURAL_FLAG -eq 1 ]; then
@@ -162,11 +166,11 @@ do aws polly synthesize-speech $ENGINE \
        --output-format mp3 \
        --voice-id $VOICE_ID \
        --text file://xml/$i.xml \
-       mp3/$i.mp3 1> /dev/null 2> tmp.txt;
+       mp3/$i.mp3 1> /dev/null 2> tmp-$RS.txt;
    
-   if [ -s tmp.txt ]; then
+   if [ -s tmp-$RS.txt ]; then
         echo "There is the following error in executing aws polly, with xml/$i.xml."
-        cat tmp.txt; rm -f tmp.txt
+        cat tmp-$RS.txt; rm -f tmp-$RS.txt
         aws polly delete-lexicon --name $LEXICON_NAME
         exit
    fi
@@ -185,7 +189,7 @@ do aws polly synthesize-speech $ENGINE \
 	echo "json/$i.json has been created."
    fi
 done
-rm -f tmp.txt
+rm -f tmp-$RS.txt
 aws polly delete-lexicon --name $LEXICON_NAME
 
 
@@ -227,16 +231,16 @@ do
 		break
 	fi
 done
-rm -f list.txt
+rm -f list-$RS.txt
 if [ $PARTIALLY_MODE -eq 0 ]; then
-	for i in `seq 1 $page_num`; do echo "file mp4/$i.mp4" >> list.txt; done
+	for i in `seq 1 $page_num`; do echo "file mp4/$i.mp4" >> list-$RS.txt; done
 else
-	for i in $PAGES; do echo "file mp4/$i.mp4" >> list.txt; done
+	for i in $PAGES; do echo "file mp4/$i.mp4" >> list-$RS.txt; done
 fi
 
 
-ffmpeg $FFMPEG_LOG_LEVEL -y -f concat -i list.txt -c copy "$OUTPUT_MP4"
-rm -rf list.txt xml
+ffmpeg $FFMPEG_LOG_LEVEL -y -f concat -i list-$RS.txt -c copy "$OUTPUT_MP4"
+rm -rf list-$RS.txt xml
 
 
 echo; echo
