@@ -30,6 +30,10 @@ print_usage ()
 }
 
 
+# Random String
+RS=$(cat /dev/urandom |base64 |tr -cd "a-zA-Z0-9" |fold -w 32 |head -n 1)
+
+
 if [ $# -ne 0 ]; then
 	if [ "$1" == "-h" -o "$1" == "--help" ]; then
 		print_usage
@@ -42,8 +46,8 @@ if [ $# -ne 3 ]; then
 fi
 
 
-cat "$DIC_TXT" |grep -v '^#' |grep -v "^\s*$" |sed '/^$/d' > tmp-DIC_TXT.txt
-cat "$TALK_SCRIPT_TXT" |awk '/<\?xml/,/<\/speak>/' > tmp-TALK_SCRIPT_TXT.txt
+cat "$DIC_TXT" |grep -v '^#' |grep -v "^\s*$" |sed '/^$/d' > tmp-DIC_TXT-$RS.txt
+cat "$TALK_SCRIPT_TXT" |awk '/<\?xml/,/<\/speak>/' > tmp-TALK_SCRIPT_TXT-$RS.txt
 
 
 echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" > "$LEXICON_FILE"
@@ -61,7 +65,7 @@ do
 	set ${line}
 	word=${1}; alias=${2}
 	if [ -n "$word"  -a  -n "$alias" ]; then
-		check_word=$(grep "$word" tmp-TALK_SCRIPT_TXT.txt 2> /dev/null)
+		check_word=$(grep "$word" tmp-TALK_SCRIPT_TXT-$RS.txt 2> /dev/null)
 		if [ -n "$check_word" ]; then
 			echo "  <lexeme>" >> "$LEXICON_FILE"
 			echo "    <grapheme>"$word"</grapheme>" >> "$LEXICON_FILE"
@@ -70,9 +74,9 @@ do
 			echo >> "$LEXICON_FILE"
 		fi
 	fi
-done < tmp-DIC_TXT.txt
+done < tmp-DIC_TXT-$RS.txt
 echo "</lexicon>" >> "$LEXICON_FILE"
 
 
-rm -f tmp-DIC_TXT.txt tmp-TALK_SCRIPT_TXT.txt
+rm -f tmp-DIC_TXT-$RS.txt tmp-TALK_SCRIPT_TXT-$RS.txt
 

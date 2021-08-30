@@ -30,6 +30,10 @@ print_usage ()
 }
 
 
+# Random String
+RS=$(cat /dev/urandom |base64 |tr -cd "a-zA-Z0-9" |fold -w 32 |head -n 1)
+
+
 if [ $# -ne 0 ]; then
 	if [ "$1" == "-h" -o "$1" == "--help" ]; then
 		print_usage
@@ -42,7 +46,7 @@ if [ $# -ne 2 ]; then
 fi
 
 
-cat "$LEXICON_FILE" |grep -e "<grapheme>" -e "<alias>" > tmp-LEXICON_FILE.txt
+cat "$LEXICON_FILE" |grep -e "<grapheme>" -e "<alias>" > tmp-LEXICON_FILE-$RS.txt
 
 
 wi=0; wj=0; count=0
@@ -57,15 +61,15 @@ do
 		alias[wj]=$(echo "$line" |sed -e "s/<\/*alias>//g" -e "s/ //g" -e "s/\t//g")
 		word_count[wj]=$count; count=0
 	fi
-done < tmp-LEXICON_FILE.txt
-rm -f tmp-LEXICON_FILE.txt
+done < tmp-LEXICON_FILE-$RS.txt
+rm -f tmp-LEXICON_FILE-$RS.txt
 
 
-echo "# word	pronunciation" > tmp-DIC_TXT.txt
+echo "# word	pronunciation" > tmp-DIC_TXT-$RS.txt
 wj=1
 for i in ${!word[@]}
 do
-	printf "${word[$i]}\t${alias[$wj]}\n" >> tmp-DIC_TXT.txt
+	printf "${word[$i]}\t${alias[$wj]}\n" >> tmp-DIC_TXT-$RS.txt
 	word_count[wj]=$((${word_count[$wj]}-1))
 	if [ ${word_count[$wj]} -eq 0 ]; then
 		wj=$(($wj+1))
@@ -74,20 +78,20 @@ done
 
 
 if [ -s "$DIC_TXT" ]; then
-	rm -f tmp-spaces_tabs-deleted.txt
+	rm -f tmp-spaces_tabs-deleted-$RS.txt
 	while read line
 	do
 		set ${line}
 		word=${1}; alias=${2}
 		if [ "$word" != "#" ]; then
-			echo -e ""$word"\t"$alias"" >> tmp-spaces_tabs-deleted.txt
+			echo -e ""$word"\t"$alias"" >> tmp-spaces_tabs-deleted-$RS.txt
 		fi
 	done < "$DIC_TXT"
-	mv tmp-spaces_tabs-deleted.txt "$DIC_TXT"
+	mv tmp-spaces_tabs-deleted-$RS.txt "$DIC_TXT"
 fi
 
 
-cat tmp-DIC_TXT.txt >> "$DIC_TXT"; rm -f tmp-DIC_TXT.txt
-awk '!dicline[$0]++' "$DIC_TXT" |sort > sort-tmp-DIC_TXT.txt
-mv sort-tmp-DIC_TXT.txt "$DIC_TXT"
+cat tmp-DIC_TXT-$RS.txt >> "$DIC_TXT"; rm -f tmp-DIC_TXT-$RS.txt
+awk '!dicline[$0]++' "$DIC_TXT" |sort > sort-tmp-DIC_TXT-$RS.txt
+mv sort-tmp-DIC_TXT-$RS.txt "$DIC_TXT"
 

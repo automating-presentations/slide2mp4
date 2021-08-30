@@ -50,6 +50,10 @@ calc_and_print_timestamp ()
 }
 
 
+# Random String
+RS=$(cat /dev/urandom |base64 |tr -cd "a-zA-Z0-9" |fold -w 32 |head -n 1)
+
+
 if [ $# -ne 0 ]; then
 	if [ "$1" == "-h" -o "$1" == "--help" ]; then
 		print_usage
@@ -62,7 +66,7 @@ if [ $# -ne 2 ]; then
 fi
 
 
-ls "$MP4_DIR" |sort -n > sort_mp4_dir_tmp.txt
+ls "$MP4_DIR" |sort -n > sort_mp4_dir_tmp-$RS.txt
 
 
 echo "Chapters:" > "$TIMESTAMPS_TXT"
@@ -71,9 +75,9 @@ while read line
 do
 	echo " "$MP4_DIR"/$line" >> "$TIMESTAMPS_TXT"
 	calc_and_print_timestamp ""$MP4_DIR"/$line" "$TIMESTAMPS_TXT"
-done < sort_mp4_dir_tmp.txt
+done < sort_mp4_dir_tmp-$RS.txt
 
 
 sed -ie '$d' "$TIMESTAMPS_TXT"
-rm -f "$TIMESTAMPS_TXT"e sort_mp4_dir_tmp.txt
+rm -f "$TIMESTAMPS_TXT"e sort_mp4_dir_tmp-$RS.txt
 
