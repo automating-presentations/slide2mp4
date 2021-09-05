@@ -57,7 +57,7 @@ do
 		shift
 	fi
 done
-if [ $INPUT_FLAG -eq 0 ]; then
+if [ $INPUT_FLAG -eq 0  -o  ! -f "$INPUT_FILE" ]; then
 	echo "Please specify input file, -i <input file>."
 	echo "Please check '$(basename $0) -h' or '$(basename $0) --help'."
 	exit
@@ -72,10 +72,10 @@ if [ $REMOVE_SSML_FLAG -eq 0 ]; then
 	SSML_HEADER="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<speak version=\"1.1\">\n<prosody rate=\"100%\">"
 	SSML_TAILER="</prosody>\n</speak>"
 
-	sed -e ':a' -e 'N' -e '$!ba' -e "s/<INSERT_SSML_TAGS>/<\/prosody>\n<\/speak>\n\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<speak version=\"1.1\">\n<prosody rate=\"100%\">/g" $INPUT_FILE > tmp-ssml-$RS.xml
-	echo -e $SSML_HEADER > $OUTPUT_FILE
-	cat tmp-ssml-$RS.xml >> $OUTPUT_FILE
-	echo -e $SSML_TAILER >> $OUTPUT_FILE
+	sed -e ':a' -e 'N' -e '$!ba' -e "s/<INSERT_SSML_TAGS>/<\/prosody>\n<\/speak>\n\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<speak version=\"1.1\">\n<prosody rate=\"100%\">/g" "$INPUT_FILE" > tmp-ssml-$RS.xml
+	echo -e $SSML_HEADER > "$OUTPUT_FILE"
+	cat tmp-ssml-$RS.xml >> "$OUTPUT_FILE"
+	echo -e $SSML_TAILER >> "$OUTPUT_FILE"
 	rm -f tmp-ssml-$RS.xml
 
 	echo "SSML tags have been inserted. Please check $OUTPUT_FILE."
