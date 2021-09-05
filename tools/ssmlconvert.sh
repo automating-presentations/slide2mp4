@@ -72,7 +72,7 @@ if [ $REMOVE_SSML_FLAG -eq 0 ]; then
 	SSML_HEADER="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<speak version=\"1.1\">\n<prosody rate=\"100%\">"
 	SSML_TAILER="</prosody>\n</speak>"
 
-	sed -e ':a' -e 'N' -e '$!ba' -e "s/<INSERT_SSML_TAGS>/<\/prosody>\n<\/speak>\n\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<prosody rate=\"100%\">/g" $INPUT_FILE > tmp-ssml-$RS.xml
+	sed -e ':a' -e 'N' -e '$!ba' -e "s/<INSERT_SSML_TAGS>/<\/prosody>\n<\/speak>\n\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<speak version=\"1.1\">\n<prosody rate=\"100%\">/g" $INPUT_FILE > tmp-ssml-$RS.xml
 	echo -e $SSML_HEADER > $OUTPUT_FILE
 	cat tmp-ssml-$RS.xml >> $OUTPUT_FILE
 	echo -e $SSML_TAILER >> $OUTPUT_FILE
