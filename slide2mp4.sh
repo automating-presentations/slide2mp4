@@ -64,7 +64,7 @@ print_usage ()
 
 
 # Random String
-RS=$(cat /dev/urandom |base64 |tr -cd "a-zA-Z0-9" |fold -w 16 |head -n 1)
+RS=$(cat /dev/urandom |base64 |tr -cd "a-z0-9" |fold -w 16 |head -n 1)
 
 
 NS_FLAG=0; NO_CONVERT_FLAG=0; NEURAL_FLAG=0
