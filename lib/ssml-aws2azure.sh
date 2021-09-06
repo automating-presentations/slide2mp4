@@ -93,6 +93,15 @@ do
 	done < tmp-split-$RS.xml
 	rm -f tmp-split-$RS.xml
 
+	if [ $SPLIT_FLAG -eq 1 ]; then
+		echo -e "${XML_VER}\n${SPEAK_VER}\n${VOICE}\n${LEXICON_URI}\n" > azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml
+		echo "${PROSODY_RATE}" >> azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml
+		cat azure-txt/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.txt >> azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml
+		echo -e "</prosody>\n\n</voice>\n</speak>" >> azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml
+		mv azure-txt/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.txt azure-txt/$PAGE_NUMBER-$file_count.txt
+		mv azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml azure-xml/$PAGE_NUMBER-$file_count.xml
+	fi
+
 	prosody_count=$((prosody_count+1))
 done
 rm -f tmp-aws-$RS.xml

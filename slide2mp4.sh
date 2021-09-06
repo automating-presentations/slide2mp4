@@ -273,6 +273,7 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 
 	mkdir -p azure-xml; rm -f azure-xml/*
 	mkdir -p azure-txt; rm -f azure-txt/*
+
 	for i in $PAGES; do "$SLIDE2MP4_DIR"/lib/ssml-aws2azure.sh xml/$i.xml $i $AZURE_TTS_VOICE_ID $LEXICON_URL; done
 
 	mkdir -p azure-mp3; rm -f azure-mp3/*
@@ -287,6 +288,10 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 				echo "azure-mp3/$i-$j.mp3 is empty file."
 				echo "Please check azure-xml/$i-$j.xml, Azure $AZURE_REGION Region, $AZURE_TTS_SUBS_KEY_FILENAME."
 				rm -f tmp-lexicon-$RS.pls
+				if [ ! $AWS_S3_REGION == "" ]; then
+					aws s3api delete-object --bucket "$BUCKET_NAME" --key "$LEXICON_FILE"
+					aws s3 rb s3://"$BUCKET_NAME"
+				fi
 				exit
 			fi
 
