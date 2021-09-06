@@ -63,7 +63,7 @@ cd slide2mp4/test
 ../slide2mp4.sh -npc -ns test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 "1 3"
 ```
 
-The following command specifies the use of Azure Speech. The subscription key to use Azure Speech must be found in "~/azure/.tts-subs-keyfile". When you run this command, "test-lexicon.pls" will be temporarily uploaded to Amazon S3. The default Azure Speech service region for slide2mp4 is Japan East region, "japaneast", so when you run the following command, please create your Azure Speech subscription key in Japan East region.
+The following command specifies the use of Azure Speech. The subscription key to use Azure Speech must be found in "~/azure/.tts-subs-keyfile". When you run this command, "test-lexicon.pls" will be temporarily uploaded to Amazon S3. The default Azure Speech service region for slide2mp4 is Japan East region, so when you run the following command, please create your Azure Speech subscription key in Japan East region.
 ```
 mkdir -p ~/.azure; cat << EOF  > ~/.azure/tts-subs-keyfile
 # Azure Speech subscription key
