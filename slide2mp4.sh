@@ -273,7 +273,6 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 
 	mkdir -p azure-xml; rm -f azure-xml/*
 	mkdir -p azure-txt; rm -f azure-txt/*
-
 	for i in $PAGES; do "$SLIDE2MP4_DIR"/lib/ssml-aws2azure.sh xml/$i.xml $i $AZURE_TTS_VOICE_ID $LEXICON_URL; done
 
 	mkdir -p azure-mp3; rm -f azure-mp3/*
