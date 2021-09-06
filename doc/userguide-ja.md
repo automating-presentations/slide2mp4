@@ -97,6 +97,7 @@ YOUR_TAGS
 YOUR_TAGS
 
 OpenShiftとVirtualizationの読み上げテストもします。
+
 ssmlconvert -tag YOUR_TAGS -i test02.txt -o test02.xml; cat test02.xml 
 <?xml version="1.0" encoding="UTF-8"?>
 <speak version="1.1">
