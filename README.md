@@ -1,18 +1,25 @@
 # slide2mp4
 
 slide2mp4 is a conversion tool, PDF slides to MP4 with audio and subtitles.   
-slide2mp4 uses Amazon Polly, Text-to-Speech (TTS) service.
+slide2mp4 uses Amazon Polly (default) or Azure Speech, Text-to-Speech (TTS) service.
 
 ----
 ## Requirements
 
  - [AWS CLI version 2](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) (version 1 has not been tested.)
  - Permission to run [Amazon Polly](https://docs.aws.amazon.com/polly/latest/dg/what-is.html) service with AWS CLI
+ - Permission to run [Amazon S3](https://aws.amazon.com/s3/) service with AWS CLI (Optional)
  - [FFmpeg](https://www.ffmpeg.org/)
+ - [ffprobe](https://ffmpeg.org/ffprobe.html)
  - [GraphicsMagick](http://www.graphicsmagick.org/index.html)
  - [Ghostscript](https://www.ghostscript.com/)
  - [Python 3](https://www.python.org/)
  - [xmllint](http://xmlsoft.org/xmllint.html)
+
+If you use Azure Speech, the following values are required. For more information, please refer to [this document](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/overview).
+
+ - Your Azure Speech service subscription key
+ - Your Azure Speech service region
 
 If you use Linux or macOS(including M1 Mac), you can install AWS CLI, FFmpeg, Ghostscript, GraphicsMagick, with [Homebrew](https://brew.sh/).
 
@@ -56,6 +63,19 @@ cd slide2mp4/test
 ../slide2mp4.sh -npc -ns test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 "1 3"
 ```
 
+The following command specifies the use of Azure Speech. The subscription key to use Azure Speech must be found in "~/azure/.tts-subs-keyfile". When you run this command, "test-lexicon.pls" will be temporarily uploaded to Amazon S3. The default Azure Speech service region for slide2mp4 is Japan East region, "japaneast", so when you run the following command, please create your Azure Speech subscription key in Japan East region.
+```
+mkdir -p ~/.azure; cat << EOF  > ~/.azure/tts-subs-keyfile
+# Azure Speech subscription key
+XXXXXXXXXXXXXXXXXXXXXXXXX
+EOF
+../slide2mp4.sh -azure test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4
+```
+The following command specifies the Azure Region where to put your subscription key, voice name, subscription keyfile path to use Azure Speech. When using Azure Speech, you can specify public (non-private) URL where you can refer to "test.pls".
+```
+slide2mp4 -azure -azure-region centralus -azure-vid en-US-JennyNeural -azure-tts-key test-azure-keyfile test.pdf test.txt http://publicdomain/test.pls output.mp4
+```
+
 You can create a lexicon file automatically. Once you've created a dictionary file, "test-dic.txt" in the following example, you can create a lexicon file, named "test-sample-lexicon.pls" with the following command. If you would like to use the existing dictionary files, please refer to [slide2mp4-dictionary](https://github.com/automating-presentations/slide2mp4-dictionary).
 ```
 cd slide2mp4/test
@@ -68,7 +88,7 @@ cd slide2mp4/test
 ../tools/lexicon2dic.sh test-lexicon.pls test-sample-dic.txt
 ```
 
-Optionally, once you've created mp4 files, "test-output.mp4" in the above example, you can create a text file with timestamp for each chapter, named "test-timestamps.txt" with the following command. This text file with timestamps can be used to [turn on chapters for your videos on YouTube](https://support.google.com/youtube/answer/9884579?hl=en). Chapters-timestamp.sh requires [ffprobe](https://ffmpeg.org/ffprobe.html), and needs to be run with the PATH of the directory including mp4 files.
+Optionally, once you've created mp4 files, "test-output.mp4" in the above example, you can create a text file with timestamp for each chapter, named "test-timestamps.txt" with the following command. This text file with timestamps can be used to [turn on chapters for your videos on YouTube](https://support.google.com/youtube/answer/9884579?hl=en). Chapters-timestamp.sh needs to be run with the PATH of the directory including mp4 files.
 ```
 cd slide2mp4/test
 ../tools/chapters-timestamp.sh mp4 test-timestamps.txt
