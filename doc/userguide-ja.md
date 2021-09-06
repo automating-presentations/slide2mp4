@@ -62,8 +62,67 @@ EOF
 ```
 
 このtest.xmlでは、[機械音声の読み上げ速度](https://docs.aws.amazon.com/ja_jp/polly/latest/dg/voice-speed-vip.html)を110%にしています。  
-これは適宜変更してください。  
-スライド作成後は、PDFとPlain Textファイルをダウンロードします。
+これは適宜変更してください。スライド作成後は、PDFとPlain Textファイルをダウンロードします。
+
+また、このようなSSMLタグが記載されたテキストファイルは、[ssmlconvert](https://github.com/automating-presentations/slide2mp4/blob/main/tools/ssmlconvert.sh)を利用して作成することもできます。ssmlconvertはオプションを付けずに実行すると、SSMLのHeaderとTailをファイルの先頭と最後の行に追加します。複数ページのスライドに対応させる場合、区切りたい場所で任意の文字列を追加しておくと、その文字列の場所ごとにSSMLタグが追加されます。また、「-remove-ssml」オプションで、SSMLのタグを全て削除します。  
+```
+cat << EOF  > test01.txt
+これはタイトルスライドであり、
+これから、サンプルスライドをご紹介します。
+OpenShiftとVirtualizationの読み上げテストもします。
+EOF
+
+ssmlconvert -i test01.txt -o test01.xml; cat test01.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<speak version="1.1">
+<prosody rate="100%">
+これはタイトルスライドであり、
+これから、サンプルスライドをご紹介します。
+OpenShiftとVirtualizationの読み上げテストもします。
+</prosody>
+</speak>
+
+ssmlconvert -remove-ssml -i test01.xml -o test01-removed-ssml.txt; cat test01-removed-ssml.txt
+これはタイトルスライドであり、
+これから、サンプルスライドをご紹介します。
+OpenShiftとVirtualizationの読み上げテストもします。
+
+cat test02.txt 
+これはタイトルスライドであり、
+
+YOUR_TAGS
+
+これから、サンプルスライドをご紹介します。
+
+YOUR_TAGS
+
+OpenShiftとVirtualizationの読み上げテストもします。
+ssmlconvert -tag YOUR_TAGS -i test02.txt -o test02.xml; cat test02.xml 
+<?xml version="1.0" encoding="UTF-8"?>
+<speak version="1.1">
+<prosody rate="100%">
+これはタイトルスライドであり、
+
+</prosody>
+</speak>
+
+<?xml version="1.0" encoding="UTF-8"?>
+<speak version="1.1">
+<prosody rate="100%">
+
+これから、サンプルスライドをご紹介します。
+
+</prosody>
+</speak>
+
+<?xml version="1.0" encoding="UTF-8"?>
+<speak version="1.1">
+<prosody rate="100%">
+
+OpenShiftとVirtualizationの読み上げテストもします。
+</prosody>
+</speak>
+```
 
 また、英字の製品名などで機械音声でうまく読み上げられないものについては、予めlexiconを利用して発音のエイリアスを作っておきます。
 ↓ では、OpenShiftとVirtualizationの発音エイリアスを登録しています。
@@ -210,6 +269,7 @@ cat json/1.json
 aws polly delete-lexicon --name test
 aws polly list-lexicons    ← test という名前のlexiconが削除されたことを確認
 ```
+
 
 ----
 ### 6. jsonファイルからsrtファイルへの変換
