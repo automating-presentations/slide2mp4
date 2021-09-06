@@ -35,7 +35,7 @@ print_usage ()
 	echo "	$(basename $0) uses Amazon Polly, Text-to-Speech (TTS) service."
 	echo "	$(basename $0) requires the following commands, aws polly, ffmpeg, gm convert, python3, xmllint."
 	echo "Usage:"
-	echo "	$(basename $0) [option] PDF_FILE TXT_FILE LEXICON_FILE OUTPUT_MP4 ["page_num1 page_num2..."]"
+	echo "	$(basename $0) [option] PDF_FILE TXT_FILE LEXICON_FILE/URL OUTPUT_MP4 ["page_num1 page_num2..."]"
 	echo "Options:"
 	echo "	-h, --help				print this message."
 	echo "	-geo, --geometry			specify the geometry of output mp4 files. (default geometry is \"1280x720\")"
@@ -92,7 +92,7 @@ do
 done
 PDF_FILE="${arg[1]}"
 TXT_FILE="${arg[2]}"
-LEXICON_FILE="${arg[3]}"
+LEXICON="${arg[3]}"
 OUTPUT_MP4="${arg[4]}"
 PAGES="${arg[5]}"
 SLIDE2MP4_DIR="$(cd "$(dirname "$0")"; pwd)"
@@ -102,6 +102,20 @@ if [ $arg_num -lt 4 ]; then
 	echo "Too few arguments. Please check whether the number of arguments is 4 or more."
 	echo "Please check '$(basename $0) -h' or '$(basename $0) --help'."
 	exit
+fi
+
+
+if [[ "$LEXICON" =~ https?://* ]]; then
+	LEXICON_FILE=tmp-lexicon-$RS.pls
+	LEXICON_URL="$LEXICON"
+	wget -q "$LEXICON_URL" -O $LEXICON_FILE
+	if [ ! -s $LEXICON_FILE ]; then
+		echo "Lexicon file is empty. Please make sure that the URL to download is corret, $LEXICON_URL."
+		rm -f tmp-lexicon-$RS.pls
+		exit
+	fi
+else
+	LEXICON_FILE="$LEXICON"
 fi
 
 
@@ -189,7 +203,7 @@ do aws polly synthesize-speech $ENGINE \
 	echo "json/$i.json has been created."
    fi
 done
-rm -f tmp-$RS.txt
+rm -f tmp-$RS.txt tmp-lexicon-$RS.pls
 aws polly delete-lexicon --name $LEXICON_NAME
 
 
