@@ -93,7 +93,7 @@ OpenShiftとVirtualizationの読み上げテストもします。
 ```
 
 ```
-cat test02.txt 
+cat << EOF  > test02.txt 
 これはタイトルスライドであり、
 
 YOUR_TAGS
@@ -103,6 +103,7 @@ YOUR_TAGS
 YOUR_TAGS
 
 OpenShiftとVirtualizationの読み上げテストもします。
+EOF
 ```
 
 ```
