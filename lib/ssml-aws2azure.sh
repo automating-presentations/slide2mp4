@@ -100,6 +100,7 @@ do
 		echo -e "</prosody>\n\n</voice>\n</speak>" >> azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml
 		mv azure-txt/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.txt azure-txt/$PAGE_NUMBER-$file_count.txt
 		mv azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml azure-xml/$PAGE_NUMBER-$file_count.xml
+		file_count=$((file_count+1))
 	fi
 
 	prosody_count=$((prosody_count+1))
