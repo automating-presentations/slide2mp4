@@ -44,7 +44,7 @@ if [ -s tmp-$RS.txt ]; then
 		mv tmp-$RS.xml tmp-aws-$RS.xml
 	done < tmp-$RS.txt
 else
-	sed -e "s|<speak version=\"1.1\">|<speak version=\"1.1\">\n<prosody rate=\"100%\" pitch=\"$PITCH%\">|" tmp-aws-$RS.xml > tmp-$RS.xml
+	sed -e "s|<speak version=\"1.1\">|<speak version=\"1.1\">\n<prosody rate=\"0%\" pitch=\"$PITCH%\">|" tmp-aws-$RS.xml > tmp-$RS.xml
 	mv tmp-$RS.xml tmp-aws-$RS.xml
 	sed -e "s|</speak>|</prosody>\n</speak>|" tmp-aws-$RS.xml > tmp-$RS.xml
 	mv tmp-$RS.xml tmp-aws-$RS.xml
