@@ -20,6 +20,7 @@ PAGE_NUMBER="$2"
 VOICE_NAME="$3"
 #LEXICON_URL="https://raw.githubusercontent.com/automating-presentations/slide2mp4/main/test/test-lexicon.pls"
 LEXICON_URL="$4"
+PITCH="$5"
 
 
 # Random String
@@ -39,11 +40,11 @@ if [ -s tmp-$RS.txt ]; then
 	while read line
         do
 		rate_num=${line}; convert_rate_num=$(($rate_num-100))
-		sed -e "s/<prosody rate=\"$rate_num%\">/<prosody rate=\"$convert_rate_num%\">/g" tmp-aws-$RS.xml > tmp-$RS.xml
+		sed -e "s/<prosody rate=\"$rate_num%\">/<prosody rate=\"$convert_rate_num%\" pitch=\"$PITCH%\">/g" tmp-aws-$RS.xml > tmp-$RS.xml
 		mv tmp-$RS.xml tmp-aws-$RS.xml
 	done < tmp-$RS.txt
 else
-	sed -e "s|<speak version=\"1.1\">|<speak version=\"1.1\">\n<prosody rate=\"100%\">|" tmp-aws-$RS.xml > tmp-$RS.xml
+	sed -e "s|<speak version=\"1.1\">|<speak version=\"1.1\">\n<prosody rate=\"100%\" pitch=\"$PITCH%\">|" tmp-aws-$RS.xml > tmp-$RS.xml
 	mv tmp-$RS.xml tmp-aws-$RS.xml
 	sed -e "s|</speak>|</prosody>\n</speak>|" tmp-aws-$RS.xml > tmp-$RS.xml
 	mv tmp-$RS.xml tmp-aws-$RS.xml

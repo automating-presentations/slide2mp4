@@ -71,9 +71,9 @@ XXXXXXXXXXXXXXXXXXXXXXXXX
 EOF
 ../slide2mp4.sh -azure test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4
 ```
-The following command specifies the Azure Region where to put your subscription key, voice name, subscription keyfile path to use Azure Speech. When using Azure Speech, you can specify public (non-private) URL where you can refer to "test.pls".
+The following command specifies the Azure Region where to put your subscription key, voice name/pitch, subscription keyfile path to use Azure Speech. When using Azure Speech, you can specify public (non-private) URL where you can refer to "test.pls".
 ```
-slide2mp4 -azure -azure-region centralus -azure-vid en-US-JennyNeural -azure-tts-key test-azure-keyfile test.pdf test.txt http://publicdomain/test.pls output.mp4
+slide2mp4 -azure -azure-region centralus -azure-vid en-US-JennyNeural -azure-pitch -6 -azure-tts-key test-azure-keyfile test.pdf test.txt http://publicdomain/test.pls output.mp4
 ```
 
 You can create a lexicon file automatically. Once you've created a dictionary file, "test-dic.txt" in the following example, you can create a lexicon file, named "test-sample-lexicon.pls" with the following command. If you would like to use the existing dictionary files, please refer to [slide2mp4-dictionary](https://github.com/automating-presentations/slide2mp4-dictionary).

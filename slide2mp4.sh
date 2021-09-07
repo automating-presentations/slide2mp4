@@ -23,9 +23,10 @@ VOICE_ID="Mizuki"
 FONT_NAME="NotoSansCJKjp-Regular"
 FONT_SIZE="14"
 FPS="25"
-# Azure TTS variables
+# Azure Speech (TTS) variables
 AZURE_REGION="japaneast"
 AZURE_TTS_VOICE_ID="ja-JP-NanamiNeural"
+AZURE_TTS_VOICE_PITCH=0
 AZURE_TTS_SUBS_KEY_FILENAME=~/.azure/tts-subs-keyfile
 
 
@@ -51,6 +52,7 @@ print_usage ()
 	echo "	-azure				use Azure Speech."
 	echo "	-azure-region			specify Azure Region for using Azure Speech. (default Region is \"japaneast\")"
 	echo "	-azure-vid, --azure-voice-id	specify Azure Speech voice name. (default voice name is \"ja-JP-NanamiNeural\")"
+	echo "	-azure-pitch			specify Azure Speech voice pitch. (default voice pitch is \"0\", meaning 0%)"
 	echo "	-azure-tts-key			specify subscription key file path for Azure Speech. (default file path is \"~/.azure/tts-subs-keyfile\")"
 	echo ""
 	echo "Example1: The following command creates one mp4 file with audio and subtitles, named \"test-output.mp4\"."
@@ -71,8 +73,8 @@ print_usage ()
 	echo "Example6: The following command specifies the use of Azure Speech. The subscription key to use Azure Speech must be found in \"~/azure/.tts-subs-keyfile\". When you run this command, \"test-lexicon.pls\" will be temporarily uploaded to Amazon S3."
 	echo "	$(basename $0) -azure test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4"
 	echo ""
-	echo "Example7: The following command specifies the Azure Region, voice name, subscription keyfile path to use Azure Speech. When using Azure Speech, you can specify public (non-private) URL where you can refer to \"test.pls\"."
-	echo "	$(basename $0) -azure -azure-region centralus -azure-vid en-US-JennyNeural -azure-tts-key test-azure-keyfile test.pdf test.txt http://publicdomain/test.pls output.mp4"
+	echo "Example7: The following command specifies the Azure Region, voice name/pitch, subscription keyfile path to use Azure Speech. When using Azure Speech, you can specify public (non-private) URL where you can refer to \"test.pls\"."
+	echo "	$(basename $0) -azure -azure-region centralus -azure-vid en-US-JennyNeural -azure-pitch -6 -azure-tts-key test-azure-keyfile test.pdf test.txt http://publicdomain/test.pls output.mp4"
 	exit
 }
 
@@ -107,6 +109,8 @@ do
 		shift; AZURE_REGION="$1"; shift
 	elif [ "$1" == "-azure-vid" -o "$1" == "--azure-voice-id" ]; then
 		shift; AZURE_TTS_VOICE_ID="$1"; shift
+	elif [ "$1" == "-azure-pitch" ]; then
+		shift; AZURE_TTS_VOICE_PITCH="$1"; shift
 	elif [ "$1" == "-azure-tts-key" ]; then
 		shift; AZURE_TTS_SUBS_KEY_FILENAME="$1"; shift
 	else
@@ -273,7 +277,7 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 
 	mkdir -p azure-xml; rm -f azure-xml/*
 	mkdir -p azure-txt; rm -f azure-txt/*
-	for i in $PAGES; do "$SLIDE2MP4_DIR"/lib/ssml-aws2azure.sh xml/$i.xml $i $AZURE_TTS_VOICE_ID $LEXICON_URL; done
+	for i in $PAGES; do "$SLIDE2MP4_DIR"/lib/ssml-aws2azure.sh xml/$i.xml $i $AZURE_TTS_VOICE_ID $LEXICON_URL "$AZURE_TTS_VOICE_PITCH"; done
 
 	mkdir -p azure-mp3; rm -f azure-mp3/*
 	for i in $PAGES;
