@@ -71,7 +71,9 @@ cat << EOF  > test01.txt
 これから、サンプルスライドをご紹介します。
 OpenShiftとVirtualizationの読み上げテストもします。
 EOF
+```
 
+```
 ssmlconvert -i test01.txt -o test01.xml; cat test01.xml
 <?xml version="1.0" encoding="UTF-8"?>
 <speak version="1.1">
@@ -81,12 +83,16 @@ ssmlconvert -i test01.txt -o test01.xml; cat test01.xml
 OpenShiftとVirtualizationの読み上げテストもします。
 </prosody>
 </speak>
+```
 
+```
 ssmlconvert -remove-ssml -i test01.xml -o test01-removed-ssml.txt; cat test01-removed-ssml.txt
 これはタイトルスライドであり、
 これから、サンプルスライドをご紹介します。
 OpenShiftとVirtualizationの読み上げテストもします。
+```
 
+```
 cat test02.txt 
 これはタイトルスライドであり、
 
@@ -97,7 +103,9 @@ YOUR_TAGS
 YOUR_TAGS
 
 OpenShiftとVirtualizationの読み上げテストもします。
+```
 
+```
 ssmlconvert -tag YOUR_TAGS -i test02.txt -o test02.xml; cat test02.xml 
 <?xml version="1.0" encoding="UTF-8"?>
 <speak version="1.1">
