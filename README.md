@@ -71,7 +71,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXX
 EOF
 ../slide2mp4.sh -azure test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4
 ```
-The following command specifies the Azure Region where to put your subscription key, voice name/pitch, subscription keyfile path to use Azure Speech. When using Azure Speech, you can specify public (non-private) URL where you can refer to "test.pls".
+The following command specifies the Azure Region where to put your subscription key, voice name/pitch, subscription keyfile path to use Azure Speech. When using Azure Speech, you can specify public (non-private) URL where you can refer to "test.pls". If you specify public URL, Amazon S3 is not used in slide2mp4.
 ```
 slide2mp4 -azure -azure-region centralus -azure-vid en-US-JennyNeural -azure-pitch -6 -azure-tts-key test-azure-keyfile test.pdf test.txt http://publicdomain/test.pls output.mp4
 ```
