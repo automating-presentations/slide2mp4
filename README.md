@@ -39,7 +39,7 @@ The following command creates one mp4 file with audio and subtitles, named "test
 
 ```
 git clone https://github.com/automating-presentations/slide2mp4
-chmod u+x slide2mp4/slide2mp4.sh
+chmod u+x slide2mp4/slide2mp4.sh slide2mp4/lib/*.sh slide2mp4/tools/*.sh
 cd slide2mp4/test
 ../slide2mp4.sh test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4
 ```

@@ -17,4 +17,5 @@ RUN cp slide2mp4/tools/lexicon2dic.sh /usr/local/bin/lexicon2dic
 RUN cp slide2mp4/tools/ssmlconvert.sh /usr/local/bin/ssmlconvert
 RUN chmod +x /usr/local/bin/*
 RUN cp -r slide2mp4/lib /usr/local/bin/
+RUN chmod +x /usr/local/bin/lib/*.sh
 RUN rm -rf slide2mp4
