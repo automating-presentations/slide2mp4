@@ -132,11 +132,10 @@ if [ $arg_num -lt 4 ]; then
 fi
 
 
-LEXICON_URL=""; LEXICON_FILE="$LEXICON"
+LEXICON_URL=""; LEXICON_FILE=tmp-lexicon-$RS.pls
 if [ $AWS_FLAG -eq 1 ]; then
 
 	if [[ "$LEXICON" =~ https?://* ]]; then
-		LEXICON_FILE=tmp-lexicon-$RS.pls
 		LEXICON_URL="$LEXICON"
 		wget -q "$LEXICON_URL" -O $LEXICON_FILE
 
@@ -146,12 +145,16 @@ if [ $AWS_FLAG -eq 1 ]; then
 			exit
 		fi
 
+	else
+		cp -f "$LEXICON" $LEXICON_FILE
 	fi
 
 elif [ $AZURE_FLAG -eq 1 ]; then
 
 	if [[ "$LEXICON" =~ https?://* ]]; then
 		LEXICON_URL="$LEXICON"
+	else
+		cp -f "$LEXICON" $LEXICON_FILE
 	fi
 
 fi
