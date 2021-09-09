@@ -274,7 +274,7 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 
 		if [ -s tmp-$RS.txt ]; then
 			cat tmp-$RS.txt
-			rm -f tmp-$RS.txt transcripts-tmp-$RS.mp4
+			rm -f tmp-$RS.txt transcripts-tmp-$RS.mp4 $LEXICON_FILE
 			exit
 		fi
 
