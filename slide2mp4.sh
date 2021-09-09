@@ -141,7 +141,7 @@ if [ $AWS_FLAG -eq 1 ]; then
 
 		if [ ! -s $LEXICON_FILE ]; then
 			echo "Lexicon file is empty. Please make sure that the URL to download is corret, $LEXICON_URL."
-			rm -f tmp-lexicon-$RS.pls
+			rm -f $LEXICON_FILE
 			exit
 		fi
 
@@ -215,7 +215,7 @@ if [ $AWS_FLAG -eq 1 ]; then
 
 	if [ -s tmp-$RS.txt ]; then
 		cat tmp-$RS.txt
-		rm -f tmp-$RS.txt tmp-lexicon-$RS.pls
+		rm -f tmp-$RS.txt $LEXICON_FILE
 		exit
 	fi
 
@@ -238,7 +238,7 @@ if [ $AWS_FLAG -eq 1 ]; then
 		echo "There is the following error in executing aws polly, with xml/$i.xml."
 		cat tmp-$RS.txt; rm -f tmp-$RS.txt
 		aws polly delete-lexicon --name $LEXICON_NAME
-		rm -f tmp-lexicon-$RS.pls
+		rm -f $LEXICON_FILE
 		exit
 	fi
 
@@ -257,7 +257,7 @@ if [ $AWS_FLAG -eq 1 ]; then
 	fi
 
 	done
-	rm -f tmp-$RS.txt tmp-lexicon-$RS.pls
+	rm -f tmp-$RS.txt $LEXICON_FILE
 	aws polly delete-lexicon --name $LEXICON_NAME
 
 elif [ $AZURE_FLAG -eq 1 ]; then
@@ -293,7 +293,7 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 			if [ ! -s azure-mp3/$i-$j.mp3 ]; then
 				echo "azure-mp3/$i-$j.mp3 is empty file."
 				echo "Please check azure-xml/$i-$j.xml, Azure $AZURE_REGION Region, your Azure account settings, Azure Speech subscription key in $AZURE_TTS_SUBS_KEY_FILENAME."
-				rm -f tmp-lexicon-$RS.pls *-list-$RS.txt
+				rm -f $LEXICON_FILE *-list-$RS.txt
 				if [ ! $AWS_S3_REGION == "" ]; then
 					aws s3api delete-object --bucket "$BUCKET_NAME" --key "$LEXICON_FILE"
 					aws s3 rb s3://"$BUCKET_NAME"
@@ -340,7 +340,7 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 		ffmpeg $FFMPEG_LOG_LEVEL -y -f concat -i $i-list-$RS.txt -c copy mp3/$i.mp3
 		echo "mp3/$i.mp3 has been created."
 	done
-	rm -rf *-list-$RS.txt tmp-lexicon-$RS.pls azure-mp3 azure-txt azure-xml
+	rm -rf *-list-$RS.txt $LEXICON_FILE azure-mp3 azure-txt azure-xml
 
 fi
 
