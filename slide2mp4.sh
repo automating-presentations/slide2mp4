@@ -170,18 +170,23 @@ rm -f check_*_slide2mp4-$RS.txt
 OUTPUT_MP4_NO_SPACE="$(echo -e "${OUTPUT_MP4}" |tr -d '[:space:]')"
 if [ -z "$CHECK_PDF" ]; then
 	echo "This "$PDF_FILE" is not PDF file. Please check PDF file."
+	rm -f $LEXICON_FILE
 	exit
 elif [ -z "$CHECK_TXT" ]; then
 	echo "This "$TXT_FILE" is not text file. Please check text file."
+	rm -f $LEXICON_FILE
 	exit
 elif [ -n "$CHECK_XML" ]; then
 	echo "There is xml file parse error in "$LEXICON_FILE". Please check xml file."
+	rm -f $LEXICON_FILE
 	exit
 elif [ -z "$OUTPUT_MP4_NO_SPACE" ]; then
 	echo "Please specify the name of the mp4 file to output."
+	rm -f $LEXICON_FILE
 	exit
 elif [ ${OUTPUT_MP4_NO_SPACE##*.} != "mp4" ]; then
 	echo "Please specify the name of the mp4 file to output."
+	rm -f $LEXICON_FILE
 	exit
 fi
 echo "Format checking of input files has been completed."
