@@ -146,7 +146,7 @@ if [ $AWS_FLAG -eq 1 ]; then
 		fi
 
 	else
-		cp -f "$LEXICON" $LEXICON_FILE
+		cp -f "$LEXICON" $LEXICON_FILE 2> /dev/null
 	fi
 
 elif [ $AZURE_FLAG -eq 1 ]; then
@@ -154,7 +154,7 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 	if [[ "$LEXICON" =~ https?://* ]]; then
 		LEXICON_URL="$LEXICON"
 	else
-		cp -f "$LEXICON" $LEXICON_FILE
+		cp -f "$LEXICON" $LEXICON_FILE 2> /dev/null
 	fi
 
 fi
