@@ -177,7 +177,7 @@ elif [ -z "$CHECK_TXT" ]; then
 	rm -f $LEXICON_FILE
 	exit
 elif [ -n "$CHECK_XML" ]; then
-	echo "There is xml file parse error in "$LEXICON_FILE". Please check xml file."
+	echo "There is xml file parse error in "$LEXICON". Please check xml file."
 	rm -f $LEXICON_FILE
 	exit
 elif [ -z "$OUTPUT_MP4_NO_SPACE" ]; then
