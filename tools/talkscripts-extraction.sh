@@ -17,6 +17,7 @@
 
 TXT_FILE="$1"
 OUTPUT="$2"
+PRE_MESSAGE="The talk scripts of this page are as follows:"
 SCRIPTS_DIR="$(cd "$(dirname "$0")"; pwd)"
 
 
@@ -61,8 +62,8 @@ mkdir -p txt-$RS
 for i in `seq 1 $page_num`
 do
 	$SCRIPTS_DIR/ssmlconvert -remove-ssml -i xml/$i.xml -o txt-$RS/$i-tmp.txt > /dev/null
-	echo "Page${i} Talk Scripts:" > txt-$RS/$i.txt
-	cat txt-$RS/$i-tmp.txt >> txt-$RS/$i.txt
+	echo "$PRE_MESSAGE" > txt-$RS/page$i.txt
+	cat txt-$RS/$i-tmp.txt >> txt-$RS/page$i.txt
 done
 
 
