@@ -66,12 +66,16 @@ do
 
 	SPLIT="\n<sentence_split-hfsqd0z2>\n"
 	sed -e "s/。/。${SPLIT}/g" -e "s/\.\ /\.${SPLIT}/g" \
-		-e "s/\!\ /\!${SPLIT}/g" -e "s/\！\　/\！${SPLIT}/g" tmp-$RS.xml | \
-		sed -e ':a' -e 'N' -e '$!ba' -e 's/\n\n/\n<sentence_split-hfsqd0z2>\n/g' \
-			-e 's/\.\n/\.\n<sentence_split-hfsqd0z2>\n/g' \
-			-e 's/\!\n/\!\n<sentence_split-hfsqd0z2>\n/g' \
-			-e 's/\！\n/\！\n<sentence_split-hfsqd0z2>\n/g' | \
-				grep -v "^\s*$" |sed '/^$/d' > tmp-split-$RS.xml
+		-e "s/\!\ /\!${SPLIT}/g" -e "s/\！\　/\！${SPLIT}/g" \
+		-e "s/\?\ /\?${SPLIT}/g" -e "s/\？\　/\？${SPLIT}/g" tmp-$RS.xml > tmp-$RS-tmp.xml
+	echo "<sentence_split-hfsqd0z2>" >> tmp-$RS-tmp.xml; mv tmp-$RS-tmp.xml tmp-$RS.xml
+	sed -e ':a' -e 'N' -e '$!ba' -e 's/\n\n/\n<sentence_split-hfsqd0z2>\n/g' \
+		-e 's/\.\n/\.\n<sentence_split-hfsqd0z2>\n/g' \
+		-e 's/\!\n/\!\n<sentence_split-hfsqd0z2>\n/g' \
+		-e 's/\！\n/\！\n<sentence_split-hfsqd0z2>\n/g' \
+		-e 's/\?\n/\?\n<sentence_split-hfsqd0z2>\n/g' \
+		-e 's/\？\n/\？\n<sentence_split-hfsqd0z2>\n/g' tmp-$RS.xml | \
+		grep -v "^\s*$" |sed '/^$/d' > tmp-split-$RS.xml
 	rm -f tmp-$RS.xml
 
 	sentence_count=1; SPLIT_FLAG=0
@@ -93,16 +97,6 @@ do
 		fi
 	done < tmp-split-$RS.xml
 	rm -f tmp-split-$RS.xml
-
-	if [ $SPLIT_FLAG -eq 1 ]; then
-		echo -e "${XML_VER}\n${SPEAK_VER}\n${VOICE}\n${LEXICON_URI}\n" > azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml
-		echo "${PROSODY_RATE}" >> azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml
-		cat azure-txt/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.txt >> azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml
-		echo -e "</prosody>\n\n</voice>\n</speak>" >> azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml
-		mv azure-txt/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.txt azure-txt/$PAGE_NUMBER-$file_count.txt
-		mv azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml azure-xml/$PAGE_NUMBER-$file_count.xml
-		file_count=$((file_count+1))
-	fi
 
 	prosody_count=$((prosody_count+1))
 done
