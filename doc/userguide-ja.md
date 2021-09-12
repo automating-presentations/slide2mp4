@@ -64,7 +64,7 @@ EOF
 このtest.xmlでは、[機械音声の読み上げ速度](https://docs.aws.amazon.com/ja_jp/polly/latest/dg/voice-speed-vip.html)を110%にしています。  
 これは適宜変更してください。スライド作成後は、PDFとPlain Textファイルをダウンロードします。
 
-また、このようなSSMLタグが記載されたテキストファイルは、[ssmlconvert](https://github.com/automating-presentations/slide2mp4/blob/main/tools/ssmlconvert.sh)を利用して作成することもできます。ssmlconvertはオプションを付けずに実行すると、SSMLのHeaderとTailをファイルの先頭と最後の行に追加します。複数ページのスライドに対応させる場合、区切りたい場所で任意の文字列を追加しておくと、その文字列の場所ごとにSSMLタグが追加されます。また、「-remove-ssml」オプションで、SSMLのタグを全て削除します。  
+また、このようなSSMLタグが記載されたテキストファイルは、[ssmlconvert](https://github.com/automating-presentations/slide2mp4/blob/main/tools/ssmlconvert.sh)を利用して作成することもできます。ssmlconvertはオプションを付けずに実行すると、SSMLのHeaderとFooterをファイルの先頭と最後の行に追加します。複数ページのスライドに対応させる場合、区切りたい場所で任意の文字列を追加しておくと、その文字列の場所ごとにSSMLタグが追加されます。また、「-remove-ssml」オプションで、SSMLのタグを全て削除します。  
 ```
 cat << EOF  > test01.txt
 これはタイトルスライドであり、

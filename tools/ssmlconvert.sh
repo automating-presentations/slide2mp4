@@ -81,20 +81,20 @@ fi
 SSML_TMP_TAG="<ssml-tag-v49ms2y2fk6fmljhvat7zyorlp4ju15g>"
 if [ $REMOVE_SSML_FLAG -eq 0 ]; then
 	SSML_HEADER="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<speak version=\"1.1\">\n<prosody rate=\"100%\">"
-	SSML_TAIL="</prosody>\n</speak>"
+	SSML_FOOTER="</prosody>\n</speak>"
 
 	sed -e "s/${TAG}/${SSML_TMP_TAG}/g" "$INPUT_FILE" | \
 		sed -e ':a' -e 'N' -e '$!ba' -e "s/<ssml-tag-v49ms2y2fk6fmljhvat7zyorlp4ju15g>/<\/prosody>\n<\/speak>\n\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<speak version=\"1.1\">\n<prosody rate=\"100%\">/g" > tmp-ssml-$RS.xml
 	echo -e $SSML_HEADER > "$OUTPUT_FILE"
 	cat tmp-ssml-$RS.xml >> "$OUTPUT_FILE"
-	echo -e $SSML_TAIL >> "$OUTPUT_FILE"
+	echo -e $SSML_FOOTER >> "$OUTPUT_FILE"
 	rm -f tmp-ssml-$RS.xml
 
 	echo "SSML tags have been inserted. Please check $OUTPUT_FILE."
 else
-	sed -e "s/^\ *\t*<?xml.*/${SSML_TMP_TAG}/g" -e "s/^\ *\t*<\/*speak.*/${SSML_TMP_TAG}/g" \
-		-e "s/^\ *\t*<\/*prosody.*/${SSML_TMP_TAG}/g" -e "s/^\ *\t*<\/*voice.*/${SSML_TMP_TAG}/g" \
-		-e "s/^\ *\t*<\/*lexicon.*/${SSML_TMP_TAG}/g" "$INPUT_FILE" > tmp-ssml-$RS.xml
+	sed -e "s/<?xml.*/${SSML_TMP_TAG}/g" -e "s/<\/*speak.*/${SSML_TMP_TAG}/g" \
+		-e "s/<\/*prosody.*/${SSML_TMP_TAG}/g" -e "s/<\/*voice.*/${SSML_TMP_TAG}/g" \
+		-e "s/<\/*lexicon.*/${SSML_TMP_TAG}/g" "$INPUT_FILE" > tmp-ssml-$RS.xml
 	sed -e ':a' -e 'N' -e '$!ba' -e 's/<ssml-tag-v49ms2y2fk6fmljhvat7zyorlp4ju15g>\n//g' tmp-ssml-$RS.xml | \
 		sed -e ':a' -e 'N' -e '$!ba' -e 's/\n<ssml-tag-v49ms2y2fk6fmljhvat7zyorlp4ju15g>//g' > "$OUTPUT_FILE"
 	rm -f tmp-ssml-$RS.xml
