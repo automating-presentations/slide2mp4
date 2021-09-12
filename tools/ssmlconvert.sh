@@ -92,9 +92,9 @@ if [ $REMOVE_SSML_FLAG -eq 0 ]; then
 
 	echo "SSML tags have been inserted. Please check $OUTPUT_FILE."
 else
-	sed -e "s/<?xml.*/${SSML_TMP_TAG}/g" -e "s/<\/*speak.*/${SSML_TMP_TAG}/g" \
-		-e "s/<\/*prosody.*/${SSML_TMP_TAG}/g" -e "s/<\/*voice.*/${SSML_TMP_TAG}/g" \
-		-e "s/<\/*lexicon.*/${SSML_TMP_TAG}/g" "$INPUT_FILE" > tmp-ssml-$RS.xml
+	sed -e "s/^\ *\t*<?xml.*/${SSML_TMP_TAG}/g" -e "s/^\ *\t*<\/*speak.*/${SSML_TMP_TAG}/g" \
+		-e "s/^\ *\t*<\/*prosody.*/${SSML_TMP_TAG}/g" -e "s/^\ *\t*<\/*voice.*/${SSML_TMP_TAG}/g" \
+		-e "s/^\ *\t*<\/*lexicon.*/${SSML_TMP_TAG}/g" "$INPUT_FILE" > tmp-ssml-$RS.xml
 	sed -e ':a' -e 'N' -e '$!ba' -e 's/<ssml-tag-v49ms2y2fk6fmljhvat7zyorlp4ju15g>\n//g' tmp-ssml-$RS.xml | \
 		sed -e ':a' -e 'N' -e '$!ba' -e 's/\n<ssml-tag-v49ms2y2fk6fmljhvat7zyorlp4ju15g>//g' > "$OUTPUT_FILE"
 	rm -f tmp-ssml-$RS.xml
