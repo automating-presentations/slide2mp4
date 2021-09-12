@@ -3,7 +3,7 @@
 
 AZURE_SSML_XML="$1"
 AZURE_REGION="$2"
-AZURE_TTS_SUBS_KEY=$(cat "$3" |grep -v '^#' |grep -v "^\s*$" |sed '/^$/d')
+AZURE_TTS_SUBS_KEY=$(cat "$3" |grep -v '^#' |grep -v "^\s*$" |sed '/^$/d' |awk '{print $1}')
 AZURE_TTS_MP3="$4"
 
 
