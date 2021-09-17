@@ -297,7 +297,7 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 
 			if [ ! -s azure-mp3/$i-$j.mp3 ]; then
 				echo "azure-mp3/$i-$j.mp3 is empty file."
-				echo "Please check azure-xml/$i-$j.xml, Azure $AZURE_REGION Region, your Azure account settings, Azure Speech subscription key in $AZURE_TTS_SUBS_KEY_FILENAME."
+				echo "Please check xml/$i.xml, azure-xml/$i-$j.xml, Azure $AZURE_REGION Region, your Azure account settings, Azure Speech subscription key in $AZURE_TTS_SUBS_KEY_FILENAME."
 				rm -f $LEXICON_FILE *-list-$RS.txt
 				if [ ! $AWS_S3_REGION == "" ]; then
 					aws s3api delete-object --bucket "$BUCKET_NAME" --key "$LEXICON_FILE"
