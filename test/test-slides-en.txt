@@ -1,0 +1,47 @@
+サンプルスライドタイトル
+Sample Slide Title
+サンプルスライド
+Sample slide
+<?xml version="1.0" encoding="UTF-8"?>
+<speak version="1.1">
+
+<prosody rate="110%">
+This is the title slide.
+I will now show you some sample slides.
+I will also test reading out OpenShift and Virtualization.
+</prosody>
+
+</speak>
+
+
+テストスライド  Test Slide
+これはサンプルテキストです。
+This is Sample Text.
+<?xml version="1.0" encoding="UTF-8"?>
+<speak version="1.1">
+
+<prosody rate="110%">
+This is the test slide.
+The sample text will be read out.
+The reading out of the sample text will end.
+</prosody>
+
+</speak>
+
+
+
+
+
+最終スライド  Final Slide
+最終スライドです
+This is final slide.
+<?xml version="1.0" encoding="UTF-8"?>
+<speak version="1.1">
+
+<prosody rate="110%">
+This is the final slide.
+This is the end of the sample slides.
+</prosody>
+
+</speak>
+
