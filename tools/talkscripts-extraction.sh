@@ -51,9 +51,39 @@ if [ $# -ne 2 ]; then
 fi
 
 
+if [ -e $SCRIPTS_DIR/ssmlconvert ]; then
+	SSMLCONVERT_PATH="$SCRIPTS_DIR"/ssmlconvert
+elif [ -e $SCRIPTS_DIR/ssmlconvert.sh ]; then
+	SSMLCONVERT_PATH="$SCRIPTS_DIR"/ssmlconvert.sh
+else
+	echo "There is no $SCRIPTS_DIR/ssmlconvert or $SCRIPTS_DIR/ssmlconvert.sh."
+	echo "Please run the following commands."
+	echo ""
+	echo "git clone --depth 1 https://github.com/automating-presentations/slide2mp4"
+	echo "cp slide2mp4/tools/ssmlconvert.sh $SCRIPTS_DIR/"
+	echo "chmod u+x $SCRIPTS_DIR/ssmlconvert.sh"
+	echo ""
+	exit
+fi
+
+
+if [ -e $SCRIPTS_DIR/lib/txt2xml.py ]; then
+        TXT2XML_PATH="$SCRIPTS_DIR"/lib/txt2xml.py
+else 
+        echo "There is no $SCRIPTS_DIR/lib/txt2xml.py."
+        echo "Please run the following commands."
+	echo ""
+        echo "git clone --depth 1 https://github.com/automating-presentations/slide2mp4"
+        echo "mkdir -p $SCRIPTS_DIR/lib"
+	echo "cp slide2mp4/lib/txt2xml.py $SCRIPTS_DIR/lib/"
+	echo ""
+	exit
+fi
+
+
 cat "$TXT_FILE" |awk '/<\?xml/,/<\/speak>/' > tmp-xml.txt
 rm -rf xml; mkdir -p xml
-python3 $SCRIPTS_DIR/lib/txt2xml.py tmp-xml.txt; rm -f tmp-xml.txt
+python3 "$TXT2XML_PATH" tmp-xml.txt; rm -f tmp-xml.txt
 page_num=$(ls -F xml/ |grep -v / |wc -l |awk '{print $1}')
 # echo "page_num is $page_num."
 
@@ -61,7 +91,7 @@ page_num=$(ls -F xml/ |grep -v / |wc -l |awk '{print $1}')
 mkdir -p txt-$RS
 for i in `seq 1 $page_num`
 do
-	$SCRIPTS_DIR/ssmlconvert -remove-ssml -i xml/$i.xml -o txt-$RS/$i-tmp.txt > /dev/null
+	"$SSMLCONVERT_PATH" -remove-ssml -i xml/$i.xml -o txt-$RS/$i-tmp.txt > /dev/null
 	echo "$PRE_MESSAGE" > txt-$RS/page$i.txt
 	cat txt-$RS/$i-tmp.txt >> txt-$RS/page$i.txt
 done
