@@ -88,7 +88,7 @@ cd slide2mp4/test
 ../tools/lexicon2dic.sh test-lexicon.pls test-sample-dic.txt
 ```
 
-You can creates a directory containing a text file containing the talk scripts for each page, and a compressed zip file of that directory with the following command. Please be aware that "talkscripts-extraction.sh" requires {PATH_OF_talkscripts-extraction.sh}/lib/txt2xml.py and {PATH_OF_talkscripts-extraction.sh}/ssmlconvert.
+You can create a directory containing a text file containing the talk scripts for each page, and a compressed zip file of that directory with the following command. Please be aware that "talkscripts-extraction.sh" requires {PATH_OF_talkscripts-extraction.sh}/lib/txt2xml.py and {PATH_OF_talkscripts-extraction.sh}/ssmlconvert.
 ```
 cp slide2mp4/tools/{talkscripts-extraction,ssmlconvert}.sh ./
 mkdir -p lib; cp slide2mp4/lib/txt2xml.py lib/
