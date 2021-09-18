@@ -51,9 +51,9 @@ if [ $# -ne 2 ]; then
 fi
 
 
-if [ -e $SCRIPTS_DIR/ssmlconvert ]; then
+if [ -s $SCRIPTS_DIR/ssmlconvert ]; then
 	SSMLCONVERT_PATH="$SCRIPTS_DIR"/ssmlconvert
-elif [ -e $SCRIPTS_DIR/ssmlconvert.sh ]; then
+elif [ -s $SCRIPTS_DIR/ssmlconvert.sh ]; then
 	SSMLCONVERT_PATH="$SCRIPTS_DIR"/ssmlconvert.sh
 else
 	echo "There is no $SCRIPTS_DIR/ssmlconvert or $SCRIPTS_DIR/ssmlconvert.sh."
@@ -67,7 +67,7 @@ else
 fi
 
 
-if [ -e $SCRIPTS_DIR/lib/txt2xml.py ]; then
+if [ -s $SCRIPTS_DIR/lib/txt2xml.py ]; then
         TXT2XML_PATH="$SCRIPTS_DIR"/lib/txt2xml.py
 else 
         echo "There is no $SCRIPTS_DIR/lib/txt2xml.py."
