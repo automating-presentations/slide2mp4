@@ -74,7 +74,7 @@ print_usage ()
 	echo "	$(basename $0) -azure test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4"
 	echo ""
 	echo "Example7: The following command specifies the Azure Region, voice name/pitch, subscription keyfile path to use Azure Speech. When using Azure Speech, you can specify public (non-private) URL where you can refer to \"test.pls\". If you specify public URL, Amazon S3 is not used in slide2mp4."
-	echo "	$(basename $0) -azure -azure-region centralus -azure-vid en-US-JennyNeural -azure-pitch -6 -azure-tts-key test-azure-keyfile test.pdf test.txt https://publicdomain/test.pls output.mp4"
+	echo "	$(basename $0) -azure -azure-region centralus -azure-vid en-US-JennyNeural -azure-pitch -6 -azure-tts-key test-azure-keyfile test.pdf test.txt https://public_domain/test.pls output.mp4"
 	exit
 }
 
