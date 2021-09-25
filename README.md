@@ -21,7 +21,7 @@ When using Azure Speech, the following values are required. For more information
  - Your Azure Speech service subscription key
  - Your Azure Speech service region
 
-If you choose a free (F0) pricing tier, please be aware that you may not be able to complete the execution of slide2mp4 as Azure Speech will prevent you from getting more than a certain number of audio (mp3) files.
+Note: If you choose a free (F0) pricing tier, please be aware that you may not be able to complete the execution of slide2mp4 as Azure Speech will prevent you from getting more than a certain number of audio (mp3) files.
 
 When using Linux or macOS(including M1 Mac), you can install AWS CLI, FFmpeg, Ghostscript, GraphicsMagick, with [Homebrew](https://brew.sh/).
 
