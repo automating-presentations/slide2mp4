@@ -5,12 +5,7 @@ slide2mp4 uses Amazon Polly (default) or Azure Speech, Text-to-Speech (TTS) serv
 
 ----
 ## Examples
-#### Japanese video
-[![](https://img.youtube.com/vi/-7UBbV9L6hk/0.jpg)](https://www.youtube.com/watch?v=-7UBbV9L6hk)
-
-#### English video
-[![](https://img.youtube.com/vi/6y_r1_QQwes/0.jpg)](https://www.youtube.com/watch?v=6y_r1_QQwes)
-
+[Sample videos in Japanese and English](https://www.youtube.com/playlist?list=PL4IvAXW0drR0TLFEuUOZNA26PBe9W4LJF)
 
 ----
 ## Requirements
