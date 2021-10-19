@@ -4,6 +4,15 @@ slide2mp4 is a conversion tool, PDF slides to MP4 with audio and subtitles.
 slide2mp4 uses Amazon Polly (default) or Azure Speech, Text-to-Speech (TTS) service.
 
 ----
+## Examples
+#### Japanese video
+[![](https://img.youtube.com/vi/-7UBbV9L6hk/0.jpg)](https://www.youtube.com/watch?v=-7UBbV9L6hk)
+
+#### English video
+[![](https://img.youtube.com/vi/6y_r1_QQwes/0.jpg)](https://www.youtube.com/watch?v=6y_r1_QQwes)
+
+
+----
 ## Requirements
 
  - [AWS CLI version 2](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) (version 1 has not been tested.)
