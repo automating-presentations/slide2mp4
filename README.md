@@ -8,6 +8,10 @@ slide2mp4 uses Amazon Polly (default) or Azure Speech, Text-to-Speech (TTS) serv
 [Sample videos in Japanese and English on YouTube](https://www.youtube.com/playlist?list=PL4IvAXW0drR0TLFEuUOZNA26PBe9W4LJF)
 
 ----
+## Demo
+<img src="test/slide2mp4-demo.gif" width="724" height="390">
+
+----
 ## Requirements
 
  - [AWS CLI version 2](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) (version 1 has not been tested.)
