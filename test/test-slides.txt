@@ -2,16 +2,20 @@
 Sample Slide Title
 サンプルスライド
 Sample slide
-<?xml version="1.0" encoding="UTF-8"?>
-<speak version="1.1">
 
-<prosody rate="110%">
+
+# TTS BEGIN
+
+# 1.1x SPEED BEGIN
 これはタイトルスライドであり、
 これから、サンプルスライドをご紹介します。
-OpenShiftとVirtualizationの読み上げテストもします。
-</prosody>
+# SPEED END
 
-</speak>
+# 1.23x SPEED BEGIN
+OpenShiftとVirtualizationの読み上げテストもします。
+# SPEED END
+
+# TTS END
 
 
 テストスライド  Test Slide
