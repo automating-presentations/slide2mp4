@@ -195,29 +195,41 @@ echo "Format checking of input files has been completed."
 mkdir -p json mp3 mp4 png srt xml
 
 
-cp "$TXT_FILE" talkscripts-$RS.txt
-grep "^#" talkscripts-$RS.txt |grep "x SPEED BEGIN" |sed -e 's|x SPEED BEGIN||' |awk '{print $2}' |awk '!dicline[$0]++' > tmp-$RS.txt
-if [ -s tmp-$RS.txt ]; then
-        while read line
-        do
-		speed_num=${line}; convert_speed_num=`echo "scale=3; $speed_num * 100" |bc |awk '{print int($1)}'`
-		sed -e "s|# "$speed_num"x SPEED BEGIN|<prosody rate=\"$convert_speed_num%\">|g" talkscripts-$RS.txt > tmp-talkscripts-$RS.txt
-		mv tmp-talkscripts-$RS.txt talkscripts-$RS.txt
-        done < tmp-$RS.txt
-fi
-sed -e 's|^# TTS BEGIN|<?xml version="1.0" encoding="UTF-8"?>\n<speak version="1.1">|g' \
-	-e 's|^# TTS END|</speak>|g' \
-	-e 's|^# SPEED END|</prosody>|g' talkscripts-$RS.txt > xml-talkscripts-$RS.txt
-rm -f talkscripts-$RS.txt tmp-$RS.txt
-
-
-cat xml-talkscripts-$RS.txt |awk '/<\?xml/,/<\/speak>/' > tmp-$RS.txt
-rm -f xml/* xml-talkscripts-$RS.txt
+sed -e 's| *```TTS|<?xml version="1.0" encoding="UTF-8"?>\n<speak version="1.1">|g' \
+        -e 's| *```|</speak>|g' "$TXT_FILE" |\
+	awk '/<\?xml/,/<\/speak>/' |\
+	sed -e 's|#.*||g' > tmp-$RS.txt
+rm -f xml/*
 python3 "$SLIDE2MP4_DIR"/lib/txt2xml.py tmp-$RS.txt; rm -f tmp-$RS.txt
 page_num=$(ls -F xml/ | grep -v / | wc -l)
 if [ -z "$PAGES" ]; then
         PAGES=`seq 1 $page_num`
 fi
+
+
+for i in $PAGES
+do
+	grep "^\s*--- SPEED" xml/$i.xml |sed -e 's|--- SPEED||' |sed -e 's|x||' |awk '{print $1}' > tmp-$RS.txt
+ 	if [ -s tmp-$RS.txt ]; then
+		speed_count=1
+
+        	while read line
+        	do
+			speed_num=${line}; convert_speed_num=`echo "scale=3; $speed_num * 100" |bc |awk '{print int($1)}'`
+			if [ $speed_count -eq 1 ]; then
+				sed -e "s|--- SPEED "$speed_num"x|<prosody rate=\"$convert_speed_num%\">|" xml/$i.xml > tmp-$RS.xml
+				speed_count=2
+			else
+				sed -e "1,/--- SPEED "$speed_num"x/ s|--- SPEED "$speed_num"x|</prosody>\n<prosody rate=\"$convert_speed_num%\">|" xml/$i.xml > tmp-$RS.xml
+			fi
+			mv tmp-$RS.xml xml/$i.xml
+        	done < tmp-$RS.txt
+
+		sed -e 's|</speak>|</prosody>\n</speak>|g' xml/$i.xml > tmp-$RS.xml
+		mv tmp-$RS.xml xml/$i.xml
+	fi
+done
+rm -f tmp-$RS.txt
 
 
 if [ $NO_CONVERT_FLAG -eq 0 ]; then
