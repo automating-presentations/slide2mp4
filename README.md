@@ -98,11 +98,10 @@ cd slide2mp4/test
 ../tools/lexicon2dic.sh test-lexicon.pls test-sample-dic.txt
 ```
 
-You can create a directory containing a text file containing the talk scripts for each page, and a compressed zip file of that directory with the following command. Please be aware that "talkscripts-extraction.sh" requires {PATH_OF_talkscripts-extraction.sh}/lib/txt2xml.py and {PATH_OF_talkscripts-extraction.sh}/ssmlconvert.
+You can create a directory containing a text file containing the talk scripts for each page, and a compressed zip file of that directory with the following command.
 ```
-cp slide2mp4/tools/{talkscripts-extraction,ssmlconvert}.sh ./
-mkdir -p lib; cp slide2mp4/lib/txt2xml.py lib/
-./talkscripts-extraction.sh slide2mp4/test/test-slides.txt talkscripts
+cd slide2mp4/test
+../tools/talkscripts-extraction.sh test-slides.txt talkscripts
 ```
 
 Optionally, once you've created mp4 files, "test-output.mp4" in the above example, you can create a text file with timestamp for each chapter, named "test-timestamps.txt" with the following command. This text file with timestamps can be used to [turn on chapters for your videos on YouTube](https://support.google.com/youtube/answer/9884579?hl=en). Chapters-timestamp.sh needs to be run with the PATH of the directory including mp4 files.
