@@ -4,7 +4,7 @@ Sample Slide Title
 Sample slide
 
 
----TTS
+--- TTS
 --- SPEED 1.1x
 これはタイトルスライドであり、
 これから、サンプルスライドをご紹介します。
@@ -17,7 +17,7 @@ OpenShiftとVirtualizationの読み上げテストもします。
 これはサンプルテキストです。
 This is Sample Text.
 
----TTS
+--- TTS
 --- SPEED 1.1x
 これはテストスライドです。
 サンプルテキストが読み上げられます。
@@ -32,7 +32,7 @@ This is Sample Text.
 最終スライドです
 This is final slide.
 
----TTS
+--- TTS
 --- SPEED 1.1x
 これは最終スライドです。
 スライドの紹介を終わります。

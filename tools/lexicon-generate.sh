@@ -47,7 +47,7 @@ fi
 
 
 cat "$DIC_TXT" |grep -v '^#' |grep -v "^\s*$" |sed '/^$/d' > tmp-DIC_TXT-$RS.txt
-sed -e 's| *---TTS|<?xml version="1.0" encoding="UTF-8"?>\n<speak version="1.1">|g' \
+sed -e 's| *--- TTS|<?xml version="1.0" encoding="UTF-8"?>\n<speak version="1.1">|g' \
         -e 's| *------|</speak>|g' "$TALK_SCRIPT_TXT" |\
         awk '/<\?xml/,/<\/speak>/' |\
         sed -e 's|#.*||g' |\
