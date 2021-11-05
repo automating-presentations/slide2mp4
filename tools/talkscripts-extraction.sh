@@ -18,7 +18,6 @@
 TXT_FILE="$1"
 OUTPUT="$2"
 PRE_MESSAGE="The talk scripts of this page are as follows:"
-SCRIPTS_DIR="$(cd "$(dirname "$0")"; pwd)"
 
 
 print_usage ()
@@ -26,8 +25,6 @@ print_usage ()
 	echo "Description:"
 	echo "	$(basename $0) creates a directory containing a text file containing the talk scripts for each page,"
 	echo "	and a compressed zip file of that directory."
-	echo "	$(basename $0) requires $SCRIPTS_DIR/lib/txt2xml.py and $SCRIPTS_DIR/ssmlconvert."
-	echo "	txt2xml.py and ssmlconvert are included in slide2mp4 repository."
 	echo "Usage:"
 	echo "	$(basename $0) TXT_FILE OUTPUT_DIRECTORY_AND_ZIP_NAME"
 	echo "	This \"TXT_FILE\" is the same text file that will be input to slide2mp4."
@@ -51,54 +48,27 @@ if [ $# -ne 2 ]; then
 fi
 
 
-if [ -s $SCRIPTS_DIR/ssmlconvert ]; then
-	SSMLCONVERT_PATH="$SCRIPTS_DIR"/ssmlconvert
-elif [ -s $SCRIPTS_DIR/ssmlconvert.sh ]; then
-	SSMLCONVERT_PATH="$SCRIPTS_DIR"/ssmlconvert.sh
-else
-	echo "There is no $SCRIPTS_DIR/ssmlconvert or $SCRIPTS_DIR/ssmlconvert.sh."
-	echo "Please run the following commands."
-	echo ""
-	echo "git clone --depth 1 https://github.com/automating-presentations/slide2mp4"
-	echo "cp slide2mp4/tools/ssmlconvert.sh $SCRIPTS_DIR/"
-	echo "chmod u+x $SCRIPTS_DIR/ssmlconvert.sh"
-	echo ""
-	exit
-fi
-
-
-if [ -s $SCRIPTS_DIR/lib/txt2xml.py ]; then
-        TXT2XML_PATH="$SCRIPTS_DIR"/lib/txt2xml.py
-else 
-        echo "There is no $SCRIPTS_DIR/lib/txt2xml.py."
-        echo "Please run the following commands."
-	echo ""
-        echo "git clone --depth 1 https://github.com/automating-presentations/slide2mp4"
-        echo "mkdir -p $SCRIPTS_DIR/lib"
-	echo "cp slide2mp4/lib/txt2xml.py $SCRIPTS_DIR/lib/"
-	echo ""
-	exit
-fi
-
-
-cat "$TXT_FILE" |awk '/<\?xml/,/<\/speak>/' > tmp-xml.txt
-rm -rf xml; mkdir -p xml
-python3 "$TXT2XML_PATH" tmp-xml.txt; rm -f tmp-xml.txt
-page_num=$(ls -F xml/ |grep -v / |wc -l |awk '{print $1}')
-# echo "page_num is $page_num."
-
-
-mkdir -p txt-$RS
-for i in `seq 1 $page_num`
+awk '/\s*--- TTS/,/\s*------/' "$TXT_FILE" |\
+	grep -v "\s*--- SPEED" |\
+	sed -e 's|#.*||g' > tmp-$RS.txt
+rm -rf "$OUTPUT" "$OUTPUT".zip
+mkdir -p "$OUTPUT"; i=0
+while read line
 do
-	"$SSMLCONVERT_PATH" -remove-ssml -i xml/$i.xml -o txt-$RS/$i-tmp.txt > /dev/null
-	echo "$PRE_MESSAGE" > txt-$RS/page$i.txt
-	cat txt-$RS/$i-tmp.txt >> txt-$RS/page$i.txt
-done
-
-
-rm -rf txt-$RS/*-tmp.txt "$OUTPUT" "$OUTPUT".zip
-mv txt-$RS "$OUTPUT"
+	echo ${line} > line-$RS.txt;
+	check_tts_begin=$(grep "^\s*--- TTS" line-$RS.txt 2> /dev/null)
+	check_tts_end=$(grep "^\s*------" line-$RS.txt 2> /dev/null)
+	if [ -n "$check_tts_begin" ]; then
+		i=$(($i+1))
+		echo "$PRE_MESSAGE" > "$OUTPUT"/page$i.txt
+		echo >> "$OUTPUT"/page$i.txt
+	else
+		if [ -z "$check_tts_end" ]; then
+			echo ${line} >> "$OUTPUT"/page$i.txt
+		fi
+	fi
+done < tmp-$RS.txt
+rm -f tmp-$RS.txt line-$RS.txt
 zip -r "$OUTPUT" "$OUTPUT"
-rm -rf xml
+
 
