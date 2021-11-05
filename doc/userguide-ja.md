@@ -43,96 +43,37 @@ cd slide2mp4/test
 
 ----
 ### 1. Google Slidesを作成
-スライド作成時に、test.xmlのような形式でトークスクリプトをスライドノート内に記載します。  
+スライド作成時に、test.txtのような形式でトークスクリプトをスライドノート内に記載します。[サンプルファイル](https://github.com/automating-presentations/slide2mp4/blob/main/test/xml/1.xml)のように、SSMLタグを直接指定するxml形式のファイルも利用できますが、簡単化のため、こちらの形式の利用を推奨します。  
 なお、1文(1文の終了は句読点の「。」、または、2つ以上連続する改行文字)の中の改行も字幕に反映されるので、区切りたいポイントで改行をしておきます。
 本ガイドでの手順により、1文ごとに1つの字幕が表示されます。1文が長くなり、3行や4行とかになると、スライド下部の文字が見にくくなりますので、スライドの情報量にもよりますが、1文は2行程度に抑えておくと、字幕やスライド下部の文字が見やすくなります。
 ```
-cat << EOF  > test.xml
-<?xml version="1.0" encoding="UTF-8"?>
-<speak version="1.1"> 
-
-<prosody rate="110%">
+cat << EOF  > test.txt
+--- TTS
+--- SPEED 1.1x
 これはタイトルスライドであり、
 これから、サンプルスライドをご紹介します。
 OpenShiftとVirtualizationの読み上げテストもします。
-</prosody>
-
-</speak>
+------
 EOF
 ```
 
-このtest.xmlでは、[機械音声の読み上げ速度](https://docs.aws.amazon.com/ja_jp/polly/latest/dg/voice-speed-vip.html)を110%にしています。  
-これは適宜変更してください。スライド作成後は、PDFとPlain Textファイルをダウンロードします。
-
-また、このようなSSMLタグが記載されたテキストファイルは、[ssmlconvert](https://github.com/automating-presentations/slide2mp4/blob/main/tools/ssmlconvert.sh)を利用して作成することもできます。ssmlconvertはオプションを付けずに実行すると、SSMLのHeaderとFooterをファイルの先頭と最後の行に追加します。複数ページのスライドに対応させる場合、区切りたい場所で任意の文字列を追加しておくと、その文字列の場所ごとにSSMLタグが追加されます。また、「-remove-ssml」オプションで、SSMLのタグを全て削除します。  
+機械音声が読み上げるテキストは、「--- TTS」から始まり、「------」で終わります。  
+このtest.txtでは、「--- SPEED 1.1x」と指定することで、機械音声の読み上げ速度を1.1倍速に設定しています。  
+「--- SPEED」を指定しなかった場合は、読み上げ速度がデフォルトの1倍速になります。  
+また、「--- SPEED」は、下記のように複数指定できます。
 ```
-cat << EOF  > test01.txt
+cat << EOF  > test.txt
+--- TTS
+--- SPEED 1.1x
 これはタイトルスライドであり、
 これから、サンプルスライドをご紹介します。
+--- SPEED 1.25x
 OpenShiftとVirtualizationの読み上げテストもします。
+------
 EOF
 ```
-
-```
-ssmlconvert -i test01.txt -o test01.xml; cat test01.xml
-<?xml version="1.0" encoding="UTF-8"?>
-<speak version="1.1">
-<prosody rate="100%">
-これはタイトルスライドであり、
-これから、サンプルスライドをご紹介します。
-OpenShiftとVirtualizationの読み上げテストもします。
-</prosody>
-</speak>
-```
-
-```
-ssmlconvert -remove-ssml -i test01.xml -o test01-removed-ssml.txt; cat test01-removed-ssml.txt
-これはタイトルスライドであり、
-これから、サンプルスライドをご紹介します。
-OpenShiftとVirtualizationの読み上げテストもします。
-```
-
-```
-cat << EOF  > test02.txt 
-これはタイトルスライドであり、
-
-YOUR_TAGS
-
-これから、サンプルスライドをご紹介します。
-
-YOUR_TAGS
-
-OpenShiftとVirtualizationの読み上げテストもします。
-EOF
-```
-
-```
-ssmlconvert -tag YOUR_TAGS -i test02.txt -o test02.xml; cat test02.xml 
-<?xml version="1.0" encoding="UTF-8"?>
-<speak version="1.1">
-<prosody rate="100%">
-これはタイトルスライドであり、
-
-</prosody>
-</speak>
-
-<?xml version="1.0" encoding="UTF-8"?>
-<speak version="1.1">
-<prosody rate="100%">
-
-これから、サンプルスライドをご紹介します。
-
-</prosody>
-</speak>
-
-<?xml version="1.0" encoding="UTF-8"?>
-<speak version="1.1">
-<prosody rate="100%">
-
-OpenShiftとVirtualizationの読み上げテストもします。
-</prosody>
-</speak>
-```
+このように指定することで、「これはタイトルスライド」から「をご紹介します。」までが1.1倍速、「OpenShiftとVirtualizationの読み上げテストもします。」が1.25倍速で読み上げられます。  
+スライド作成後は、PDFとPlain Textファイルをダウンロードします。
 
 英字の製品名などで機械音声でうまく読み上げられないものについては、予めlexiconを利用して発音のエイリアスを作っておきます。
 ↓ では、OpenShiftとVirtualizationの発音エイリアスを登録しています。
