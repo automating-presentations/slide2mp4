@@ -195,8 +195,8 @@ echo "Format checking of input files has been completed."
 mkdir -p json mp3 mp4 png srt xml
 
 
-sed -e 's| *```TTS|<?xml version="1.0" encoding="UTF-8"?>\n<speak version="1.1">|g' \
-        -e 's| *```|</speak>|g' "$TXT_FILE" |\
+sed -e 's| *---TTS|<?xml version="1.0" encoding="UTF-8"?>\n<speak version="1.1">|g' \
+        -e 's| *------|</speak>|g' "$TXT_FILE" |\
 	awk '/<\?xml/,/<\/speak>/' |\
 	sed -e 's|#.*||g' > tmp-$RS.txt
 rm -f xml/*
