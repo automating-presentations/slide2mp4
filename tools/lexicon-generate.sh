@@ -47,10 +47,10 @@ fi
 
 
 cat "$DIC_TXT" |grep -v '^#' |grep -v "^\s*$" |sed '/^$/d' > tmp-DIC_TXT-$RS.txt
-sed -e 's|^ *--- TTS$|<?xml|g' -e 's|^ *---$|</speak>|g' "$TALK_SCRIPT_TXT" |\
+sed -e 's|^ *~~~TTS$|<?xml|g' -e 's|^ *~~~$|</speak>|g' "$TALK_SCRIPT_TXT" |\
         awk '/<\?xml/,/<\/speak>/' |\
         sed -e 's|#.*||g' |\
-	grep -v "^\s*--- SPEED" > tmp-TALK_SCRIPT_TXT-$RS.txt
+	grep -v "^\s*~~~SPEED" > tmp-TALK_SCRIPT_TXT-$RS.txt
 
 
 echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" > "$LEXICON_FILE"

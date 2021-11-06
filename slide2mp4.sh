@@ -195,8 +195,8 @@ echo "Format checking of input files has been completed."
 mkdir -p json mp3 mp4 png srt xml
 
 
-sed -e 's|^ *--- TTS$|<?xml version="1.0" encoding="UTF-8"?>\n<speak version="1.1">|g' \
-        -e 's|^ *---$|</speak>|g' "$TXT_FILE" |\
+sed -e 's|^ *~~~TTS$|<?xml version="1.0" encoding="UTF-8"?>\n<speak version="1.1">|g' \
+        -e 's|^ *~~~$|</speak>|g' "$TXT_FILE" |\
 	awk '/<\?xml/,/<\/speak>/' |\
 	sed -e 's|#.*||g' > tmp-$RS.txt
 rm -f xml/*
@@ -209,7 +209,7 @@ fi
 
 for i in $PAGES
 do
-	grep "^\s*--- SPEED" xml/$i.xml |sed -e 's|--- SPEED||' |sed -e 's|x||' |awk '{print $1}' > tmp-$RS.txt
+	grep "^\s*~~~SPEED" xml/$i.xml |sed -e 's|~~~SPEED||' |sed -e 's|x||' |awk '{print $1}' > tmp-$RS.txt
  	if [ -s tmp-$RS.txt ]; then
 		speed_count=1
 
@@ -217,10 +217,10 @@ do
         	do
 			speed_num=${line}; convert_speed_num=`echo "scale=3; $speed_num * 100" |bc |awk '{print int($1)}'`
 			if [ $speed_count -eq 1 ]; then
-				sed -e "s|--- SPEED "$speed_num"x|<prosody rate=\"$convert_speed_num%\">|" xml/$i.xml > tmp-$RS.xml
+				sed -e "s|~~~SPEED "$speed_num"x|<prosody rate=\"$convert_speed_num%\">|" xml/$i.xml > tmp-$RS.xml
 				speed_count=2
 			else
-				sed -e "1,/--- SPEED "$speed_num"x/ s|--- SPEED "$speed_num"x|</prosody>\n<prosody rate=\"$convert_speed_num%\">|" xml/$i.xml > tmp-$RS.xml
+				sed -e "1,/~~~SPEED "$speed_num"x/ s|~~~SPEED "$speed_num"x|</prosody>\n<prosody rate=\"$convert_speed_num%\">|" xml/$i.xml > tmp-$RS.xml
 			fi
 			mv tmp-$RS.xml xml/$i.xml
         	done < tmp-$RS.txt

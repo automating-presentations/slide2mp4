@@ -4,25 +4,25 @@ Sample Slide Title
 Sample slide
 
 
---- TTS
---- SPEED 1.1x
+~~~TTS
+~~~SPEED 1.1x
 これはタイトルスライドであり、
 これから、サンプルスライドをご紹介します。
 コメントアウトのテストをします。# "#"以降の文字はコメントであり、無視されます。 
 OpenShiftとVirtualizationの読み上げテストもします。
----
+~~~
 
 
 テストスライド  Test Slide
 これはサンプルテキストです。
 This is Sample Text.
 
---- TTS
---- SPEED 1.1x
+~~~TTS
+~~~SPEED 1.1x
 これはテストスライドです。
 サンプルテキストが読み上げられます。
 サンプルテキストの読み上げを終了します。
----
+~~~
 
 
 
@@ -32,9 +32,9 @@ This is Sample Text.
 最終スライドです
 This is final slide.
 
---- TTS
---- SPEED 1.1x
+~~~TTS
+~~~SPEED 1.1x
 これは最終スライドです。
 スライドの紹介を終わります。
----
+~~~
 

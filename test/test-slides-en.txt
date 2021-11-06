@@ -3,25 +3,25 @@ Sample Slide Title
 サンプルスライド
 Sample slide
 
---- TTS
---- SPEED 1.1x
+~~~TTS
+~~~SPEED 1.1x
 This is the title slide.
 I will now show you some sample slides.
 I will test the comment out. # Any string after "#" will be ignored.
 I will also test reading out OpenShift and Virtualization.
----
+~~~
 
 
 テストスライド  Test Slide
 これはサンプルテキストです。
 This is Sample Text.
 
---- TTS
---- SPEED 1.1x
+~~~TTS
+~~~SPEED 1.1x
 This is the test slide.
 The sample text will be read out.
 The reading out of the sample text will end.
----
+~~~
 
 
 
@@ -31,9 +31,9 @@ The reading out of the sample text will end.
 最終スライドです
 This is final slide.
 
---- TTS
---- SPEED 1.1x
+~~~TTS
+~~~SPEED 1.1x
 This is the final slide.
 This is the end of the sample slides.
----
+~~~
 
