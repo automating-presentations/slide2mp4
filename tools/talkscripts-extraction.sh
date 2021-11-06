@@ -48,16 +48,19 @@ if [ $# -ne 2 ]; then
 fi
 
 
-awk '/\s*--- TTS/,/\s*------/' "$TXT_FILE" |\
-	grep -v "\s*--- SPEED" |\
-	sed -e 's|#.*||g' > tmp-$RS.txt
+sed -e "s|^ *--- TTS$|TTS_BEGIN_"$RS"|g" -e "s|^ *---$|TTS_END_"$RS"|g" "$TXT_FILE" |\
+	awk '/TTS_BEGIN_'$RS'/,/TTS_END_'$RS'/' |\
+	sed -e 's|#.*||g' |\
+	grep -v "\s*--- SPEED" > tmp-$RS.txt
+
+
 rm -rf "$OUTPUT" "$OUTPUT".zip
 mkdir -p "$OUTPUT"; i=0
 while read line
 do
 	echo ${line} > line-$RS.txt;
-	check_tts_begin=$(grep "^\s*--- TTS" line-$RS.txt 2> /dev/null)
-	check_tts_end=$(grep "^\s*------" line-$RS.txt 2> /dev/null)
+	check_tts_begin=$(grep "TTS_BEGIN_"$RS"" line-$RS.txt 2> /dev/null)
+	check_tts_end=$(grep "TTS_END_"$RS"" line-$RS.txt 2> /dev/null)
 	if [ -n "$check_tts_begin" ]; then
 		i=$(($i+1))
 		echo "$PRE_MESSAGE" > "$OUTPUT"/page$i.txt
