@@ -15,7 +15,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXX
 EOF
 ```
 ```
-git clone https://github.com/automating-presentations/slide2mp4
+git clone --depth 1 https://github.com/automating-presentations/slide2mp4
 chmod u+x slide2mp4/slide2mp4.sh
 cd slide2mp4/test
 ../slide2mp4.sh test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4
