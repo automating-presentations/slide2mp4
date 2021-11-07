@@ -97,6 +97,7 @@ cd slide2mp4/test
 ../slide2mp4.sh -aws -aws-vid Matthew -aws-neural test.pdf test.txt lexicon.pls output.mp4
 ```
 
+----
 ### Related tools for slide2mp4
 
 You can create a lexicon file automatically. Once you've created a dictionary file, "test-dic.txt" in the following example, you can create a lexicon file, named "test-sample-lexicon.pls" with the following command. If you would like to use the existing dictionary files, please refer to [slide2mp4-dictionary](https://github.com/automating-presentations/slide2mp4-dictionary).
