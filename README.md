@@ -14,7 +14,7 @@ slide2mp4 uses Azure Speech (default) or Amazon Polly, Text-to-Speech (TTS) serv
 ----
 ## Requirements
 
- - [Azure Speech](https://azure.microsoft.com/en-us/services/cognitive-services/text-to-speech/#overview) service resource (paid tier) with your Azure account (please refer to [this document](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/overview))
+ - [Azure Speech](https://azure.microsoft.com/en-us/services/cognitive-services/text-to-speech/#overview) service resource (paid tier) with your Azure account (please refer to [this document](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/overview#create-the-azure-resource))
    - Your Azure Speech service subscription key
    - Your Azure Speech service region
  - [AWS CLI version 2](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) (version 1 has not been tested.)
@@ -52,7 +52,9 @@ mkdir -p ~/.azure; cat << EOF  > ~/.azure/tts-subs-keyfile
 # Azure Speech subscription key
 XXXXXXXXXXXXXXXXXXXXXXXXX
 EOF
-git clone https://github.com/automating-presentations/slide2mp4
+```
+```
+git clone --depth 1 https://github.com/automating-presentations/slide2mp4
 chmod u+x slide2mp4/slide2mp4.sh slide2mp4/lib/*.sh slide2mp4/tools/*.sh
 cd slide2mp4/test
 ../slide2mp4.sh test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4
