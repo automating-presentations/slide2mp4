@@ -19,7 +19,6 @@
 # The following variables are to be modified by the user as appropriate.
 DENSITY="600"
 GEOMETRY="1280x720"
-VOICE_ID="Mizuki"
 FONT_NAME="NotoSansCJKjp-Regular"
 FONT_SIZE="14"
 FPS="25"
@@ -28,6 +27,8 @@ AZURE_REGION="japaneast"
 AZURE_TTS_VOICE_ID="ja-JP-NanamiNeural"
 AZURE_TTS_VOICE_PITCH=0
 AZURE_TTS_SUBS_KEY_FILENAME=~/.azure/tts-subs-keyfile
+# Amazon Polly (TTS) variables
+AWS_TTS_VOICE_ID="Mizuki"
 
 
 # rm -rf json mp3 mp4 png srt xml
@@ -37,25 +38,28 @@ print_usage ()
 {
 	echo "Description:"
 	echo "	$(basename $0) is a conversion tool, PDF slides to MP4 with audio and subtitles."
-	echo "	$(basename $0) uses Amazon Polly (default) or Azure Speech, Text-to-Speech (TTS) service."
-	echo "	$(basename $0) requires the following commands, aws polly, aws s3, ffmpeg, ffprobe, gm convert, python3, xmllint."
+	echo "	$(basename $0) uses Azure Speech (default) or Amazon Polly, Text-to-Speech (TTS) service."
+	echo "	$(basename $0) requires the following commands, ffmpeg, ffprobe, gm convert, python3, xmllint, aws polly (option), aws s3 (option)."
 	echo "Usage:"
 	echo "	$(basename $0) [option] PDF_FILE TXT_FILE LEXICON_FILE/URL OUTPUT_MP4 ["page_num1 page_num2..."]"
 	echo "Options:"
 	echo "	-h, --help			print this message."
 	echo "	-geo, --geometry		specify the geometry of output mp4 files. (default geometry is \"1280x720\")"
 	echo "	-le, --ffmpeg-loglevel-error	ffmpeg loglevel is \"error\". (default level is \"info\")"
-	echo "	-neural				use Amazon Polly Neural format, if possible."
 	echo "	-npc, --no-pdf-convert		don't convert PDF to png."
 	echo "	-ns, --no-subtitles		convert without subtitles."
-	echo "	-vid, --voice-id		specify Amazon Polly voice ID. (default voice ID is \"Mizuki\", Japanese Female)"
-	echo "	-azure				use Azure Speech."
+	echo ""
+	echo "	-azure				use Azure Speech (default)."
 	echo "	-azure-region			specify Azure Region for using Azure Speech. (default Region is \"japaneast\")"
 	echo "	-azure-vid, --azure-voice-id	specify Azure Speech voice name. (default voice name is \"ja-JP-NanamiNeural\")"
 	echo "	-azure-pitch			specify Azure Speech voice pitch. (default voice pitch is \"0\", meaning 0%)"
 	echo "	-azure-tts-key			specify subscription key file path for Azure Speech. (default file path is \"~/.azure/tts-subs-keyfile\")"
 	echo ""
-	echo "Example1: The following command creates one mp4 file with audio and subtitles, named \"test-output.mp4\"."
+	echo "	-aws				use Amazon Polly."
+	echo "	-aws-vid, --aws-voice-id	specify Amazon Polly voice ID. (default voice ID is \"Mizuki\", Japanese Female)"
+	echo "	-aws-neural			use Amazon Polly Neural format, if possible."
+	echo ""
+	echo "Example1: The following command uses Azure Speech to create one mp4 file with audio and subtitles, named \"test-output.mp4\"." The subscription key to use Azure Speech must be found in \"~/azure/.tts-subs-keyfile\". When you run this command, \"test-lexicon.pls\" will be temporarily uploaded to Amazon S3.
 	echo "	$(basename $0) test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4"
 	echo ""
 	echo "Example2: If you have modified some of the slides, e.g. pages 2 and 3, you can apply the patch to \"test-output.mp4\" with the following command."
@@ -67,14 +71,15 @@ print_usage ()
 	echo "Example4: No PDF converting option is also available, e.g. in the case of changing the talk script on pages 1 and 3."
 	echo "	$(basename $0) -npc -ns test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 \"1 3\""
 	echo ""
-	echo "Example5: Specify the Neural format, the geometry of output mp4 files (1080p) and Amazon Polly voice ID, Matthew (Male, English, US). Note that the Neural format only works with some voice IDs."
-	echo "	$(basename $0) -geo 1920x1080 -vid Matthew -neural test.pdf test.txt lexicon.pls output.mp4"
+	echo "Example5: The following command specifies the geometry of output mp4 files (1080p), the Azure Region, voice name/pitch, subscription keyfile path to use Azure Speech. When using Azure Speech, you can specify public (non-private) URL where you can refer to \"test.pls\". If you specify public URL, Amazon S3 is not used in slide2mp4."
+	echo "	$(basename $0) -geo 1920x1080 -azure -azure-region centralus -azure-vid en-US-JennyNeural -azure-pitch -6 -azure-tts-key test-azure-keyfile test.pdf test.txt https://public_domain/test.pls output.mp4"
 	echo ""
-	echo "Example6: The following command specifies the use of Azure Speech. The subscription key to use Azure Speech must be found in \"~/azure/.tts-subs-keyfile\". When you run this command, \"test-lexicon.pls\" will be temporarily uploaded to Amazon S3."
-	echo "	$(basename $0) -azure test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4"
+	echo "Example6: The following command uses Amazon Polly to create one mp4 file with audio and subtitles, named \"test-output.mp4\"."
+	echo "	$(basename $0) -aws test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4"
 	echo ""
-	echo "Example7: The following command specifies the Azure Region, voice name/pitch, subscription keyfile path to use Azure Speech. When using Azure Speech, you can specify public (non-private) URL where you can refer to \"test.pls\". If you specify public URL, Amazon S3 is not used in slide2mp4."
-	echo "	$(basename $0) -azure -azure-region centralus -azure-vid en-US-JennyNeural -azure-pitch -6 -azure-tts-key test-azure-keyfile test.pdf test.txt https://public_domain/test.pls output.mp4"
+	echo "Example7: Specify the Amazon Polly Neural format, voice ID, Matthew (Male, English, US). Note that the Neural format only works with some voice IDs."
+	echo "	$(basename $0) -aws -aws-vid Matthew -aws-neural test.pdf test.txt lexicon.pls output.mp4"
+	echo ""
 	exit
 }
 
@@ -83,8 +88,9 @@ print_usage ()
 RS=$(cat /dev/urandom |base64 |tr -cd "a-z0-9" |fold -w 16 |head -n 1)
 
 
-NS_FLAG=0; NO_CONVERT_FLAG=0; NEURAL_FLAG=0
-AWS_FLAG=1; AZURE_FLAG=0
+NS_FLAG=0; NO_CONVERT_FLAG=0;
+AZURE_FLAG=1; AWS_FLAG=0
+AWS_TTS_NEURAL_FLAG=0
 FFMPEG_LOG_LEVEL="-loglevel info"
 i=0; arg_num=$#
 while [ $# -gt 0 ]
@@ -99,12 +105,9 @@ do
 		FFMPEG_LOG_LEVEL="-loglevel error"; shift
 	elif [ "$1" == "-geo" -o "$1" == "--geometry" ]; then
 		shift; GEOMETRY="$1"; shift
-	elif [ "$1" == "-vid" -o "$1" == "--voice-id" ]; then
-		shift; VOICE_ID="$1"; shift
-	elif [ "$1" == "-neural" ]; then
-		NEURAL_FLAG=1; shift
+
 	elif [ "$1" == "-azure" ]; then
-		AWS_FLAG=0; AZURE_FLAG=1; shift; 
+		AZURE_FLAG=1; AWS_FLAG=0; shift; 
 	elif [ "$1" == "-azure-region" ]; then
 		shift; AZURE_REGION="$1"; shift
 	elif [ "$1" == "-azure-vid" -o "$1" == "--azure-voice-id" ]; then
@@ -113,6 +116,14 @@ do
 		shift; AZURE_TTS_VOICE_PITCH="$1"; shift
 	elif [ "$1" == "-azure-tts-key" ]; then
 		shift; AZURE_TTS_SUBS_KEY_FILENAME="$1"; shift
+
+	elif [ "$1" == "-aws" ]; then
+		AZURE_FLAG=0; AWS_FLAG=1; shift; 
+	elif [ "$1" == "-aws-vid" -o "$1" == "--aws-voice-id" ]; then
+		shift; AWS_TTS_VOICE_ID="$1"; shift
+	elif [ "$1" == "-aws-neural" ]; then
+		AWS_TTS_NEURAL_FLAG=1; shift
+
 	else
 		i=$(($i+1)); arg[i]="$1"; shift
 	fi
@@ -253,7 +264,7 @@ if [ $AWS_FLAG -eq 1 ]; then
 	fi
 
 	ENGINE=""
-	if [ $NEURAL_FLAG -eq 1 ]; then
+	if [ $AWS_TTS_NEURAL_FLAG -eq 1 ]; then
 		ENGINE="--engine neural"
 	fi
 
@@ -263,7 +274,7 @@ if [ $AWS_FLAG -eq 1 ]; then
 		--lexicon-names $LEXICON_NAME \
 		--text-type ssml \
 		--output-format mp3 \
-		--voice-id $VOICE_ID \
+		--voice-id $AWS_TTS_VOICE_ID \
 		--text file://xml/$i.xml \
 		mp3/$i.mp3 1> /dev/null 2> tmp-$RS.txt;
 
@@ -282,7 +293,7 @@ if [ $AWS_FLAG -eq 1 ]; then
 			--lexicon-names $LEXICON_NAME \
 			--text-type ssml \
 			--output-format json \
-			--voice-id $VOICE_ID \
+			--voice-id $AWS_TTS_VOICE_ID \
 			--speech-mark-types='["sentence"]' \
 			--text file://xml/$i.xml \
 			json/$i.json &> /dev/null;
