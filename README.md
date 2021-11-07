@@ -1,7 +1,7 @@
 # slide2mp4
 
 slide2mp4 is a conversion tool, PDF slides to MP4 with audio and subtitles.   
-slide2mp4 uses Amazon Polly (default) or Azure Speech, Text-to-Speech (TTS) service.
+slide2mp4 uses Azure Speech (default) or Amazon Polly, Text-to-Speech (TTS) service.
 
 ----
 ## Examples
@@ -14,6 +14,9 @@ slide2mp4 uses Amazon Polly (default) or Azure Speech, Text-to-Speech (TTS) serv
 ----
 ## Requirements
 
+ - [Azure Speech](https://azure.microsoft.com/en-us/services/cognitive-services/text-to-speech/#overview) service resource (paid tier) with your Azure account (please refer to [this document](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/overview))
+   - Your Azure Speech service subscription key
+   - Your Azure Speech service region
  - [AWS CLI version 2](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) (version 1 has not been tested.)
  - Permission to run [Amazon Polly](https://docs.aws.amazon.com/polly/latest/dg/what-is.html) service with AWS CLI
  - Permission to run [Amazon S3](https://aws.amazon.com/s3/) service with AWS CLI (Optional)
@@ -24,12 +27,7 @@ slide2mp4 uses Amazon Polly (default) or Azure Speech, Text-to-Speech (TTS) serv
  - [Python 3](https://www.python.org/)
  - [xmllint](http://xmlsoft.org/xmllint.html)
 
-When using Azure Speech, the following values are required. For more information, please refer to [this document](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/overview). 
-
- - Your Azure Speech service subscription key
- - Your Azure Speech service region
-
-Note: If you choose a free (F0) pricing tier, please be aware that you may not be able to complete the execution of slide2mp4 as Azure Speech will prevent you from getting more than a certain number of audio (mp3) files.
+Note: If you choose a free (F0) pricing tier for Azure Speech, please be aware that you may not be able to complete the execution of slide2mp4 as Azure Speech will prevent you from getting more than a certain number of audio (mp3) files.
 
 When using Linux or macOS(including M1 Mac), you can install AWS CLI, FFmpeg, Ghostscript, GraphicsMagick, with [Homebrew](https://brew.sh/).
 
