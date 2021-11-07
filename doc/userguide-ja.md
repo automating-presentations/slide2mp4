@@ -13,6 +13,8 @@ mkdir -p ~/.azure; cat << EOF  > ~/.azure/tts-subs-keyfile
 # Azure Speech subscription key
 XXXXXXXXXXXXXXXXXXXXXXXXX
 EOF
+```
+```
 git clone https://github.com/automating-presentations/slide2mp4
 chmod u+x slide2mp4/slide2mp4.sh
 cd slide2mp4/test
