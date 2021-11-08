@@ -25,10 +25,10 @@ print_usage ()
 	echo "	-h, --help		print this message."
         echo "	-lang <language code>	specify the language code of a lexicon file. (default language code is \"ja-JP\")"
 	echo ""
-	echo "Example1: The following command creates a lexicon file \"test-lexicon.pls\" in Japanese, only the words in \"test-dic.txt\"."
+	echo "Example1: The following command creates a lexicon file \"test-lexicon.pls\" with the language code \"ja-JP\", only the words in \"test-dic.txt\"."
         echo "  $(basename $0) test-dic.txt test-my-talk-scripts.txt test-lexicon.pls"
         echo ""
-        echo "Example2: The following command creates a lexicon file in English."
+        echo "Example2: The following command creates a lexicon file with the language code \"en-US\"."
         echo "  $(basename $0) -lang en-US test-dic-en.txt test-my-talk-scripts-en.txt test-lexicon-en.pls"
 	echo ""
 	exit
