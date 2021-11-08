@@ -100,10 +100,10 @@ cd slide2mp4/test
 ----
 ### Related tools for slide2mp4
 
-You can create a lexicon file automatically. Once you've created a dictionary file, "test-dic.txt" in the following example, you can create a lexicon file, named "test-sample-lexicon.pls" with the following command. If you would like to use the existing dictionary files, please refer to [slide2mp4-dictionary](https://github.com/automating-presentations/slide2mp4-dictionary).
+You can create a lexicon file automatically. Once you've created a dictionary file in Japanese, "test-dic.txt" in the following example, you can create a lexicon file in Japanese, named "test-sample-lexicon.pls" with the following command. If you would like to use the existing dictionary files, please refer to [slide2mp4-dictionary](https://github.com/automating-presentations/slide2mp4-dictionary).
 ```
 cd slide2mp4/test
-../tools/lexicon-generate.sh test-dic.txt test-slides.txt test-sample-lexicon.pls
+../tools/lexicon-generate.sh -lang ja-JP test-dic.txt test-slides.txt test-sample-lexicon.pls
 ```
 
 You can convert the existing lexicon file to a dictionary file, or extend the existing dictionary file with the following command. Please note that if the word and pronounciation in your lexicon file contain spaces and tabs, the spaces and tabs will be removed. 
