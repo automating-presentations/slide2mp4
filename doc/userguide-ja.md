@@ -120,7 +120,7 @@ OpenShift	オープンシフト
 Virtualization	バーチャライゼーション
 openshift	オープンシフト
 EOF
-lexicon-generate.sh test-dic.txt test-slides.txt test-sample-lexicon.pls
+lexicon-generate.sh -lang ja-JP test-dic.txt test-slides.txt test-sample-lexicon.pls
 ```
 
 また、[lexicon2dic.sh](https://github.com/automating-presentations/slide2mp4/blob/main/tools/lexicon2dic.sh)を利用して、既存のlexiconを上記フォーマットに沿った辞書ファイルに変換できます。この時、lexiconファイルで登録している単語や発音の中に空白やタブが含まれている場合、その空白やタブは削除されますので注意してください。
