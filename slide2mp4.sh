@@ -45,7 +45,7 @@ print_usage ()
 	echo "Options:"
 	echo "	-h, --help			print this message."
 	echo "	-geo, --geometry		specify the geometry of output mp4 files. (default geometry is \"1280x720\")"
-	echo "	-le, --ffmpeg-loglevel-error	ffmpeg loglevel is \"error\". (default level is \"info\")"
+	echo "	-fle, --ffmpeg-loglevel-error	ffmpeg loglevel is \"error\". (default level is \"info\")"
 	echo "	-npc, --no-pdf-convert		don't convert PDF to png."
 	echo "	-ns, --no-subtitles		convert without subtitles."
 	echo ""
@@ -101,7 +101,7 @@ do
 		NS_FLAG=1; shift
 	elif [ "$1" == "-npc" -o "$1" == "--no-pdf-convert" ]; then
 		NO_CONVERT_FLAG=1; shift
-	elif [ "$1" == "-le" -o "$1" == "--ffmpeg-loglevel-error" ]; then
+	elif [ "$1" == "-fle" -o "$1" == "--ffmpeg-loglevel-error" ]; then
 		FFMPEG_LOG_LEVEL="-loglevel error"; shift
 	elif [ "$1" == "-geo" -o "$1" == "--geometry" ]; then
 		shift; GEOMETRY="$1"; shift
