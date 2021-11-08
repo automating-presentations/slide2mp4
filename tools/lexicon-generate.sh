@@ -15,17 +15,22 @@
 # limitations under the License.
 
 
-DIC_TXT="$1"
-TALK_SCRIPT_TXT="$2"
-LEXICON_FILE="$3"
-
-
 print_usage ()
 {
 	echo "Description:"
-	echo "	$(basename $0) creates a lexicon file."
+	echo "	$(basename $0) creates a lexicon file only the words in the dictionary file."
 	echo "Usage:"
-	echo "	$(basename $0) DIC_TXT TALK_SCRIPT_TXT LEXICON_FILE"
+	echo "	$(basename $0) [option] DIC_TXT TALK_SCRIPT_TXT LEXICON_FILE"
+	echo "Options:"
+	echo "	-h, --help		print this message."
+        echo "	-lang <language code>	specify the language code of a lexicon file. (default language code is \"ja-JP\")"
+	echo ""
+	echo "Example1: The following command creates a lexicon file \"test-lexicon.pls\" in Japanese, only the words in \"test-dic.txt\"."
+        echo "  $(basename $0) test-dic.txt test-my-talk-scripts.txt test-lexicon.pls"
+        echo ""
+        echo "Example2: The following command creates a lexicon file in English."
+        echo "  $(basename $0) -lang en-US test-dic-en.txt test-my-talk-scripts-en.txt test-lexicon-en.pls"
+	echo ""
 	exit
 }
 
@@ -39,11 +44,26 @@ if [ $# -ne 0 ]; then
 		print_usage
 	fi
 fi
-if [ $# -ne 3 ]; then
-	echo "Too few or many arguments. Please check whether the number of arguments is 3."
+if [ $# -ne 3  -a  $# -ne 5 ]; then
+	echo "Too few or many arguments. Please check whether the number of arguments is 3 or 5."
 	echo "Please check '$(basename $0) -h' or '$(basename $0) --help'."
 	exit
 fi
+
+
+XML_LANG="ja-JP"
+i=0
+while [ $# -gt 0 ]
+do
+        if [ "$1" == "-lang"  ]; then
+                shift; XML_LANG="$1"; shift
+        else
+                i=$(($i+1)); arg[i]="$1"; shift
+        fi
+done
+DIC_TXT="${arg[1]}"
+TALK_SCRIPT_TXT="${arg[2]}"
+LEXICON_FILE="${arg[3]}"
 
 
 cat "$DIC_TXT" |grep -v '^#' |grep -v "^\s*$" |sed '/^$/d' > tmp-DIC_TXT-$RS.txt
@@ -59,7 +79,7 @@ echo "      xmlns=\"http://www.w3.org/2005/01/pronunciation-lexicon\"" >> "$LEXI
 echo "      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" >> "$LEXICON_FILE"
 echo "      xsi:schemaLocation=\"http://www.w3.org/2005/01/pronunciation-lexicon" >> "$LEXICON_FILE"
 echo "        http://www.w3.org/TR/2007/CR-pronunciation-lexicon-20071212/pls.xsd\"" >> "$LEXICON_FILE"
-echo "      alphabet=\"ipa\" xml:lang=\"ja-JP\">" >> "$LEXICON_FILE"
+echo "      alphabet=\"ipa\" xml:lang=\"$XML_LANG\">" >> "$LEXICON_FILE"
 echo >> "$LEXICON_FILE"
 
 
