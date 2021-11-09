@@ -83,6 +83,7 @@ EOF
 
 「~~~BREAK」で一時停止を指定して、プレゼンの間を取ることに利用できます。一時停止できる時間の範囲は、利用するTTSサービス([Azure Speech](https://docs.microsoft.com/ja-jp/azure/cognitive-services/speech-service/speech-synthesis-markup?tabs=csharp#add-or-remove-a-breakpause)や[Amazon Polly](https://docs.aws.amazon.com/ja_jp/polly/latest/dg/supportedtags.html))の仕様に準拠します。
 ```
+cat << EOF  > test.txt
 ~~~TTS
 これはタイトルスライドであり、
 ~~~BREAK 1s # 1秒の一時停止
@@ -90,6 +91,7 @@ EOF
 ~~~BREAK 1000ms # 1000ミリ秒の一時停止
 OpenShiftとVirtualizationの読み上げテストもします。
 ~~~
+EOF
 ```
 
 スライド作成後は、PDFとPlain Textファイルをダウンロードします。
