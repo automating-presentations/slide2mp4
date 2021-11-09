@@ -80,6 +80,18 @@ OpenShiftとVirtualizationの読み上げテストもします。
 ~~~
 EOF
 ```
+
+「~~~BREAK」で一時停止を指定して、プレゼンの間を取ることに利用できます。一時停止できる時間の範囲は、利用するTTSサービス([Azure Speech](https://docs.microsoft.com/ja-jp/azure/cognitive-services/speech-service/speech-synthesis-markup?tabs=csharp#add-or-remove-a-breakpause)や[Amazon Polly](https://docs.aws.amazon.com/ja_jp/polly/latest/dg/supportedtags.html))の仕様に準拠します。
+```
+~~~TTS
+これはタイトルスライドであり、
+~~~BREAK 1s # 1秒の一時停止
+これから、サンプルスライドをご紹介します。
+~~~BREAK 1000ms # 1000ミリ秒の一時停止
+OpenShiftとVirtualizationの読み上げテストもします。
+~~~
+```
+
 スライド作成後は、PDFとPlain Textファイルをダウンロードします。
 
 英字の製品名などで機械音声でうまく読み上げられないものについては、予めlexiconを利用して発音のエイリアスを作っておきます。
