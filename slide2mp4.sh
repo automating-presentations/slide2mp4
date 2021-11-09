@@ -220,6 +220,10 @@ fi
 
 for i in $PAGES
 do
+
+	sed -e 's|^ *~~~BREAK|<tmptime=\"|' xml/$i.xml |sed -e 's| ||' |sed -e 's|\t||' |sed -e 's|$|\" />|' |sed -e 's|tmptime|break time|' > tmp-$RS.xml
+	mv tmp-$RS.xml xml/$i.xml
+
 	grep "^\s*~~~SPEED" xml/$i.xml |sed -e 's|~~~SPEED||' |sed -e 's|x||' |awk '{print $1}' > tmp-$RS.txt
  	if [ -s tmp-$RS.txt ]; then
 		speed_count=1
