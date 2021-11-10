@@ -27,7 +27,7 @@ print_usage ()
 	echo "	and a compressed zip file of that directory."
 	echo "Usage:"
 	echo "	$(basename $0) TXT_FILE OUTPUT_DIRECTORY_AND_ZIP_NAME"
-	echo "	This \"TXT_FILE\" is the same text file that will be input to slide2mp4."
+	echo "	# This \"TXT_FILE\" is the same text file that will be input to slide2mp4."
 	exit
 }
 
