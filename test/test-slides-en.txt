@@ -4,7 +4,6 @@ Sample Slide Title
 Sample slide
 
 ~~~TTS
-~~~SPEED 1.1x
 This is the title slide.
 I will now show you some sample slides.
 I will test the comment out. # Any string after "#" will be ignored.
@@ -17,7 +16,7 @@ I will also test reading out OpenShift and Virtualization.
 This is Sample Text.
 
 ~~~TTS
-~~~SPEED 1.1x
+~~~SPEED 1x
 This is the test slide.
 The sample text will be read out.
 The reading out of the sample text will end.
@@ -32,8 +31,8 @@ The reading out of the sample text will end.
 This is final slide.
 
 ~~~TTS
-~~~SPEED 1.1x
 This is the final slide.
+~~~BREAK 3s
 This is the end of the sample slides.
 ~~~
 
