@@ -9,7 +9,7 @@ slide2mp4 uses Azure Speech (default) or Amazon Polly, Text-to-Speech (TTS) serv
 
 ----
 ## Demo
-<img src="test/slide2mp4-demo.gif" width="724" height="390">
+<img src="test/slide2mp4-demo.gif" width="640" height="360">
 
 ----
 ## Requirements
