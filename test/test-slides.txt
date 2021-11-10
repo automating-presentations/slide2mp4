@@ -17,7 +17,7 @@ OpenShiftとVirtualizationの読み上げテストもします。
 This is Sample Text.
 
 ~~~TTS
-~~~SPEED 1x
+~~~SPEED 1.1x
 これはテストスライドです。
 サンプルテキストが読み上げられます。
 サンプルテキストの読み上げを終了します。

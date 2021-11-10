@@ -16,7 +16,7 @@ I will also test reading out OpenShift and Virtualization.
 This is Sample Text.
 
 ~~~TTS
-~~~SPEED 1x
+~~~SPEED 1.1x
 This is the test slide.
 The sample text will be read out.
 The reading out of the sample text will end.
