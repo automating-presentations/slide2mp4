@@ -60,11 +60,11 @@ cd slide2mp4/test
 ../slide2mp4.sh test-slides.pdf test-slides.txt test-output.mp4
 ```
 
-If you have modified some of the slides, e.g. pages 2 and 3, you can apply the patch to "test-output.mp4" with the following command. When you run this command with Azure Speech (not Amazon Polly), "test-lexicon.pls" will be temporarily uploaded to Amazon S3.
+If you have modified some of the slides, e.g. pages 1 and 3, you can apply the patch to "test-output.mp4" with the following command. When you run this command with Azure Speech (not Amazon Polly), "test-lexicon.pls" will be temporarily uploaded to Amazon S3.
 
 ```
 cd slide2mp4/test
-../slide2mp4.sh -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4 "2 3"
+../slide2mp4.sh -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4 "1 3"
 ```
 
 No subtitles option is also available, e.g. mp4 files on pages 1 and 3 are without subtitles.
