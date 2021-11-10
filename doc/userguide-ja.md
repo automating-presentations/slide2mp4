@@ -331,7 +331,7 @@ for i in {1..3}; do ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -vcodec libx26
 
 ```
 ffmpeg -encoders |grep -i h264; : '← h264 (mp4) で利用できるencoderを確認'
-…<snip>...
+...<snip>...
  V..... libx264              libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (codec h264)
  V..... libx264rgb           libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 RGB (codec h264)
  V..... h264_videotoolbox    VideoToolbox H.264 Encoder (codec h264)   
