@@ -51,7 +51,8 @@ fi
 sed -e "s|^ *~~~TTS$|TTS_BEGIN_"$RS"|g" -e "s|^ *~~~$|TTS_END_"$RS"|g" "$TXT_FILE" |\
 	awk '/TTS_BEGIN_'$RS'/,/TTS_END_'$RS'/' |\
 	sed -e 's|#.*||g' |\
-	grep -v "\s*~~~SPEED" > tmp-$RS.txt
+	grep -v "\s*~~~SPEED" |\
+	grep -v "\s*~~~BREAK" > tmp-$RS.txt
 
 
 rm -rf "$OUTPUT" "$OUTPUT".zip

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: slide2mp4.sh [option] PDF_FILE TXT_FILE LEXICON_FILE/URL OUTPUT_MP4 ["page_num1 page_num2..."]
+# Usage: slide2mp4.sh [option] PDF_FILE TXT_FILE OUTPUT_MP4 ["page_num1 page_num2..."]
 #
 # Copyright (C) 2021 Hirofumi Kojima
 #
@@ -41,13 +41,14 @@ print_usage ()
 	echo "	$(basename $0) uses Azure Speech (default) or Amazon Polly, Text-to-Speech (TTS) service."
 	echo "	$(basename $0) requires the following commands, ffmpeg, ffprobe, gm convert, python3, xmllint, aws polly (option), aws s3 (option)."
 	echo "Usage:"
-	echo "	$(basename $0) [option] PDF_FILE TXT_FILE LEXICON_FILE/URL OUTPUT_MP4 ["page_num1 page_num2..."]"
+	echo "	$(basename $0) [option] PDF_FILE TXT_FILE OUTPUT_MP4 ["page_num1 page_num2..."]"
 	echo "Options:"
 	echo "	-h, --help			print this message."
 	echo "	-geo, --geometry		specify the geometry of output mp4 files. (default geometry is \"1280x720\")"
 	echo "	-fle, --ffmpeg-loglevel-error	ffmpeg loglevel is \"error\". (default level is \"info\")"
 	echo "	-npc, --no-pdf-convert		don't convert PDF to png."
 	echo "	-ns, --no-subtitles		convert without subtitles."
+	echo "	-lexicon                        specify lexicon file or url."
 	echo ""
 	echo "	-azure				use Azure Speech (default)."
 	echo "	-azure-region			specify Azure Region for using Azure Speech. (default Region is \"japaneast\")"
@@ -59,26 +60,26 @@ print_usage ()
 	echo "	-aws-vid, --aws-voice-id	specify Amazon Polly voice ID. (default voice ID is \"Mizuki\", Japanese Female)"
 	echo "	-aws-neural			use Amazon Polly Neural format, if possible."
 	echo ""
-	echo "Example1: The following command uses Azure Speech to create one mp4 file with audio and subtitles, named \"test-output.mp4\"." The subscription key to use Azure Speech must be found in \"~/azure/.tts-subs-keyfile\". When you run this command, \"test-lexicon.pls\" will be temporarily uploaded to Amazon S3.
-	echo "	$(basename $0) test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4"
+	echo "Example1: The following command uses Azure Speech to create one mp4 file with audio and subtitles, named \"test-output.mp4\"." The subscription key to use Azure Speech must be found in \"~/azure/.tts-subs-keyfile\".
+	echo "	$(basename $0) test-slides.pdf test-slides.txt test-output.mp4"
 	echo ""
-	echo "Example2: If you have modified some of the slides, e.g. pages 2 and 3, you can apply the patch to \"test-output.mp4\" with the following command."
-	echo "	$(basename $0) test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 \"2 3\""
+	echo "Example2: If you have modified some of the slides, e.g. pages 2 and 3, you can apply the patch to \"test-output.mp4\" with the following command." When you run this command with Azure Speech \(not Amazon Polly\), \"test-lexicon.pls\" will be temporarily uploaded to Amazon S3.
+	echo "	$(basename $0) -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4 \"2 3\""
 	echo ""
 	echo "Example3: No subtitles option is also available, e.g. mp4 files on pages 1 and 3 are without subtitles."
-	echo "	$(basename $0) -ns test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 \"1 3\""
+	echo "	$(basename $0) -ns test-slides.pdf test-slides.txt test-output.mp4 \"1 3\""
 	echo ""
 	echo "Example4: No PDF converting option is also available, e.g. in the case of changing the talk script on pages 1 and 3."
-	echo "	$(basename $0) -npc -ns test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 \"1 3\""
+	echo "	$(basename $0) -npc -ns test-slides.pdf test-slides.txt test-output.mp4 \"1 3\""
 	echo ""
 	echo "Example5: The following command specifies the geometry of output mp4 files (1080p), the Azure Region, voice name/pitch, subscription keyfile path to use Azure Speech. When using Azure Speech, you can specify public (non-private) URL where you can refer to \"test.pls\". If you specify public URL, Amazon S3 is not used in slide2mp4."
-	echo "	$(basename $0) -geo 1920x1080 -azure -azure-region centralus -azure-vid en-US-JennyNeural -azure-pitch -6 -azure-tts-key test-azure-keyfile test.pdf test.txt https://public_domain/test.pls output.mp4"
+	echo "	$(basename $0) -geo 1920x1080 -azure -azure-region centralus -azure-vid en-US-JennyNeural -azure-pitch -6 -azure-tts-key test-azure-keyfile -lexicon https://public_domain/test.pls test.pdf test.txt output.mp4"
 	echo ""
 	echo "Example6: The following command uses Amazon Polly to create one mp4 file with audio and subtitles, named \"test-output.mp4\"."
-	echo "	$(basename $0) -aws test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4"
+	echo "	$(basename $0) -aws test-slides.pdf test-slides.txt test-output.mp4"
 	echo ""
 	echo "Example7: Specify the Amazon Polly Neural format, voice ID, Matthew (Male, English, US). Note that the Neural format only works with some voice IDs."
-	echo "	$(basename $0) -aws -aws-vid Matthew -aws-neural test.pdf test.txt lexicon.pls output.mp4"
+	echo "	$(basename $0) -aws -aws-vid Matthew -aws-neural -lexicon lexicon.pls test.pdf test.txt output.mp4"
 	echo ""
 	exit
 }
@@ -92,6 +93,9 @@ NS_FLAG=0; NO_CONVERT_FLAG=0;
 AZURE_FLAG=1; AWS_FLAG=0
 AWS_TTS_NEURAL_FLAG=0
 FFMPEG_LOG_LEVEL="-loglevel info"
+LEXICON_FLAG=0
+
+
 i=0; arg_num=$#
 while [ $# -gt 0 ]
 do
@@ -105,6 +109,8 @@ do
 		FFMPEG_LOG_LEVEL="-loglevel error"; shift
 	elif [ "$1" == "-geo" -o "$1" == "--geometry" ]; then
 		shift; GEOMETRY="$1"; shift
+	elif [ "$1" == "-lexicon" ]; then
+		shift; LEXICON="$1"; LEXICON_FLAG=1; shift
 
 	elif [ "$1" == "-azure" ]; then
 		AZURE_FLAG=1; AWS_FLAG=0; shift; 
@@ -130,21 +136,41 @@ do
 done
 PDF_FILE="${arg[1]}"
 TXT_FILE="${arg[2]}"
-LEXICON="${arg[3]}"
-OUTPUT_MP4="${arg[4]}"
-PAGES="${arg[5]}"
+OUTPUT_MP4="${arg[3]}"
+PAGES="${arg[4]}"
 SLIDE2MP4_DIR="$(cd "$(dirname "$0")"; pwd)"
 
 
-if [ $arg_num -lt 4 ]; then
-	echo "Too few arguments. Please check whether the number of arguments is 4 or more."
+if [ $arg_num -lt 3 ]; then
+	echo "Too few arguments. Please check whether the number of arguments is 3 or more."
 	echo "Please check '$(basename $0) -h' or '$(basename $0) --help'."
 	exit
 fi
 
 
-LEXICON_URL=""; LEXICON_FILE=tmp-lexicon-$RS.pls
-if [ $AWS_FLAG -eq 1 ]; then
+file "$PDF_FILE" > check_pdf_slide2mp4-$RS.txt
+file "$TXT_FILE" > check_txt_slide2mp4-$RS.txt
+CHECK_PDF=$(grep -i pdf check_pdf_slide2mp4-$RS.txt 2> /dev/null)
+CHECK_TXT=$(grep -i text check_txt_slide2mp4-$RS.txt 2> /dev/null)
+rm -f check_*_slide2mp4-$RS.txt
+OUTPUT_MP4_NO_SPACE="$(echo -e "${OUTPUT_MP4}" |tr -d '[:space:]')"
+if [ -z "$CHECK_PDF" ]; then
+	echo "This "$PDF_FILE" is not PDF file. Please check PDF file."
+	exit
+elif [ -z "$CHECK_TXT" ]; then
+	echo "This "$TXT_FILE" is not text file. Please check text file."
+	exit
+elif [ -z "$OUTPUT_MP4_NO_SPACE" ]; then
+	echo "Please specify the name of the mp4 file to output."
+	exit
+elif [ ${OUTPUT_MP4_NO_SPACE##*.} != "mp4" ]; then
+	echo "Please specify the name of the mp4 file to output."
+	exit
+fi
+
+
+if [ $LEXICON_FLAG -eq 1 ]; then
+	LEXICON_URL=""; LEXICON_FILE=tmp-lexicon-$RS.pls
 
 	if [[ "$LEXICON" =~ https?://* ]]; then
 		LEXICON_URL="$LEXICON"
@@ -160,46 +186,18 @@ if [ $AWS_FLAG -eq 1 ]; then
 		cp -f "$LEXICON" $LEXICON_FILE 2> /dev/null
 	fi
 
-elif [ $AZURE_FLAG -eq 1 ]; then
-
-	if [[ "$LEXICON" =~ https?://* ]]; then
-		LEXICON_URL="$LEXICON"
-	else
-		cp -f "$LEXICON" $LEXICON_FILE 2> /dev/null
+	xmllint "$LEXICON_FILE" 1> /dev/null 2> check_lexicon_error_slide2mp4-$RS.txt
+	CHECK_XML=$(grep -i error check_lexicon_error_slide2mp4-$RS.txt)
+	if [ -n "$CHECK_XML" ]; then
+		echo "There is the following xml file parse error in "$LEXICON". Please check xml file."
+		cat check_lexicon_error_slide2mp4-$RS.txt
+		rm -f check_*_slide2mp4-$RS.txt $LEXICON_FILE
+		exit
 	fi
-
+	rm -f check_*_slide2mp4-$RS.txt
 fi
 
 
-file "$PDF_FILE" > check_pdf_slide2mp4-$RS.txt
-file "$TXT_FILE" > check_txt_slide2mp4-$RS.txt
-xmllint "$LEXICON_FILE" 1> /dev/null 2> check_lexicon_error_slide2mp4-$RS.txt
-CHECK_PDF=$(grep -i pdf check_pdf_slide2mp4-$RS.txt 2> /dev/null)
-CHECK_TXT=$(grep -i text check_txt_slide2mp4-$RS.txt 2> /dev/null)
-CHECK_XML=$(grep -i error check_lexicon_error_slide2mp4-$RS.txt)
-rm -f check_*_slide2mp4-$RS.txt
-OUTPUT_MP4_NO_SPACE="$(echo -e "${OUTPUT_MP4}" |tr -d '[:space:]')"
-if [ -z "$CHECK_PDF" ]; then
-	echo "This "$PDF_FILE" is not PDF file. Please check PDF file."
-	rm -f $LEXICON_FILE
-	exit
-elif [ -z "$CHECK_TXT" ]; then
-	echo "This "$TXT_FILE" is not text file. Please check text file."
-	rm -f $LEXICON_FILE
-	exit
-elif [ -n "$CHECK_XML" ]; then
-	echo "There is xml file parse error in "$LEXICON". Please check xml file."
-	rm -f $LEXICON_FILE
-	exit
-elif [ -z "$OUTPUT_MP4_NO_SPACE" ]; then
-	echo "Please specify the name of the mp4 file to output."
-	rm -f $LEXICON_FILE
-	exit
-elif [ ${OUTPUT_MP4_NO_SPACE##*.} != "mp4" ]; then
-	echo "Please specify the name of the mp4 file to output."
-	rm -f $LEXICON_FILE
-	exit
-fi
 echo "Format checking of input files has been completed."
 
 
@@ -221,8 +219,17 @@ fi
 for i in $PAGES
 do
 
-	#sed -e 's|^ *~~~BREAK|<tmptime=\"|' xml/$i.xml |sed -e 's| ||' |sed -e 's|\t||' |sed -e 's|$|\" />|' |sed -e 's|tmptime|break time|' > tmp-$RS.xml
-	#mv tmp-$RS.xml xml/$i.xml
+	grep "^\s*~~~BREAK" xml/$i.xml |sed -e 's|~~~BREAK||' |sed -e 's|m||' |sed -e 's|s||' |awk '{print $1}' > tmp-$RS.txt
+	if [ -s tmp-$RS.txt ]; then
+		while read line
+		do
+			break_time=${line}
+			sed -e "s|~~~BREAK "$break_time"s|\n\n<break time=\""$break_time"s\" />\n\n|" xml/$i.xml > tmp-$RS.xml
+			mv tmp-$RS.xml xml/$i.xml
+			sed -e "s|~~~BREAK "$break_time"ms|\n\n<break time=\""$break_time"ms\" />\n\n|" xml/$i.xml > tmp-$RS.xml
+			mv tmp-$RS.xml xml/$i.xml
+		done < tmp-$RS.txt
+	fi
 
 	grep "^\s*~~~SPEED" xml/$i.xml |sed -e 's|~~~SPEED||' |sed -e 's|x||' |awk '{print $1}' > tmp-$RS.txt
  	if [ -s tmp-$RS.txt ]; then
@@ -243,6 +250,7 @@ do
 		sed -e 's|</speak>|</prosody>\n</speak>|g' xml/$i.xml > tmp-$RS.xml
 		mv tmp-$RS.xml xml/$i.xml
 	fi
+
 done
 rm -f tmp-$RS.txt
 
@@ -258,13 +266,19 @@ fi
 
 if [ $AWS_FLAG -eq 1 ]; then
 
-	LEXICON_NAME=$RS
-	aws polly put-lexicon --name $LEXICON_NAME --content file://"$LEXICON_FILE" 2> tmp-$RS.txt
+	LEXICON_OPTION=""
 
-	if [ -s tmp-$RS.txt ]; then
-		cat tmp-$RS.txt
-		rm -f tmp-$RS.txt $LEXICON_FILE
-		exit
+	if [ $LEXICON_FLAG -eq 1 ]; then
+		LEXICON_NAME=$RS
+		aws polly put-lexicon --name $LEXICON_NAME --content file://"$LEXICON_FILE" 2> tmp-$RS.txt
+
+		if [ -s tmp-$RS.txt ]; then
+			cat tmp-$RS.txt
+			rm -f tmp-$RS.txt $LEXICON_FILE
+			exit
+		fi
+
+		LEXICON_OPTION="--lexicon-names $LEXICON_NAME"
 	fi
 
 	ENGINE=""
@@ -274,8 +288,7 @@ if [ $AWS_FLAG -eq 1 ]; then
 
 	for i in $PAGES;
 
-	do aws polly synthesize-speech $ENGINE \
-		--lexicon-names $LEXICON_NAME \
+	do aws polly synthesize-speech $ENGINE $LEXICON_OPTION \
 		--text-type ssml \
 		--output-format mp3 \
 		--voice-id $AWS_TTS_VOICE_ID \
@@ -284,17 +297,17 @@ if [ $AWS_FLAG -eq 1 ]; then
 
 	if [ -s tmp-$RS.txt ]; then
 		echo "There is the following error in executing aws polly, with xml/$i.xml."
-		cat tmp-$RS.txt; rm -f tmp-$RS.txt
-		aws polly delete-lexicon --name $LEXICON_NAME
-		rm -f $LEXICON_FILE
+		cat tmp-$RS.txt; rm -f tmp-$RS.txt $LEXICON_FILE
+		if [ $LEXICON_FLAG -eq 1 ]; then
+			aws polly delete-lexicon --name $LEXICON_NAME
+		fi
 		exit
 	fi
 
 	echo "mp3/$i.mp3 has been created."   
 
 	if [ $NS_FLAG -eq 0 ]; then
-		aws polly synthesize-speech $ENGINE \
-			--lexicon-names $LEXICON_NAME \
+		aws polly synthesize-speech $ENGINE $LEXICON_OPTION \
 			--text-type ssml \
 			--output-format json \
 			--voice-id $AWS_TTS_VOICE_ID \
@@ -306,24 +319,30 @@ if [ $AWS_FLAG -eq 1 ]; then
 
 	done
 	rm -f tmp-$RS.txt $LEXICON_FILE
-	aws polly delete-lexicon --name $LEXICON_NAME
+	if [ $LEXICON_FLAG -eq 1 ]; then
+		aws polly delete-lexicon --name $LEXICON_NAME
+	fi
 
 elif [ $AZURE_FLAG -eq 1 ]; then
 
-	AWS_S3_REGION=""; BUCKET_NAME=tmp-lexicon-$RS
-	if [ "$LEXICON_URL" == "" ]; then
-		AWS_S3_REGION="ap-northeast-1"
-		aws s3api create-bucket --bucket "$BUCKET_NAME" --region "$AWS_S3_REGION" --create-bucket-configuration LocationConstraint="$AWS_S3_REGION" 2> tmp-$RS.txt
+	if [ $LEXICON_FLAG -eq 1 ]; then
+		AWS_S3_REGION=""; BUCKET_NAME=tmp-lexicon-$RS
+		if [ "$LEXICON_URL" == "" ]; then
+			AWS_S3_REGION="ap-northeast-1"
+			aws s3api create-bucket --bucket "$BUCKET_NAME" --region "$AWS_S3_REGION" --create-bucket-configuration LocationConstraint="$AWS_S3_REGION" 2> tmp-$RS.txt
 
-		if [ -s tmp-$RS.txt ]; then
-			cat tmp-$RS.txt
-			rm -f tmp-$RS.txt transcripts-tmp-$RS.mp4 $LEXICON_FILE
-			exit
+			if [ -s tmp-$RS.txt ]; then
+				cat tmp-$RS.txt
+				rm -f tmp-$RS.txt transcripts-tmp-$RS.mp4 $LEXICON_FILE
+				exit
+			fi
+
+			aws s3 cp "$LEXICON_FILE" s3://"$BUCKET_NAME"/ --acl public-read
+			LEXICON_URL="https://"$BUCKET_NAME".s3."$AWS_S3_REGION".amazonaws.com/$LEXICON_FILE"
+			rm -f tmp-$RS.txt
 		fi
-
-		aws s3 cp "$LEXICON_FILE" s3://"$BUCKET_NAME"/ --acl public-read
-		LEXICON_URL="https://"$BUCKET_NAME".s3."$AWS_S3_REGION".amazonaws.com/$LEXICON_FILE"
-		rm -f tmp-$RS.txt
+	else
+		LEXICON_URL="https://dummy-$RS/dummy-$RS.pls"
 	fi
 
 	mkdir -p azure-xml; rm -f azure-xml/*
@@ -342,9 +361,11 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 				echo "azure-mp3/$i-$j.mp3 is empty file."
 				echo "Please check xml/$i.xml, azure-xml/$i-$j.xml, Azure $AZURE_REGION Region, your Azure account settings, Azure Speech subscription key in $AZURE_TTS_SUBS_KEY_FILENAME."
 				rm -f $LEXICON_FILE *-list-$RS.txt
-				if [ ! $AWS_S3_REGION == "" ]; then
-					aws s3api delete-object --bucket "$BUCKET_NAME" --key "$LEXICON_FILE"
-					aws s3 rb s3://"$BUCKET_NAME"
+				if [ $LEXICON_FLAG -eq 1 ]; then
+					if [ ! $AWS_S3_REGION == "" ]; then
+						aws s3api delete-object --bucket "$BUCKET_NAME" --key "$LEXICON_FILE"
+						aws s3 rb s3://"$BUCKET_NAME"
+					fi
 				fi
 				exit
 			fi
@@ -353,9 +374,11 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 		done
 	done
 
-	if [ ! $AWS_S3_REGION == "" ]; then
-		aws s3api delete-object --bucket "$BUCKET_NAME" --key "$LEXICON_FILE"
-		aws s3 rb s3://"$BUCKET_NAME"
+	if [ $LEXICON_FLAG -eq 1 ]; then
+		if [ ! $AWS_S3_REGION == "" ]; then
+			aws s3api delete-object --bucket "$BUCKET_NAME" --key "$LEXICON_FILE"
+			aws s3 rb s3://"$BUCKET_NAME"
+		fi
 	fi
 
 	if [ $NS_FLAG -eq 0 ]; then
@@ -370,7 +393,7 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 				seconds=$(ffprobe -loglevel error -hide_banner -show_entries format=duration azure-mp3/$i-$j.mp3 |grep -i duration |sed -e 's/duration=//')
 				mseconds=`echo "scale=4; $seconds * 1000" |bc`
 				python3 "$SLIDE2MP4_DIR"/lib/repr.py azure-txt/$i-$j.txt tmp-$RS.txt
-				awk '{print substr($0, 2, length($0)-2)}' tmp-$RS.txt > value-$RS.txt
+				awk '{print substr($0, 2, length($0)-2)}' tmp-$RS.txt |grep -v "<break time=\"" > value-$RS.txt
 				awk '{print "{\"time\":'$time_info',\"value\":\"" $0}' value-$RS.txt |sed '$s/$/\"}/' >> json/$i.json
 				time_value=`echo "scale=4; $time_value + $mseconds" |bc`
 				time_info=${time_value%.*}
@@ -440,7 +463,7 @@ fi
 
 
 ffmpeg $FFMPEG_LOG_LEVEL -y -f concat -i list-$RS.txt -c copy "$OUTPUT_MP4"
-rm -rf list-$RS.txt #xml
+rm -rf list-$RS.txt xml
 
 
 echo; echo
