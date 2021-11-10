@@ -18,7 +18,7 @@ EOF
 git clone --depth 1 https://github.com/automating-presentations/slide2mp4
 chmod u+x slide2mp4/slide2mp4.sh
 cd slide2mp4/test
-../slide2mp4.sh test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4
+../slide2mp4.sh test-slides.pdf test-slides.txt test-output.mp4
 ```
 
 ----
@@ -32,8 +32,8 @@ cd slide2mp4/test
    - PDFのDL時にフォントが崩れる場合は、一度pptxでDLした後に、PowerPointを開いてPDF Export
    - LibreOfficeを利用している場合は、pptx形式で保存した後に、Google DriveにアップロードしてGoogle Slidesでpptxファイルを開くと、上記と同様にスライドノートの一括保存が可能
  - SSML情報を含んだXMLで書かれたトークスクリプト (Google Slidesのスライドノート内に記載)
- - 発音エイリアスを記載した[lexicon](https://www.w3.org/TR/pronunciation-lexicon/)
-   - 日本語音声だと、英字の製品名をうまく読んでくれない時があるので、予めエイリアスを記載したファイルを作成しておく必要あり
+ - (オプション) 発音エイリアスを記載した[lexicon](https://www.w3.org/TR/pronunciation-lexicon/)
+   - 日本語音声だと、英字の製品名をうまく読んでくれない時があるので、エイリアスを記載したファイルを適宜作成
 
 出力ファイル:
  - PDFから変換した画像ファイル (png)
@@ -96,46 +96,22 @@ EOF
 
 スライド作成後は、PDFとPlain Textファイルをダウンロードします。
 
-英字の製品名などで機械音声でうまく読み上げられないものについては、予めlexiconを利用して発音のエイリアスを作っておきます。
-↓ では、OpenShiftとVirtualizationの発音エイリアスを登録しています。
-なお、登録する発音のエイリアスがない場合は、lexiconの空ファイルを利用します。
-その場合は、レキシコンファイルの`<lexeme>`から`</lexeme>`までを全部削除してください。
-```
-cat << EOF  > test-lexicon.pls
-<?xml version="1.0" encoding="UTF-8"?>
-<lexicon version="1.0"
-      xmlns="http://www.w3.org/2005/01/pronunciation-lexicon"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.w3.org/2005/01/pronunciation-lexicon
-        http://www.w3.org/TR/2007/CR-pronunciation-lexicon-20071212/pls.xsd"
-      alphabet="ipa" xml:lang="ja-JP">
+英字の製品名などで機械音声でうまく読み上げられないものについては、予めlexiconを利用して発音のエイリアスを作っておきます。ここでは、OpenShiftとVirtualizationの発音エイリアスを利用する例をご紹介します。  
 
-  <lexeme> 
-    <grapheme>OpenShift</grapheme>
-    <grapheme>openshift</grapheme>
-    <alias>オープンシフト</alias>
-  </lexeme>
+lexiconは、[lexicon-generate.sh](https://github.com/automating-presentations/slide2mp4/blob/main/tools/lexicon-generate.sh)を利用して、ユーザが作成した辞書ファイルから自動的に作成できます。辞書ファイルは単語と発音を記載したテキストファイルであり、単語と発音の間は空白かタブで区切る必要があります。単語と発音の中には、空白やタブを含めることはできません。[lexiconのサイズの上限値](https://docs.aws.amazon.com/ja_jp/polly/latest/dg/limits.html)を考慮して、単語と発音の組み合わせ数を抑えるために、この制限を設定しています。辞書ファイルでは、「#」から始まる行はコメントとして認識されます。  
 
-  <lexeme> 
-    <grapheme>Virtualization</grapheme>
-    <alias>バーチャライゼーション</alias>
-  </lexeme>
-
-</lexicon>
-EOF
-```
-
-このlexiconについては、[lexicon-generate.sh](https://github.com/automating-presentations/slide2mp4/blob/main/tools/lexicon-generate.sh)を利用して、ユーザが作成した辞書ファイルから自動的に作成することもできます。辞書ファイルは単語と発音を記載したテキストファイルであり、単語と発音の間は空白かタブで区切る必要があります。単語と発音の中には、空白やタブを含めることはできません。[lexiconのサイズの上限値](https://docs.aws.amazon.com/ja_jp/polly/latest/dg/limits.html)を考慮して、単語と発音の組み合わせ数を抑えるために、この制限を設定しています。辞書ファイルでは、「#」から始まる行はコメントとして認識されます。下記は、test-dic.txtという名前の辞書ファイルと、Google Slidesからダウンロードしたトークスクリプトtest-slides.txtから、lexiconを自動的に作成するコマンド例です。このコマンドにより、予め作成した辞書ファイルにある単語のうち、トークスクリプトに記載される単語のみを抽出したlexiconが自動的に作成されます。
+下記は、test-dic.txtという名前の辞書ファイルと、Google Slidesからダウンロードしたトークスクリプトtest-slides.txtから、lexiconを自動的に作成するコマンド例です。このコマンドにより、予め作成した辞書ファイルにある単語のうち、トークスクリプトに記載される単語のみを抽出したlexiconが自動的に作成されます。
 
 ```
 cat << EOF   > test-dic.txt
 # word	pronunciation
 OpenShift	オープンシフト
 Virtualization	バーチャライゼーション
-openshift	オープンシフト
 EOF
 lexicon-generate.sh -lang ja-JP test-dic.txt test-slides.txt test-sample-lexicon.pls
 ```
+
+上記のtest-sample-lexicon.plsのように、自動作成したlexiconのほかにも、[サンプルのlexiconファイル](https://github.com/automating-presentations/slide2mp4/blob/main/test/test-lexicon.pls)のように、直接作成したlexiconを利用することもできます。
 
 また、[lexicon2dic.sh](https://github.com/automating-presentations/slide2mp4/blob/main/tools/lexicon2dic.sh)を利用して、既存のlexiconを上記フォーマットに沿った辞書ファイルに変換できます。この時、lexiconファイルで登録している単語や発音の中に空白やタブが含まれている場合、その空白やタブは削除されますので注意してください。
 ```
@@ -165,7 +141,8 @@ for i in {0..2}; do mv png/$i-tmp.png png/$(($i+1)).png; done
 ### 4. トークスクリプトをxmlファイルに変換
 
 Google SlidesからPlain Text形式でDLしたtest-slides.txtに含まれる、トークスクリプト(xml)部分を抽出します。  
-スクリプト部分である`<?xml`から始まり`</speak>`で終わる文字列」を抽出します。  
+スクリプト部分である`<?xml`から始まり`</speak>`で終わる文字列を抽出します。  
+なお、ここでは記載していませんが、slide2mp4ではこの抽出処理の前に、「~~~TTS」を「<?xml」に変更するなど、SSMLタグへの変換処理を実施しています。
 
 ```
 # awkでエスケープ文字を使う場合:  \074: <, \076: >, \077: ?
@@ -392,7 +369,7 @@ ffmpeg -y -f concat -i list.txt -c copy test-output.mp4
 
 slide2mp4.sh の使い方:
 ```
-slide2mp4.sh PDF_FILE TXT_FILE LEXICON_FILE OUTPUT_MP4 <"page_num1 page_num2...">
+slide2mp4.sh [-lexicon LEXICON_FILE/URL] PDF_FILE TXT_FILE OUTPUT_MP4 <"page_num1 page_num2...">
 ```
 
 末尾のページ番号指定はオプションで、一部のスライドやトークスクリプトを修正して、そこだけjson, srt, mp3, mp4を新しくして動画にパッチを入れたい場合に使います。
@@ -401,6 +378,6 @@ slide2mp4.sh PDF_FILE TXT_FILE LEXICON_FILE OUTPUT_MP4 <"page_num1 page_num2..."
 
 例. 2, 5, 12 ページのみを修正してDLしたPDF, テキストファイルを利用して、動画にパッチを当てる場合:
 ```
-slide2mp4.sh test01.pdf test01.txt test01-lexicon.pls test01-output.mp4 “2 5 12”
+slide2mp4.sh test01.pdf test01.txt test01-output.mp4 “2 5 12”
 ```
 
