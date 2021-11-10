@@ -67,6 +67,12 @@ cd slide2mp4/test
 ../slide2mp4.sh -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4 "1 3"
 ```
 
+When you don't use Amazon S3, you can specify public (non-private) URL for downloading the lexicon file.
+```
+cd slide2mp4/test
+../slide2mp4.sh -lexicon https://public_domain/test.pls test-slides.pdf test-slides.txt test-output.mp4 "1 3"
+```
+
 No subtitles option is also available, e.g. mp4 files on pages 1 and 3 are without subtitles.
 ```
 cd slide2mp4/test
@@ -79,10 +85,10 @@ cd slide2mp4/test
 ../slide2mp4.sh -npc -ns -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4 "1 3"
 ```
 
-The following command specifies the geometry of output mp4 files (1080p), the Azure Region where to put your subscription key, voice name/pitch, subscription keyfile path to use Azure Speech. When using Azure Speech, you can specify public (non-private) URL where you can refer to "test.pls". If you specify public URL, Amazon S3 is not used in slide2mp4. Please refer to [this web page](https://azure.microsoft.com/en-us/services/cognitive-services/text-to-speech/) to see what kind of voice name/pitch is available.
+The following command specifies the geometry of output mp4 files (1080p), the Azure Region where to put your subscription key, voice name/pitch, subscription keyfile path to use Azure Speech. Please refer to [this web page](https://azure.microsoft.com/en-us/services/cognitive-services/text-to-speech/) to see what kind of voice name/pitch is available.
 ```
 cd slide2mp4/test
-../slide2mp4.sh -geo 1920x1080 -azure -azure-region centralus -azure-vid en-US-JennyNeural -azure-pitch -6 -azure-tts-key test-azure-keyfile -lexicon https://public_domain/test.pls test.pdf test.txt output.mp4
+../slide2mp4.sh -azure -geo 1920x1080 -azure-region centralus -azure-vid en-US-JennyNeural -azure-pitch -6 -azure-tts-key test-azure-keyfile test.pdf test.txt output.mp4
 ```
 
 The following command uses Amazon Polly to create one mp4 file with audio and subtitles, named "test-output.mp4".
