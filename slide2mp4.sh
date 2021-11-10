@@ -63,14 +63,14 @@ print_usage ()
 	echo "Example1: The following command uses Azure Speech to create one mp4 file with audio and subtitles, named \"test-output.mp4\"." The subscription key to use Azure Speech must be found in \"~/azure/.tts-subs-keyfile\".
 	echo "	$(basename $0) test-slides.pdf test-slides.txt test-output.mp4"
 	echo ""
-	echo "Example2: If you have modified some of the slides, e.g. pages 2 and 3, you can apply the patch to \"test-output.mp4\" with the following command." When you run this command with Azure Speech \(not Amazon Polly\), \"test-lexicon.pls\" will be temporarily uploaded to Amazon S3.
-	echo "	$(basename $0) -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4 \"2 3\""
+	echo "Example2: If you have modified some of the slides, e.g. pages 1 and 3, you can apply the patch to \"test-output.mp4\" with the following command." When you run this command with Azure Speech \(not Amazon Polly\), \"test-lexicon.pls\" will be temporarily uploaded to Amazon S3.
+	echo "	$(basename $0) -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4 \"1 3\""
 	echo ""
 	echo "Example3: No subtitles option is also available, e.g. mp4 files on pages 1 and 3 are without subtitles."
-	echo "	$(basename $0) -ns test-slides.pdf test-slides.txt test-output.mp4 \"1 3\""
+	echo "	$(basename $0) -ns -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4 \"1 3\""
 	echo ""
 	echo "Example4: No PDF converting option is also available, e.g. in the case of changing the talk script on pages 1 and 3."
-	echo "	$(basename $0) -npc -ns test-slides.pdf test-slides.txt test-output.mp4 \"1 3\""
+	echo "	$(basename $0) -npc -ns -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4 \"1 3\""
 	echo ""
 	echo "Example5: The following command specifies the geometry of output mp4 files (1080p), the Azure Region, voice name/pitch, subscription keyfile path to use Azure Speech. When using Azure Speech, you can specify public (non-private) URL where you can refer to \"test.pls\". If you specify public URL, Amazon S3 is not used in slide2mp4."
 	echo "	$(basename $0) -geo 1920x1080 -azure -azure-region centralus -azure-vid en-US-JennyNeural -azure-pitch -6 -azure-tts-key test-azure-keyfile -lexicon https://public_domain/test.pls test.pdf test.txt output.mp4"
