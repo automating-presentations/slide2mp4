@@ -70,13 +70,13 @@ cd slide2mp4/test
 No subtitles option is also available, e.g. mp4 files on pages 1 and 3 are without subtitles.
 ```
 cd slide2mp4/test
-../slide2mp4.sh -ns test-slides.pdf test-slides.txt test-output.mp4 "1 3"
+../slide2mp4.sh -ns -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4 "1 3"
 ```
 
 No PDF converting option is also available, e.g. in the case of changing the talk script on pages 1 and 3.
 ```
 cd slide2mp4/test
-../slide2mp4.sh -npc -ns test-slides.pdf test-slides.txt test-output.mp4 "1 3"
+../slide2mp4.sh -npc -ns -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4 "1 3"
 ```
 
 The following command specifies the geometry of output mp4 files (1080p), the Azure Region where to put your subscription key, voice name/pitch, subscription keyfile path to use Azure Speech. When using Azure Speech, you can specify public (non-private) URL where you can refer to "test.pls". If you specify public URL, Amazon S3 is not used in slide2mp4. Please refer to [this web page](https://azure.microsoft.com/en-us/services/cognitive-services/text-to-speech/) to see what kind of voice name/pitch is available.
