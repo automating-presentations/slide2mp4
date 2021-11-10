@@ -19,7 +19,7 @@ git clone --depth 1 https://github.com/automating-presentations/slide2mp4
 chmod u+x slide2mp4/slide2mp4.sh
 cd slide2mp4/test
 ../slide2mp4.sh test-slides.pdf test-slides.txt test-output.mp4
-../slide2mp4.sh -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4    ← lexiconを指定する場合
+../slide2mp4.sh -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4; : '← lexiconを指定する場合'
 ```
 
 ----
@@ -146,7 +146,7 @@ Google SlidesからPlain Text形式でDLしたtest-slides.txtに含まれる、�
 なお、ここでは記載していませんが、slide2mp4ではこの抽出処理の前に、「~~~TTS」を「<?xml」に変更するなど、SSMLタグへの変換処理を実施しています。
 
 ```
-# awkでエスケープ文字を使う場合:  \074: <, \076: >, \077: ?
+: '# awkでエスケープ文字を使う場合:  \074: <, \076: >, \077: ?'
 cat test-slides.txt |awk '/<\?xml/,/<\/speak>/' > tmp.txt
 ```
 
@@ -181,7 +181,7 @@ python3 txt2xml.py tmp.txt; rm -f tmp.txt
 (「Q&A対応」などがエラーになります)
 
 ```
-# test という名前でlexiconを保存
+: '# test という名前でlexiconを保存'
 aws polly put-lexicon --name test --content file://test-lexicon.pls
 
 for i in {1..3}; 
@@ -217,7 +217,7 @@ cat json/1.json
 
 ```
 aws polly delete-lexicon --name test
-aws polly list-lexicons    ← test という名前のlexiconが削除されたことを確認
+aws polly list-lexicons; : '← test という名前のlexiconが削除されたことを確認'
 ```
 
 Azure Speechを利用する場合は、次の処理を実施しています。
@@ -330,13 +330,13 @@ for i in {1..3}; do ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -vcodec libx26
 上記コマンドは、ソフトウェアエンコーダ libx264 (`-vcodec libx264`) を指定していますが、ffmpegの[ハードウェアエンコーディング](https://trac.ffmpeg.org/wiki/HWAccelIntro)を利用したい場合は、libx264 より画質が粗くなるので、画像ビットレート (`-vb 1M`など) を明示的に指定する必要があります。その場合、動画のサイズも大きくなりますが、GPUによるエンコーディングが実行されることで、CPUの負荷を減らせます。
 
 ```
-ffmpeg -encoders |grep -i h264   ← h264 (mp4) で利用できるencoderを確認
+ffmpeg -encoders |grep -i h264; : '← h264 (mp4) で利用できるencoderを確認'
 …<snip>...
  V..... libx264              libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (codec h264)
  V..... libx264rgb           libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 RGB (codec h264)
  V..... h264_videotoolbox    VideoToolbox H.264 Encoder (codec h264)   
-↑ HW encoder: h264_videotoolbox を確認 (M1 Macの場合)
-↑ SW encoder: libx264, libx264rgb を確認 
+: '↑ HW encoder: h264_videotoolbox を確認 (M1 Macの場合)'
+: '↑ SW encoder: libx264, libx264rgb を確認' 
 
 for i in {1..3}; do ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -vcodec h264_videotoolbox -vb 1M -tune stillimage -pix_fmt yuv420p -shortest -vf "subtitles=srt/$i.srt:force_style='FontName=NotoSansCJKjp-Medium,FontSize=14'" mp4/$i.mp4; done
 ```
