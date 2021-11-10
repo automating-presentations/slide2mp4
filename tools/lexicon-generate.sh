@@ -22,14 +22,18 @@ print_usage ()
 	echo "Usage:"
 	echo "	$(basename $0) [option] DIC_TXT TALK_SCRIPT_TXT LEXICON_FILE"
 	echo "Options:"
-	echo "	-h, --help		print this message."
-        echo "	-lang <language code>	specify the language code of a lexicon file. (default language code is \"ja-JP\")"
+	echo "	-h, --help			print this message."
+        echo "	-lang <language code>		specify the language code of a lexicon file. (default language code is \"ja-JP\")"
+        echo "	-patch <dictionary text file>	specify the patch file to be applied to DIC_TXT."
 	echo ""
 	echo "Example1: The following command creates a lexicon file \"test-lexicon.pls\" with the language code \"ja-JP\", only the words in \"test-dic.txt\"."
         echo "  $(basename $0) test-dic.txt test-my-talk-scripts.txt test-lexicon.pls"
         echo ""
         echo "Example2: The following command creates a lexicon file with the language code \"en-US\"."
         echo "  $(basename $0) -lang en-US test-dic-en.txt test-my-talk-scripts-en.txt test-lexicon-en.pls"
+	echo ""
+        echo "Example3: The following command specifies the patch to be applied to \"test-dic.txt\". The items in \"test-dic.txt\" will be overwritten by the items in \"patch-dic.txt\"."
+        echo "  $(basename $0) -patch patch-dic.txt test-dic.txt test-my-talk-scripts.txt test-lexicon.pls"
 	echo ""
 	exit
 }
@@ -44,19 +48,22 @@ if [ $# -ne 0 ]; then
 		print_usage
 	fi
 fi
-if [ $# -ne 3  -a  $# -ne 5 ]; then
-	echo "Too few or many arguments. Please check whether the number of arguments is 3 or 5."
+if [ $# -lt 3 ]; then
+	echo "Too few arguments. Please check whether the number of arguments is 3 or more."
 	echo "Please check '$(basename $0) -h' or '$(basename $0) --help'."
 	exit
 fi
 
 
 XML_LANG="ja-JP"
+touch empty-$RS.txt; PATCH_TXT=empty-$RS.txt
 i=0
 while [ $# -gt 0 ]
 do
         if [ "$1" == "-lang"  ]; then
                 shift; XML_LANG="$1"; shift
+	elif [ "$1" == "-patch" ]; then
+		shift; PATCH_TXT="$1"; shift
         else
                 i=$(($i+1)); arg[i]="$1"; shift
         fi
@@ -67,6 +74,24 @@ LEXICON_FILE="${arg[3]}"
 
 
 cat "$DIC_TXT" |grep -v '^#' |grep -v "^\s*$" |sed '/^$/d' > tmp-DIC_TXT-$RS.txt
+if [ -s "$PATCH_TXT" ]; then
+	cat "$PATCH_TXT" |grep -v '^#' |grep -v "^\s*$" |sed '/^$/d' > tmp-PATCH-$RS.txt
+
+	while read line
+	do
+		set ${line}
+		word=${1}; alias=${2}
+		if [ -n "$word"  -a  -n "$alias" ]; then
+			grep -v "$word" tmp-DIC_TXT-$RS.txt > tmp-word-delete-$RS.txt
+			echo "${line}" >> tmp-word-delete-$RS.txt; mv tmp-word-delete-$RS.txt tmp-DIC_TXT-$RS.txt
+		fi
+	done < tmp-PATCH-$RS.txt
+
+	rm -f tmp-PATCH-$RS.txt
+fi
+rm -f empty-$RS.txt
+
+
 sed -e 's|^ *~~~TTS$|<?xml|g' -e 's|^ *~~~$|</speak>|g' "$TALK_SCRIPT_TXT" |\
         awk '/<\?xml/,/<\/speak>/' |\
         sed -e 's|#.*||g' |\
