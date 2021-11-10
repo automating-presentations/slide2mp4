@@ -95,7 +95,8 @@ rm -f empty-$RS.txt
 sed -e 's|^ *~~~TTS$|<?xml|g' -e 's|^ *~~~$|</speak>|g' "$TALK_SCRIPT_TXT" |\
         awk '/<\?xml/,/<\/speak>/' |\
         sed -e 's|#.*||g' |\
-	grep -v "^\s*~~~SPEED" > tmp-TALK_SCRIPT_TXT-$RS.txt
+	grep -v "^\s*~~~SPEED" |\
+	grep -v "^\s*~~~BREAK" > tmp-TALK_SCRIPT_TXT-$RS.txt
 
 
 echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" > "$LEXICON_FILE"
