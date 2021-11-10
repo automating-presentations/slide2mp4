@@ -45,7 +45,7 @@ docker pull ghcr.io/automating-presentations/slide2mp4:latest
 
 ### slide2mp4
 
-The following command uses Azure Speech to create one mp4 file with audio and subtitles, named "test-output.mp4". The subscription key to use Azure Speech must be found in "~/azure/.tts-subs-keyfile". When you run this command, "test-lexicon.pls" will be temporarily uploaded to Amazon S3. The default Azure Speech service region for slide2mp4 is Japan East region, so when you run the following command, please create your Azure Speech subscription key in Japan East region.
+The following command uses Azure Speech to create one mp4 file with audio and subtitles, named "test-output.mp4". The subscription key to use Azure Speech must be found in "~/azure/.tts-subs-keyfile". The default Azure Speech service region for slide2mp4 is Japan East region, so when you run the following command, please create your Azure Speech subscription key in Japan East region.
 
 ```
 mkdir -p ~/.azure; cat << EOF  > ~/.azure/tts-subs-keyfile
@@ -57,44 +57,44 @@ EOF
 git clone --depth 1 https://github.com/automating-presentations/slide2mp4
 chmod u+x slide2mp4/slide2mp4.sh slide2mp4/lib/*.sh slide2mp4/tools/*.sh
 cd slide2mp4/test
-../slide2mp4.sh test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4
+../slide2mp4.sh test-slides.pdf test-slides.txt test-output.mp4
 ```
 
-If you have modified some of the slides, e.g. pages 2 and 3, you can apply the patch to "test-output.mp4" with the following command.
+If you have modified some of the slides, e.g. pages 2 and 3, you can apply the patch to "test-output.mp4" with the following command. When you run this command with Azure Speech (not Amazon Polly), "test-lexicon.pls" will be temporarily uploaded to Amazon S3.
 
 ```
 cd slide2mp4/test
-../slide2mp4.sh test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 "2 3"
+../slide2mp4.sh -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4 "2 3"
 ```
 
 No subtitles option is also available, e.g. mp4 files on pages 1 and 3 are without subtitles.
 ```
 cd slide2mp4/test
-../slide2mp4.sh -ns test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 "1 3"
+../slide2mp4.sh -ns test-slides.pdf test-slides.txt test-output.mp4 "1 3"
 ```
 
 No PDF converting option is also available, e.g. in the case of changing the talk script on pages 1 and 3.
 ```
 cd slide2mp4/test
-../slide2mp4.sh -npc -ns test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4 "1 3"
+../slide2mp4.sh -npc -ns test-slides.pdf test-slides.txt test-output.mp4 "1 3"
 ```
 
 The following command specifies the geometry of output mp4 files (1080p), the Azure Region where to put your subscription key, voice name/pitch, subscription keyfile path to use Azure Speech. When using Azure Speech, you can specify public (non-private) URL where you can refer to "test.pls". If you specify public URL, Amazon S3 is not used in slide2mp4. Please refer to [this web page](https://azure.microsoft.com/en-us/services/cognitive-services/text-to-speech/) to see what kind of voice name/pitch is available.
 ```
 cd slide2mp4/test
-../slide2mp4.sh -geo 1920x1080 -azure -azure-region centralus -azure-vid en-US-JennyNeural -azure-pitch -6 -azure-tts-key test-azure-keyfile test.pdf test.txt https://public_domain/test.pls output.mp4
+../slide2mp4.sh -geo 1920x1080 -azure -azure-region centralus -azure-vid en-US-JennyNeural -azure-pitch -6 -azure-tts-key test-azure-keyfile -lexicon https://public_domain/test.pls test.pdf test.txt output.mp4
 ```
 
 The following command uses Amazon Polly to create one mp4 file with audio and subtitles, named "test-output.mp4".
 ```
 cd slide2mp4/test
-../slide2mp4.sh -aws test-slides.pdf test-slides.txt test-lexicon.pls test-output.mp4
+../slide2mp4.sh -aws test-slides.pdf test-slides.txt test-output.mp4
 ```
 
 Specify the Amazon Polly Neural format, voice ID, Matthew (Male, English, US). Note that the Neural format only works with some voice IDs.
 ```
 cd slide2mp4/test
-../slide2mp4.sh -aws -aws-vid Matthew -aws-neural test.pdf test.txt lexicon.pls output.mp4
+../slide2mp4.sh -aws -aws-vid Matthew -aws-neural -lexicon lexicon.pls test.pdf test.txt output.mp4
 ```
 
 ----
