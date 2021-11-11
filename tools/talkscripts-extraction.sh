@@ -48,14 +48,19 @@ if [ $# -ne 2 ]; then
 fi
 
 
-sed -e "s|^ *~~~TTS$|TTS_BEGIN_"$RS"|g" -e "s|^ *~~~$|TTS_END_"$RS"|g" "$TXT_FILE" |\
+sed -e 's|<?xml version="1.0" encoding="UTF-8"?>|~~~TTS|' -e 's|</speak>|~~~|' "$TXT_FILE" |\
+	grep -v "<speak version=" |\
+	grep -v "<*prosody" > $RS.txt
+
+
+sed -e "s|^ *~~~TTS$|TTS_BEGIN_"$RS"|g" -e "s|^ *~~~$|TTS_END_"$RS"|g" $RS.txt |\
 	awk '/TTS_BEGIN_'$RS'/,/TTS_END_'$RS'/' |\
 	sed -e 's|#.*||g' |\
-	grep -v "\s*~~~SPEED" |\
-	grep -v "\s*~~~BREAK" > tmp-$RS.txt
+	grep -v "^\s*~~~SPEED" |\
+	grep -v "^\s*~~~BREAK" > tmp-$RS.txt
 
 
-rm -rf "$OUTPUT" "$OUTPUT".zip
+rm -rf "$OUTPUT" "$OUTPUT".zip $RS.txt
 mkdir -p "$OUTPUT"; i=0
 while read line
 do
