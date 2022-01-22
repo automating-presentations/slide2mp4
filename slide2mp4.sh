@@ -204,6 +204,13 @@ fi
 echo "Format checking of input files has been completed."
 
 
+mkdir -p slide2mp4-outputs
+for i in "$PDF_FILE" "$TXT_FILE"; do cp $i slide2mp4-outputs/ 2> /dev/null; done
+mv $LEXICON_FILE slide2mp4-outputs/ 2> /dev/null
+# for i in json mp3 mp4 png srt xml; do cp -r $i slide2mp4-outputs/ 2> /dev/null; done
+cd slide2mp4-outputs
+
+
 mkdir -p json mp3 mp4 png srt xml
 
 
@@ -467,6 +474,10 @@ fi
 
 ffmpeg $FFMPEG_LOG_LEVEL -y -f concat -i list-$RS.txt -c copy "$OUTPUT_MP4"
 rm -rf list-$RS.txt xml
+
+
+cd ../slide2mp4-outputs; rm -f "$PDF_FILE" "$TXT_FILE" $LEXICON_FILE
+mv ../slide2mp4-outputs/"$OUTPUT_MP4" ../
 
 
 echo; echo
