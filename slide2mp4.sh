@@ -49,6 +49,7 @@ print_usage ()
 	echo "	-npc, --no-pdf-convert		don't convert PDF to png."
 	echo "	-ns, --no-subtitles		convert without subtitles."
 	echo "	-lexicon                        specify lexicon file or url."
+	echo "	-p, --path			specify the output directory. (default path is current directory)"
 	echo ""
 	echo "	-azure				use Azure Speech (default)."
 	echo "	-azure-region			specify Azure Region for using Azure Speech. (default Region is \"japaneast\")"
@@ -97,6 +98,7 @@ AZURE_FLAG=1; AWS_FLAG=0
 AWS_TTS_NEURAL_FLAG=0
 FFMPEG_LOG_LEVEL="-loglevel info"
 LEXICON_FLAG=0
+SLIDE2MP4_OUTPUTS_PATH="$(pwd)"
 
 
 i=0; arg_num=$#
@@ -114,6 +116,8 @@ do
 		shift; GEOMETRY="$1"; shift
 	elif [ "$1" == "-lexicon" ]; then
 		shift; LEXICON="$1"; LEXICON_FLAG=1; shift
+	elif [ "$1" == "-p" -o "$1" == "--path" ]; then
+		shift; SLIDE2MP4_OUTPUTS_PATH="$1"; shift
 
 	elif [ "$1" == "-azure" ]; then
 		AZURE_FLAG=1; AWS_FLAG=0; shift; 
@@ -149,6 +153,15 @@ if [ $arg_num -lt 3 ]; then
 	echo "Please check '$(basename $0) -h' or '$(basename $0) --help'."
 	exit
 fi
+
+
+mkdir -p "$SLIDE2MP4_OUTPUTS_PATH"
+touch "$SLIDE2MP4_OUTPUTS_PATH"/testfile-$RS 2> /dev/null
+if [ ! -e "$SLIDE2MP4_OUTPUTS_PATH"/testfile-$RS ]; then
+	echo "You do not have permission to write to the $SLIDE2MP4_OUTPUTS_PATH ."
+	exit
+fi
+rm -f "$SLIDE2MP4_OUTPUTS_PATH"/testfile-$RS
 
 
 file "$PDF_FILE" > check_pdf_slide2mp4-$RS.txt
@@ -204,21 +217,20 @@ fi
 echo "Format checking of input files has been completed."
 
 
-mkdir -p slide2mp4-outputs
-for i in "$PDF_FILE" "$TXT_FILE"; do cp $i slide2mp4-outputs/ 2> /dev/null; done
-mv $LEXICON_FILE slide2mp4-outputs/ 2> /dev/null
-# for i in json mp3 mp4 png srt xml; do cp -r $i slide2mp4-outputs/ 2> /dev/null; done
-cd slide2mp4-outputs
+cp "$PDF_FILE" "$SLIDE2MP4_OUTPUTS_PATH"/PDF-$RS.pdf
+cp "$TXT_FILE" "$SLIDE2MP4_OUTPUTS_PATH"/TXT-$RS.txt
+mv $LEXICON_FILE "$SLIDE2MP4_OUTPUTS_PATH"/ 2> /dev/null
+cd "$SLIDE2MP4_OUTPUTS_PATH"
 
 
 mkdir -p json mp3 mp4 png srt xml
 
 
 sed -e 's|^ *~~~TTS$|<?xml version="1.0" encoding="UTF-8"?>\n<speak version="1.1">|g' \
-        -e 's|^ *~~~$|</speak>|g' "$TXT_FILE" |\
+        -e 's|^ *~~~$|</speak>|g' TXT-$RS.txt |\
 	awk '/<\?xml/,/<\/speak>/' |\
 	sed -e 's|#.*||g' > tmp-$RS.txt
-rm -f xml/*
+rm -f xml/* TXT-$RS.txt
 python3 "$SLIDE2MP4_DIR"/lib/txt2xml.py tmp-$RS.txt; rm -f tmp-$RS.txt
 page_num=$(ls -F xml/ | grep -v / | wc -l)
 if [ -z "$PAGES" ]; then
@@ -268,10 +280,11 @@ rm -f tmp-$RS.txt
 if [ $NO_CONVERT_FLAG -eq 0 ]; then
 	echo "The conversion from PDF to PNG starts now."
 	rm -f png/*
-	gm convert -density $DENSITY -geometry $GEOMETRY +adjoin "$PDF_FILE" png:png/%01d-tmp.png
+	gm convert -density $DENSITY -geometry $GEOMETRY +adjoin PDF-$RS.pdf png:png/%01d-tmp.png
 	for i in `seq 0 $(($page_num-1))`; do mv png/$i-tmp.png png/$(($i+1)).png; done
 	echo "The conversion from PDF to PNG has been successfully completed."
 fi
+rm -f PDF-$RS.pdf
 
 
 if [ $AWS_FLAG -eq 1 ]; then
@@ -473,14 +486,10 @@ fi
 
 
 ffmpeg $FFMPEG_LOG_LEVEL -y -f concat -i list-$RS.txt -c copy "$OUTPUT_MP4"
-rm -rf list-$RS.txt xml
-
-
-cd ../slide2mp4-outputs; rm -f "$PDF_FILE" "$TXT_FILE" $LEXICON_FILE
-mv ../slide2mp4-outputs/"$OUTPUT_MP4" ../
+rm -f list-$RS.txt
 
 
 echo; echo
 echo "The conversion from PDF slides to mp4 files has been successfully completed."
-echo "Please check $OUTPUT_MP4."
+echo "Please check $SLIDE2MP4_OUTPUTS_PATH/$OUTPUT_MP4."
 
