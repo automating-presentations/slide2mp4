@@ -58,6 +58,8 @@ git clone --depth 1 https://github.com/automating-presentations/slide2mp4
 chmod u+x slide2mp4/slide2mp4.sh slide2mp4/lib/*.sh slide2mp4/tools/*.sh
 cd slide2mp4/test
 ../slide2mp4.sh test-slides.pdf test-slides.txt test-output.mp4
+: '↓ when using lexicon'
+../slide2mp4.sh -lexicon https://raw.githubusercontent.com/automating-presentations/slide2mp4/main/test/test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4
 ```
 
 If you have modified some of the slides, e.g. pages 1 and 3, you can apply the patch to "test-output.mp4" with the following command. When you run this command with Azure Speech (not Amazon Polly), "test-lexicon.pls" will be temporarily uploaded to Amazon S3.
