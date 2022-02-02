@@ -19,7 +19,8 @@ git clone --depth 1 https://github.com/automating-presentations/slide2mp4
 chmod u+x slide2mp4/slide2mp4.sh
 cd slide2mp4/test
 ../slide2mp4.sh test-slides.pdf test-slides.txt test-output.mp4
-../slide2mp4.sh -lexicon https://raw.githubusercontent.com/automating-presentations/slide2mp4/main/test/test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4; : '← lexiconを指定する場合'
+: '↓ lexiconを指定する場合'
+../slide2mp4.sh -lexicon https://raw.githubusercontent.com/automating-presentations/slide2mp4/main/test/test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4
 ```
 
 ----
