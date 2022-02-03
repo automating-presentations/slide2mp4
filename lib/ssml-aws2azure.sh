@@ -21,6 +21,7 @@ VOICE_NAME="$3"
 #LEXICON_URL="https://raw.githubusercontent.com/automating-presentations/slide2mp4/main/test/test-lexicon.pls"
 LEXICON_URL="$4"
 PITCH="$5"
+STYLE="$6"
 
 
 # Random String
@@ -28,8 +29,8 @@ RS=$(cat /dev/urandom |base64 |tr -cd "a-z0-9" |fold -w 16 |head -n 1)
 
 
 XML_VER="<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-SPEAK_VER="<speak version=\"1.0\" xml:lang=\"en-US\">"
-VOICE="<voice name=\"$VOICE_NAME\">"
+SPEAK_VER="<speak xmlns=\"http://www.w3.org/2001/10/synthesis\" xmlns:mstts=\"http://www.w3.org/2001/mstts\" xmlns:emo=\"http://www.w3.org/2009/10/emotionml\" version=\"1.0\" xml:lang=\"en-US\">"
+VOICE="<voice name=\"$VOICE_NAME\"><mstts:express-as style=\"$STYLE\" >"
 LEXICON_URI="<lexicon uri=\"$LEXICON_URL\"/>"
 
 
@@ -89,7 +90,7 @@ do
 			echo -e "${XML_VER}\n${SPEAK_VER}\n${VOICE}\n${LEXICON_URI}\n" > azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml
 			echo "${PROSODY_RATE}" >> azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml
 			cat azure-txt/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.txt >> azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml
-			echo -e "</prosody>\n\n</voice>\n</speak>" >> azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml
+			echo -e "</prosody>\n</mstts:express-as>\n</voice>\n</speak>" >> azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml
 			mv azure-txt/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.txt azure-txt/$PAGE_NUMBER-$file_count.txt
 			mv azure-xml/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.xml azure-xml/$PAGE_NUMBER-$file_count.xml
 			sentence_count=$((sentence_count+1)); file_count=$((file_count+1))

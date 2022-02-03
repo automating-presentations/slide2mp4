@@ -26,6 +26,7 @@ FPS="25"
 AZURE_REGION="japaneast"
 AZURE_TTS_VOICE_ID="ja-JP-NanamiNeural"
 AZURE_TTS_VOICE_PITCH=0
+AZURE_TTS_VOICE_STYLE="general"
 AZURE_TTS_SUBS_KEY_FILENAME=~/.azure/tts-subs-keyfile
 # Amazon Polly (TTS) variables
 AWS_TTS_VOICE_ID="Mizuki"
@@ -54,6 +55,7 @@ print_usage ()
 	echo "	-azure				use Azure Speech (default)."
 	echo "	-azure-region			specify Azure Region for using Azure Speech. (default Region is \"japaneast\")"
 	echo "	-azure-vid, --azure-voice-id	specify Azure Speech voice name. (default voice name is \"ja-JP-NanamiNeural\")"
+	echo "	-azure-style			specify Azure Speech voice style. (default voice style is \"general\")"
 	echo "	-azure-pitch			specify Azure Speech voice pitch. (default voice pitch is \"0\", meaning 0%)"
 	echo "	-azure-tts-key			specify subscription key file path for Azure Speech. (default file path is \"~/.azure/tts-subs-keyfile\")"
 	echo ""
@@ -125,6 +127,8 @@ do
 		shift; AZURE_REGION="$1"; shift
 	elif [ "$1" == "-azure-vid" -o "$1" == "--azure-voice-id" ]; then
 		shift; AZURE_TTS_VOICE_ID="$1"; shift
+	elif [ "$1" == "-azure-style" ]; then
+		shift; AZURE_TTS_VOICE_STYLE="$1"; shift
 	elif [ "$1" == "-azure-pitch" ]; then
 		shift; AZURE_TTS_VOICE_PITCH="$1"; shift
 	elif [ "$1" == "-azure-tts-key" ]; then
@@ -370,7 +374,7 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 
 	mkdir -p azure-xml; rm -f azure-xml/*
 	mkdir -p azure-txt; rm -f azure-txt/*
-	for i in $PAGES; do "$SLIDE2MP4_DIR"/lib/ssml-aws2azure.sh xml/$i.xml $i $AZURE_TTS_VOICE_ID $LEXICON_URL "$AZURE_TTS_VOICE_PITCH"; done
+	for i in $PAGES; do "$SLIDE2MP4_DIR"/lib/ssml-aws2azure.sh xml/$i.xml $i $AZURE_TTS_VOICE_ID $LEXICON_URL "$AZURE_TTS_VOICE_PITCH" $AZURE_TTS_VOICE_STYLE; done
 
 	mkdir -p azure-mp3; rm -f azure-mp3/*
 	for i in $PAGES;
