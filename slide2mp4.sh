@@ -73,7 +73,7 @@ print_usage ()
 	echo "Example2: The following command uses Azure Speech to create one mp4 file with audio and subtitles, named \"test-output.mp4\" using only specific pages, e.g. using only 1, 2 page."
 	echo "	$(basename $0) -sp test-slides.pdf test-slides.txt test-output.mp4 \"1 2\""
 	echo ""
-	echo "Example3: If you have modified some of the slides, e.g. pages 1 and 3, you can apply the patch to \"test-output.mp4\" with the following command." When you run this command with Azure Speech \(not Amazon Polly\), \"test-lexicon.pls\" will be temporarily uploaded to Amazon S3.
+	echo "Example3: If you have modified some of the slides, e.g. pages 1 and 3, you can apply the patch to \"test-output.mp4\" with the following command. When you run this command with Azure Speech \(not Amazon Polly\), \"test-lexicon.pls\" will be temporarily uploaded to Amazon S3."
 	echo "	$(basename $0) -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4 \"1 3\""
 	echo ""
 	echo "  When you don't use Amazon S3, you can specify public (non-private) URL for downloading the lexicon file."
