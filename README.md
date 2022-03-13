@@ -62,6 +62,16 @@ cd slide2mp4/test
 ../slide2mp4.sh -lexicon https://raw.githubusercontent.com/automating-presentations/slide2mp4/main/test/test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4
 ```
 
+When you specify the output directory, files created by slide2mp4 will be saved in the specified directory. If the directory does not exist, it will be created automatically.
+```
+slide2mp4 -p ./outputs-directory test-slides.pdf test-slides.txt test-output.mp4
+```
+
+The following command uses Azure Speech to create one mp4 file with audio and subtitles, named "test-output.mp4" using only specific pages, e.g. using only 1, 2 page.
+```
+slide2mp4 -sp test-slides.pdf test-slides.txt test-output.mp4 "1 2"
+```
+
 If you have modified some of the slides, e.g. pages 1 and 3, you can apply the patch to "test-output.mp4" with the following command. When you run this command with Azure Speech (not Amazon Polly), "test-lexicon.pls" will be temporarily uploaded to Amazon S3.
 
 ```
