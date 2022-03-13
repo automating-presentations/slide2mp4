@@ -51,6 +51,7 @@ print_usage ()
 	echo "	-ns, --no-subtitles		convert without subtitles."
 	echo "	-lexicon                        specify lexicon file or url."
 	echo "	-p, --path			specify the output directory. (default path is current directory)"
+	echo "	-sp, --specific-pages		specify pages. (using all pages by default)"
 	echo ""
 	echo "	-azure				use Azure Speech (default)."
 	echo "	-azure-region			specify Azure Region for using Azure Speech. (default Region is \"japaneast\")"
@@ -66,25 +67,31 @@ print_usage ()
 	echo "Example1: The following command uses Azure Speech to create one mp4 file with audio and subtitles, named \"test-output.mp4\"." The subscription key to use Azure Speech must be found in \"~/azure/.tts-subs-keyfile\".
 	echo "	$(basename $0) test-slides.pdf test-slides.txt test-output.mp4"
 	echo ""
-	echo "Example2: If you have modified some of the slides, e.g. pages 1 and 3, you can apply the patch to \"test-output.mp4\" with the following command." When you run this command with Azure Speech \(not Amazon Polly\), \"test-lexicon.pls\" will be temporarily uploaded to Amazon S3.
+	echo "  When you specify the output directory, files created by slide2mp4 will be saved in the specified directory. If the directory does not exist, it will be created automatically."
+	echo "	$(basename $0) -p ./outputs-directory test-slides.pdf test-slides.txt test-output.mp4"
+	echo ""
+	echo "Example2: The following command uses Azure Speech to create one mp4 file with audio and subtitles, named \"test-output.mp4\" using only specific pages, e.g. using only 1, 2 page."
+	echo "	$(basename $0) -sp test-slides.pdf test-slides.txt test-output.mp4 \"1 2\""
+	echo ""
+	echo "Example3: If you have modified some of the slides, e.g. pages 1 and 3, you can apply the patch to \"test-output.mp4\" with the following command." When you run this command with Azure Speech \(not Amazon Polly\), \"test-lexicon.pls\" will be temporarily uploaded to Amazon S3.
 	echo "	$(basename $0) -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4 \"1 3\""
 	echo ""
 	echo "  When you don't use Amazon S3, you can specify public (non-private) URL for downloading the lexicon file."
 	echo "	$(basename $0) -lexicon https://public_domain/test.pls test-slides.pdf test-slides.txt test-output.mp4 \"1 3\""
 	echo ""
-	echo "Example3: No subtitles option is also available, e.g. mp4 files on pages 1 and 3 are without subtitles."
+	echo "Example4: No subtitles option is also available, e.g. mp4 files on pages 1 and 3 are without subtitles."
 	echo "	$(basename $0) -ns -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4 \"1 3\""
 	echo ""
-	echo "Example4: No PDF converting option is also available, e.g. in the case of changing the talk script on pages 1 and 3."
+	echo "Example5: No PDF converting option is also available, e.g. in the case of changing the talk script on pages 1 and 3."
 	echo "	$(basename $0) -npc -ns -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4 \"1 3\""
 	echo ""
-	echo "Example5: The following command specifies the geometry of output mp4 files (1080p), the Azure Region, voice name/pitch, subscription keyfile path to use Azure Speech."
+	echo "Example6: The following command specifies the geometry of output mp4 files (1080p), the Azure Region, voice name/pitch, subscription keyfile path to use Azure Speech."
 	echo "	$(basename $0) -azure -geo 1920x1080 -azure-region centralus -azure-vid en-US-JennyNeural -azure-pitch -6 -azure-tts-key test-azure-keyfile test.pdf test.txt output.mp4"
 	echo ""
-	echo "Example6: The following command uses Amazon Polly to create one mp4 file with audio and subtitles, named \"test-output.mp4\"."
+	echo "Example7: The following command uses Amazon Polly to create one mp4 file with audio and subtitles, named \"test-output.mp4\"."
 	echo "	$(basename $0) -aws test-slides.pdf test-slides.txt test-output.mp4"
 	echo ""
-	echo "Example7: Specify the Amazon Polly Neural format, voice ID, Matthew (Male, English, US). Note that the Neural format only works with some voice IDs."
+	echo "Example8: Specify the Amazon Polly Neural format, voice ID, Matthew (Male, English, US). Note that the Neural format only works with some voice IDs."
 	echo "	$(basename $0) -aws -aws-vid Matthew -aws-neural -lexicon lexicon.pls test.pdf test.txt output.mp4"
 	echo ""
 	exit
@@ -101,6 +108,7 @@ AWS_TTS_NEURAL_FLAG=0
 FFMPEG_LOG_LEVEL="-loglevel info"
 LEXICON_FLAG=0
 SLIDE2MP4_OUTPUTS_PATH="$(pwd)"
+PARTIALLY_MODE=0
 
 
 i=0; arg_num=$#
@@ -120,6 +128,8 @@ do
 		shift; LEXICON="$1"; LEXICON_FLAG=1; shift
 	elif [ "$1" == "-p" -o "$1" == "--path" ]; then
 		shift; SLIDE2MP4_OUTPUTS_PATH="$1"; shift
+	elif [ "$1" == "-sp" -o "$1" == "--specific-pages" ]; then
+		PARTIALLY_MODE=1; shift
 
 	elif [ "$1" == "-azure" ]; then
 		AZURE_FLAG=1; AWS_FLAG=0; shift; 
@@ -473,7 +483,6 @@ do
 done
 
 
-PARTIALLY_MODE=0
 for i in `seq 1 $page_num`
 do
 	if [ ! -s "mp4/$i.mp4" ]; then
