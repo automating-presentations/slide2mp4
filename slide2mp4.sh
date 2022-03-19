@@ -299,7 +299,8 @@ if [ $NO_CONVERT_FLAG -eq 0 ]; then
 	echo "The conversion from PDF to PNG starts now."
 	rm -f png/*
 	pdftocairo -png -r $PPI -scale-to-x $SCALEX -scale-to-y $SCALEY PDF-$RS.pdf png/image
-	for i in `seq 1 9`; do mv png/image-0$i.png png/image-$i.png 2> /dev/null; done
+	for i in `seq 1 99`; do mv png/image-0$i.png png/image-$i.png 2> /dev/null; done
+	for i in `seq 1 9`; do mv png/image-00$i.png png/image-$i.png 2> /dev/null; done
 	echo "The conversion from PDF to PNG has been successfully completed."
 fi
 rm -f PDF-$RS.pdf
