@@ -130,13 +130,13 @@ mkdir -p json mp3 mp4 png srt xml
 
 ----
 ### 3. PDFファイルからpngファイルへの一括変換
-複数ページのPDFファイル(test-slides.pdf)を次のコマンドで複数の720pのpngファイルに一括変換します。この例では、3ページのPDFファイルをpng/{1..3}.pngに変換します。
-解像度を1080p(1920x1080)にする場合は、geometryを 1920x1080 に変更します。
+複数ページのPDFファイル(test-slides.pdf)を次のコマンドで複数の720pのpngファイルに一括変換します。この例では、3ページのPDFファイルをpng/image-{1..3}.pngに変換します。
+解像度を1080p(1920x1080)にする場合は、-scale-to-x, -scale-to-yオプションを、それぞれ 1920 と 1080 に変更します。
 
 ```
 rm -f png/*
-gm convert -density 600 -geometry 1280x720 +adjoin test-slides.pdf png:png/%01d-tmp.png
-for i in {0..2}; do mv png/$i-tmp.png png/$(($i+1)).png; done
+pdftocairo -png -r 600 -scale-to-x 1280 -scale-to-y 720 PDF-$RS.pdf png/image
+for i in `seq 1 9`; do mv png/image-0$i.png png/image-$i.png 2> /dev/null; done
 ```
 
 ----
@@ -325,7 +325,7 @@ OpenShiftとVirtualizationの読み上げテストもします。
 3.で作成した画像ファイル(png)と、5.で作成した音声ファイル(mp3)と、6.で作成した字幕ファイル(srt)を合成して、mp4ディレクトリに保存します。 字幕のフォントはNotoSansCJKjp-Mediumの14サイズを指定していますが、これは適宜変更してください。もし、字幕を付けたくない場合は、`-vf`オプションを削除(↓の例だと`-vf "subtitles=srt/$i.srt:force_style='FontName=NotoSansCJKjp-Medium,FontSize=14'"`を削除)して、ffmpegを実行するようにしてください。
 
 ```
-for i in {1..3}; do ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf "subtitles=srt/$i.srt:force_style='FontName=NotoSansCJKjp-Medium,FontSize=14'" mp4/$i.mp4; done
+for i in {1..3}; do ffmpeg -y -loop 1 -i png/image-$i.png -i mp3/$i.mp3 -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf "subtitles=srt/$i.srt:force_style='FontName=NotoSansCJKjp-Medium,FontSize=14'" mp4/$i.mp4; done
 ```
 
 上記コマンドは、ソフトウェアエンコーダ libx264 (`-vcodec libx264`) を指定していますが、ffmpegの[ハードウェアエンコーディング](https://trac.ffmpeg.org/wiki/HWAccelIntro)を利用したい場合は、libx264 より画質が粗くなるので、画像ビットレート (`-vb 1M`など) を明示的に指定する必要があります。その場合、動画のサイズも大きくなりますが、GPUによるエンコーディングが実行されることで、CPUの負荷を減らせます。
@@ -339,7 +339,7 @@ ffmpeg -encoders |grep -i h264; : '← h264 (mp4) で利用できるencoderを�
 : '↑ HW encoder: h264_videotoolbox を確認 (M1 Macの場合)'
 : '↑ SW encoder: libx264, libx264rgb を確認' 
 
-for i in {1..3}; do ffmpeg -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -vcodec h264_videotoolbox -vb 1M -tune stillimage -pix_fmt yuv420p -shortest -vf "subtitles=srt/$i.srt:force_style='FontName=NotoSansCJKjp-Medium,FontSize=14'" mp4/$i.mp4; done
+for i in {1..3}; do ffmpeg -y -loop 1 -i png/image-$i.png -i mp3/$i.mp3 -vcodec h264_videotoolbox -vb 1M -tune stillimage -pix_fmt yuv420p -shortest -vf "subtitles=srt/$i.srt:force_style='FontName=NotoSansCJKjp-Medium,FontSize=14'" mp4/$i.mp4; done
 ```
 
 使用するマシンによって、利用可能な HW encoder が異なりますので、上記を参考にご確認ください。
