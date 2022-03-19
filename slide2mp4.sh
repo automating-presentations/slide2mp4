@@ -17,8 +17,9 @@
 
 
 # The following variables are to be modified by the user as appropriate.
-DENSITY="600"
-GEOMETRY="1280x720"
+PPI="600"
+SCALEX="1280"
+SCALEY="720"
 FONT_NAME="NotoSansCJKjp-Regular"
 FONT_SIZE="14"
 FPS="25"
@@ -40,7 +41,7 @@ print_usage ()
 	echo "Description:"
 	echo "	$(basename $0) is a conversion tool, PDF slides to MP4 with audio and subtitles."
 	echo "	$(basename $0) uses Azure Speech (default) or Amazon Polly, Text-to-Speech (TTS) service."
-	echo "	$(basename $0) requires the following commands, ffmpeg, ffprobe, gm convert, python3, xmllint, aws polly (option), aws s3 (option)."
+	echo "	$(basename $0) requires the following commands, ffmpeg, ffprobe, pdftocairo, python3, xmllint, aws polly (option), aws s3 (option)."
 	echo "Usage:"
 	echo "	$(basename $0) [option] PDF_FILE TXT_FILE OUTPUT_MP4 ["page_num1 page_num2..."]"
 	echo "Options:"
@@ -123,7 +124,10 @@ do
 	elif [ "$1" == "-fle" -o "$1" == "--ffmpeg-loglevel-error" ]; then
 		FFMPEG_LOG_LEVEL="-loglevel error"; shift
 	elif [ "$1" == "-geo" -o "$1" == "--geometry" ]; then
-		shift; GEOMETRY="$1"; shift
+		shift
+		SCALEX=$(echo "$1"| awk -F '[x]' '{print $1}')
+		SCALEY=$(echo "$1"| awk -F '[x]' '{print $2}')
+		shift
 	elif [ "$1" == "-lexicon" ]; then
 		shift; LEXICON="$1"; LEXICON_FLAG=1; shift
 	elif [ "$1" == "-p" -o "$1" == "--path" ]; then
@@ -294,8 +298,8 @@ rm -f tmp-$RS.txt
 if [ $NO_CONVERT_FLAG -eq 0 ]; then
 	echo "The conversion from PDF to PNG starts now."
 	rm -f png/*
-	gm convert -density $DENSITY -geometry $GEOMETRY +adjoin PDF-$RS.pdf png:png/%01d-tmp.png
-	for i in `seq 0 $(($page_num-1))`; do mv png/$i-tmp.png png/$(($i+1)).png; done
+	pdftocairo -png -r $PPI -scale-to-x $SCALEX -scale-to-y $SCALEY PDF-$RS.pdf png/image
+	for i in `seq 1 9`; do mv png/image-0$i.png png/image-$i.png 2> /dev/null; done
 	echo "The conversion from PDF to PNG has been successfully completed."
 fi
 rm -f PDF-$RS.pdf
@@ -465,9 +469,9 @@ fi
 for i in $PAGES
 do
 	if [ $NS_FLAG -eq 0 ]; then
-		ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf "subtitles=srt/$i.srt:force_style='FontName=$FONT_NAME,FontSize=$FONT_SIZE'" mp4/$i.mp4
+		ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/image-$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf "subtitles=srt/$i.srt:force_style='FontName=$FONT_NAME,FontSize=$FONT_SIZE'" mp4/$i.mp4
 	else
-		ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest mp4/$i.mp4
+		ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/image-$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest mp4/$i.mp4
 	fi
 
 	if [ ! -s mp4/$i.mp4 ]; then
