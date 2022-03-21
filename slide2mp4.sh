@@ -299,8 +299,8 @@ if [ $NO_CONVERT_FLAG -eq 0 ]; then
 	echo "The conversion from PDF to PNG starts now."
 	rm -f png/*
 	pdftocairo -png -r $PPI -scale-to-x $SCALEX -scale-to-y $SCALEY PDF-$RS.pdf png/image
-	for i in `seq 1 99`; do mv png/image-0$i.png png/image-$i.png 2> /dev/null; done
-	for i in `seq 1 9`; do mv png/image-00$i.png png/image-$i.png 2> /dev/null; done
+	parallel --no-notice mv {1} {2} 2> /dev/null ::: png/image-0{1..99}.png :::+ png/image-{1..99}.png
+	parallel --no-notice mv {1} {2} 2> /dev/null ::: png/image-00{1..9}.png :::+ png/image-{1..9}.png
 	echo "The conversion from PDF to PNG has been successfully completed."
 fi
 rm -f PDF-$RS.pdf
@@ -395,9 +395,11 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 	for i in $PAGES;
 	do 
 		NUMS=$(ls azure-xml/$i-*.xml |wc -w |awk '{print $1}')
+		AZURE_TTS_COMMAND="\"$SLIDE2MP4_DIR\"/lib/azure-tts.sh azure-xml/{1}-{2}.xml \"$AZURE_REGION\" \"$AZURE_TTS_SUBS_KEY_FILENAME\" azure-mp3/{1}-{2}.mp3"
+		parallel --no-notice $AZURE_TTS_COMMAND ::: $i ::: `seq 1 $NUMS`
+
 		for j in `seq 1 $NUMS`;
 		do
-			"$SLIDE2MP4_DIR"/lib/azure-tts.sh azure-xml/$i-$j.xml "$AZURE_REGION" "$AZURE_TTS_SUBS_KEY_FILENAME" azure-mp3/$i-$j.mp3
 
 			if [ ! -s azure-mp3/$i-$j.mp3 ]; then
 				echo "azure-mp3/$i-$j.mp3 is empty file."
@@ -467,24 +469,24 @@ if [ $NS_FLAG -eq 0 ]; then
 fi
 
 
+PAGES_LIST=$(echo $PAGES |xargs -n1)
+if [ $NS_FLAG -eq 0 ]; then
+	VF_OPTIONS=\""subtitles=srt/{}.srt:force_style='FontName=$FONT_NAME,FontSize=$FONT_SIZE'\""
+	COMMAND_LIST="ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/image-{}.png -i mp3/{}.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf $VF_OPTIONS mp4/{}.mp4; echo \"mp4/{}.mp4 has been created.\""
+	parallel --no-notice $COMMAND_LIST ::: $PAGES_LIST
+else
+	COMMAND_LIST="ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/image-{}.png -i mp3/{}.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest mp4/{}.mp4; echo \"mp4/{}.mp4 has been created.\""
+	parallel --no-notice $COMMAND_LIST ::: $PAGES_LIST
+fi
+
+
 for i in $PAGES
 do
-	if [ $NS_FLAG -eq 0 ]; then
-		ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/image-$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf "subtitles=srt/$i.srt:force_style='FontName=$FONT_NAME,FontSize=$FONT_SIZE'" mp4/$i.mp4
-	else
-		ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/image-$i.png -i mp3/$i.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest mp4/$i.mp4
-	fi
-
 	if [ ! -s mp4/$i.mp4 ]; then
 		echo; echo
-		echo "FFmpeg job for creating mp4/$i.mp4 has been failed. Please check your pdf or talk script file."
+		echo "mp4/$i.mp4 is empty file. FFmpeg job for creating mp4/$i.mp4 has been failed. Please check your pdf or talk script file."
 		exit
 	fi
-
-	if [ "$FFMPEG_LOG_LEVEL" == "-loglevel info" ]; then
-		echo; echo
-	fi
-	echo "mp4/$i.mp4 has been created."
 done
 
 

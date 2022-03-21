@@ -26,6 +26,7 @@ STYLE="$6"
 
 # Random String
 RS=$(cat /dev/urandom |base64 |tr -cd "a-z0-9" |fold -w 16 |head -n 1)
+SPLIT="sentence-split-$(cat /dev/urandom |base64 |tr -cd "a-z0-9" |fold -w 16 |head -n 1)"
 
 
 XML_VER="<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -65,25 +66,34 @@ do
 
 	cat tmp-$RS.txt |sed '1,2d' |sed -e '$d' |sed -e '$d' > tmp-$RS.xml
 
-	SPLIT="\n<sentence_split-hfsqd0z2>\n"
-	sed -e "s/。/。${SPLIT}/g" -e "s/\.\ /\.${SPLIT}/g" \
-		-e "s/\!\ /\!${SPLIT}/g" -e "s/\！\　/\！${SPLIT}/g" \
-		-e "s/\?\ /\?${SPLIT}/g" -e "s/\？\　/\？${SPLIT}/g" tmp-$RS.xml > tmp-$RS-tmp.xml
-	echo "<sentence_split-hfsqd0z2>" >> tmp-$RS-tmp.xml; mv tmp-$RS-tmp.xml tmp-$RS.xml
-	sed -e ':a' -e 'N' -e '$!ba' -e 's/\n\n/\n<sentence_split-hfsqd0z2>\n/g' \
-		-e 's/\.\n/\.\n<sentence_split-hfsqd0z2>\n/g' \
-		-e 's/\!\n/\!\n<sentence_split-hfsqd0z2>\n/g' \
-		-e 's/\！\n/\！\n<sentence_split-hfsqd0z2>\n/g' \
-		-e 's/\?\n/\?\n<sentence_split-hfsqd0z2>\n/g' \
-		-e 's/\？\n/\？\n<sentence_split-hfsqd0z2>\n/g' tmp-$RS.xml | \
-		grep -v "^\s*$" |sed '/^$/d' > tmp-split-$RS.xml
+	sed -e "s/。/。\n${SPLIT}\n/g" -e "s/\.\ /\.\n${SPLIT}\n/g" \
+		-e "s/\!\ /\!\n${SPLIT}\n/g" -e "s/\！\　/\！\n${SPLIT}\n/g" \
+		-e "s/\?\ /\?\n${SPLIT}\n/g" -e "s/\？\　/\？\n${SPLIT}\n/g" tmp-$RS.xml > tmp-$RS-tmp.xml
+	echo ${SPLIT} >> tmp-$RS-tmp.xml; mv tmp-$RS-tmp.xml tmp-$RS.xml
+
+	cat tmp-$RS.xml |awk '
+		{
+			last_letter=(substr($NF, length($NF), length($NF)))
+			if($0 == "" || last_letter == "." || last_letter == "!" || last_letter == "！" || \
+				last_letter == "?" || last_letter == "？"){
+				SPLIT_FLAG=1; 
+			}else{
+				SPLIT_FLAG=0
+			}
+			if($0 == "" || SPLIT_FLAG == 1){
+				print $0 "\n" "'$SPLIT'"
+			}else{
+				print $0 
+			}
+		}
+	' | grep -v "^\s*$" |sed '/^$/d' > tmp-split-$RS.xml
 	rm -f tmp-$RS.xml
 
 	sentence_count=1; SPLIT_FLAG=0
 	while read line
 	do
 		word=${line}
-		if [ "$word" != "<sentence_split-hfsqd0z2>" ]; then
+		if [ "$word" != ${SPLIT} ]; then
 			SPLIT_FLAG=1
 			echo $word >> azure-txt/$PAGE_NUMBER-pro${prosody_count}-sen${sentence_count}.txt
 		elif [ $SPLIT_FLAG -eq 1 ]; then
