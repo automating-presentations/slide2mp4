@@ -53,6 +53,9 @@ print_usage ()
 	echo "	-lexicon                        specify lexicon file or url."
 	echo "	-p, --path			specify the output directory. (default path is current directory)"
 	echo "	-sp, --specific-pages		specify pages. (using all pages by default)"
+	echo "	-j, --jobs			control of parallel jobs.
+					(the default jobs option for parallel command is used, by default.)
+					(e.g. \"--jobs 2\" subtracts 2 from the number of CPU threads.)"
 	echo ""
 	echo "	-azure				use Azure Speech (default)."
 	echo "	-azure-region			specify Azure Region for using Azure Speech. (default Region is \"japaneast\")"
@@ -110,6 +113,8 @@ FFMPEG_LOG_LEVEL="-loglevel info"
 LEXICON_FLAG=0
 SLIDE2MP4_OUTPUTS_PATH="$(pwd)"
 PARTIALLY_MODE=0
+JOBS_FLAG=0
+PARALLEL_JOBS_OPTION=""
 
 
 i=0; arg_num=$#
@@ -134,6 +139,8 @@ do
 		shift; SLIDE2MP4_OUTPUTS_PATH="$1"; shift
 	elif [ "$1" == "-sp" -o "$1" == "--specific-pages" ]; then
 		PARTIALLY_MODE=1; shift
+	elif [ "$1" == "-j" -o "$1" == "--jobs" ]; then
+		shift; PARALLEL_JOBS_OPTION="$1"; JOBS_FLAG=1; shift
 
 	elif [ "$1" == "-azure" ]; then
 		AZURE_FLAG=1; AWS_FLAG=0; shift; 
@@ -471,12 +478,26 @@ fi
 
 PAGES_LIST=$(echo $PAGES |xargs -n1)
 if [ $NS_FLAG -eq 0 ]; then
+
 	VF_OPTIONS=\""subtitles=srt/{}.srt:force_style='FontName=$FONT_NAME,FontSize=$FONT_SIZE'\""
 	COMMAND_LIST="ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/image-{}.png -i mp3/{}.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf $VF_OPTIONS mp4/{}.mp4; echo \"mp4/{}.mp4 has been created.\""
-	parallel --no-notice $COMMAND_LIST ::: $PAGES_LIST
+
+	if [ $JOBS_FLAG -eq 0 ]; then
+		parallel --no-notice $COMMAND_LIST ::: $PAGES_LIST
+	else
+		parallel --no-notice --jobs "$PARALLEL_JOBS_OPTION" $COMMAND_LIST ::: $PAGES_LIST
+	fi
+
 else
+
 	COMMAND_LIST="ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/image-{}.png -i mp3/{}.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest mp4/{}.mp4; echo \"mp4/{}.mp4 has been created.\""
-	parallel --no-notice $COMMAND_LIST ::: $PAGES_LIST
+
+	if [ $JOBS_FLAG -eq 0 ]; then
+		parallel --no-notice $COMMAND_LIST ::: $PAGES_LIST
+	else
+		parallel --no-notice --jobs "$PARALLEL_JOBS_OPTION" $COMMAND_LIST ::: $PAGES_LIST
+	fi
+
 fi
 
 
