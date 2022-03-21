@@ -29,7 +29,7 @@ slide2mp4 uses Azure Speech (default) or Amazon Polly, Text-to-Speech (TTS) serv
 
 Note: If you choose a free (F0) pricing tier for Azure Speech, please be aware that you may not be able to complete the execution of slide2mp4 as Azure Speech will prevent you from getting more than a certain number of audio (mp3) files.
 
-When using Linux or macOS(including M1 Mac), you can install AWS CLI, FFmpeg, Poppler, with [Homebrew](https://brew.sh/).
+When using Linux or macOS(including M1 Mac), you can install AWS CLI, FFmpeg, GNU Parallel, Poppler, with [Homebrew](https://brew.sh/).
 
 ```
 brew install awscli ffmpeg parallel poppler
