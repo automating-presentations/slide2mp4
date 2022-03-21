@@ -41,7 +41,7 @@ print_usage ()
 	echo "Description:"
 	echo "	$(basename $0) is a conversion tool, PDF slides to MP4 with audio and subtitles."
 	echo "	$(basename $0) uses Azure Speech (default) or Amazon Polly, Text-to-Speech (TTS) service."
-	echo "	$(basename $0) requires the following commands, ffmpeg, ffprobe, pdftocairo, python3, xmllint, aws polly (option), aws s3 (option)."
+	echo "	$(basename $0) requires the following commands, ffmpeg, ffprobe, parallel, pdftocairo, python3, xmllint, aws polly (option), aws s3 (option)."
 	echo "Usage:"
 	echo "	$(basename $0) [option] PDF_FILE TXT_FILE OUTPUT_MP4 ["page_num1 page_num2..."]"
 	echo "Options:"
