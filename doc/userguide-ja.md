@@ -136,7 +136,7 @@ mkdir -p json mp3 mp4 png srt xml
 ```
 rm -f png/*
 pdftocairo -png -r 600 -scale-to-x 1280 -scale-to-y 720 PDF-$RS.pdf png/image
-for i in `seq 1 9`; do mv png/image-0$i.png png/image-$i.png 2> /dev/null; done
+for i in `seq 1 3`; do mv png/image-0$i.png png/image-$i.png 2> /dev/null; done
 ```
 
 ----
