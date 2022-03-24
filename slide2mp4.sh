@@ -113,7 +113,6 @@ FFMPEG_LOG_LEVEL="-loglevel info"
 LEXICON_FLAG=0
 SLIDE2MP4_OUTPUTS_PATH="$(pwd)"
 PARTIALLY_MODE=0
-JOBS_FLAG=0
 PARALLEL_JOBS_OPTION=""
 
 
@@ -140,7 +139,7 @@ do
 	elif [ "$1" == "-sp" -o "$1" == "--specific-pages" ]; then
 		PARTIALLY_MODE=1; shift
 	elif [ "$1" == "-j" -o "$1" == "--jobs" ]; then
-		shift; PARALLEL_JOBS_OPTION="$1"; JOBS_FLAG=1; shift
+		shift; PARALLEL_JOBS_OPTION="$1"; shift
 
 	elif [ "$1" == "-azure" ]; then
 		AZURE_FLAG=1; AWS_FLAG=0; shift; 
@@ -482,20 +481,20 @@ if [ $NS_FLAG -eq 0 ]; then
 	VF_OPTIONS="\"subtitles=srt/{}.srt:force_style='FontName=$FONT_NAME,FontSize=$FONT_SIZE'\""
 	COMMAND_LIST="ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/image-{}.png -i mp3/{}.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf $VF_OPTIONS mp4/{}.mp4; echo \"mp4/{}.mp4 has been created.\""
 
-	if [ $JOBS_FLAG -eq 0 ]; then
-		parallel --no-notice $COMMAND_LIST ::: $PAGES_LIST
-	else
+	if [ ! $PARALLEL_JOBS_OPTION == "" ]; then
 		parallel --no-notice --jobs "$PARALLEL_JOBS_OPTION" $COMMAND_LIST ::: $PAGES_LIST
+	else
+		parallel --no-notice $COMMAND_LIST ::: $PAGES_LIST
 	fi
 
 else
 
 	COMMAND_LIST="ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/image-{}.png -i mp3/{}.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest mp4/{}.mp4; echo \"mp4/{}.mp4 has been created.\""
 
-	if [ $JOBS_FLAG -eq 0 ]; then
-		parallel --no-notice $COMMAND_LIST ::: $PAGES_LIST
-	else
+	if [ ! $PARALLEL_JOBS_OPTION == "" ]; then
 		parallel --no-notice --jobs "$PARALLEL_JOBS_OPTION" $COMMAND_LIST ::: $PAGES_LIST
+	else
+		parallel --no-notice $COMMAND_LIST ::: $PAGES_LIST
 	fi
 
 fi
