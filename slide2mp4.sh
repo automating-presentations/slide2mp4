@@ -22,7 +22,7 @@ SCALEX="1280"
 SCALEY="720"
 FONT_NAME="NotoSansCJKjp-Regular"
 FONT_SIZE="14"
-FPS="25"
+FPS="30"
 FFMPEG_LOG_LEVEL="-loglevel error"
 # Azure Speech (TTS) variables
 AZURE_REGION="japaneast"
