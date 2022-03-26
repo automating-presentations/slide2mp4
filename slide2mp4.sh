@@ -23,6 +23,7 @@ SCALEY="720"
 FONT_NAME="NotoSansCJKjp-Regular"
 FONT_SIZE="14"
 FPS="25"
+FFMPEG_LOG_LEVEL="-loglevel error"
 # Azure Speech (TTS) variables
 AZURE_REGION="japaneast"
 AZURE_TTS_VOICE_ID="ja-JP-NanamiNeural"
@@ -47,7 +48,6 @@ print_usage ()
 	echo "Options:"
 	echo "	-h, --help			print this message."
 	echo "	-geo, --geometry		specify the geometry of output mp4 files. (default geometry is \"1280x720\")"
-	echo "	-fle, --ffmpeg-loglevel-error	ffmpeg loglevel is \"error\". (default level is \"info\")"
 	echo "	-npc, --no-pdf-convert		don't convert PDF to png."
 	echo "	-ns, --no-subtitles		convert without subtitles."
 	echo "	-lexicon                        specify lexicon file or url."
@@ -109,7 +109,6 @@ RS=$(cat /dev/urandom |base64 |tr -cd "a-z0-9" |fold -w 16 |head -n 1)
 NS_FLAG=0; NO_CONVERT_FLAG=0;
 AZURE_FLAG=1; AWS_FLAG=0
 AWS_TTS_NEURAL_FLAG=0
-FFMPEG_LOG_LEVEL="-loglevel info"
 LEXICON_FLAG=0
 SLIDE2MP4_OUTPUTS_PATH="$(pwd)"
 PARTIALLY_MODE=0
@@ -125,8 +124,6 @@ do
 		NS_FLAG=1; shift
 	elif [ "$1" == "-npc" -o "$1" == "--no-pdf-convert" ]; then
 		NO_CONVERT_FLAG=1; shift
-	elif [ "$1" == "-fle" -o "$1" == "--ffmpeg-loglevel-error" ]; then
-		FFMPEG_LOG_LEVEL="-loglevel error"; shift
 	elif [ "$1" == "-geo" -o "$1" == "--geometry" ]; then
 		shift
 		SCALEX=$(echo "$1"| awk -F '[x]' '{print $1}')
@@ -440,7 +437,7 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 
 			for j in `seq 1 $NUMS`;
 			do
-				seconds=$(ffprobe -loglevel error -hide_banner -show_entries format=duration azure-mp3/$i-$j.mp3 |grep -i duration |sed -e 's/duration=//')
+				seconds=$(ffprobe $FFMPEG_LOG_LEVEL -hide_banner -show_entries format=duration azure-mp3/$i-$j.mp3 |grep -i duration |sed -e 's/duration=//')
 				mseconds=`echo "scale=4; $seconds * 1000" |bc`
 				python3 "$SLIDE2MP4_DIR"/lib/repr.py azure-txt/$i-$j.txt tmp-$RS.txt
 				awk '{print substr($0, 2, length($0)-2)}' tmp-$RS.txt |grep -v "<break time=\"" > value-$RS.txt
@@ -525,11 +522,13 @@ else
 fi
 
 
-ffmpeg $FFMPEG_LOG_LEVEL -y -f concat -i list-$RS.txt -c copy "$OUTPUT_MP4"
+echo; echo "Combining mp4 files..."
+ffmpeg $FFMPEG_LOG_LEVEL -y -f concat -i list-$RS.txt -async 1 "$OUTPUT_MP4"
 rm -f list-$RS.txt
+echo "Combining mp4 files has been completed."
 
 
-echo; echo
+echo
 echo "The conversion from PDF slides to mp4 files has been successfully completed."
 echo "Please check $SLIDE2MP4_OUTPUTS_PATH/$OUTPUT_MP4."
 
