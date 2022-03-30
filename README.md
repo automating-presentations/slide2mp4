@@ -45,7 +45,7 @@ docker pull ghcr.io/automating-presentations/slide2mp4:latest
 
 ### slide2mp4
 
-The following command uses Azure Speech to create one mp4 file with audio and subtitles, named "test-output.mp4". The subscription key to use Azure Speech must be found in "~/azure/.tts-subs-keyfile". The default Azure Speech service region for slide2mp4 is Japan East region, so when you run the following command, please create your Azure Speech subscription key in Japan East region.
+The following command uses Azure Speech to create one mp4 file with audio and subtitles, named "test-output.mp4". The subscription key to use Azure Speech must be found in "~/.azure/tts-subs-keyfile". The default Azure Speech service region for slide2mp4 is Japan East region, so when you run the following command, please create your Azure Speech subscription key in Japan East region.
 
 ```
 mkdir -p ~/.azure; cat << EOF  > ~/.azure/tts-subs-keyfile
