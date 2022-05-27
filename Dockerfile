@@ -1,9 +1,9 @@
-FROM fedora:35
+FROM fedora:36
 LABEL maintainer="Hirofumi Kojima"
 # podman build -t slide2mp4:latest <PATH_OF_DOCKERFILE>
 
 
-RUN dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-35.noarch.rpm
+RUN dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-36.noarch.rpm
 RUN dnf -y install awscli bc ffmpeg file git google-noto-sans*-cjk-jp-fonts parallel poppler python3 libxml2 wget zip
 RUN dnf -y update
 RUN dnf clean all
