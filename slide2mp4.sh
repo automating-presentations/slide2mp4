@@ -361,6 +361,7 @@ if [ $AWS_FLAG -eq 1 ]; then
 			--speech-mark-types='["sentence"]' \
 			--text file://xml/$i.xml \
 			json/$i.json &> /dev/null;
+		sed -i -e "s/&amp;/\&/g" json/$i.json; rm -f json/$i.json-e
 		echo "json/$i.json has been created."
 	fi
 
