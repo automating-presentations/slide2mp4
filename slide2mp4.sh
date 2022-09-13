@@ -294,6 +294,8 @@ do
 		mv tmp-$RS.xml xml/$i.xml
 	fi
 
+	sed -i -e "s/&/&amp;/g" xml/$i.xml; rm -f xml/$i.xml-e
+
 done
 rm -f tmp-$RS.txt
 
@@ -445,6 +447,8 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 				time_value=`echo "scale=4; $time_value + $mseconds" |bc`
 				time_info=${time_value%.*}
 			done
+
+			sed -i -e "s/&amp;/\&/g" json/$i.json; rm -f json/$i.json-e
 
 			echo "json/$i.json has been created."
 
