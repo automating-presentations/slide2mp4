@@ -14,7 +14,7 @@ slide2mp4 uses Azure Speech (default) or Amazon Polly, Text-to-Speech (TTS) serv
 ----
 ## Requirements
 
- - [Azure Speech](https://azure.microsoft.com/en-us/services/cognitive-services/text-to-speech/#overview) service resource (paid tier) with your Azure account (please refer to [this document](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/overview#create-the-azure-resource))
+ - [Azure Speech](https://azure.microsoft.com/en-us/services/cognitive-services/text-to-speech/#overview) service resource (paid tier) with your Azure account (please refer to [this document](https://learn.microsoft.com/en-us/azure/cognitive-services/cognitive-services-apis-create-account))
    - Your Azure Speech service subscription key
    - Your Azure Speech service region
  - [AWS CLI version 2](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) (Optional. version 1 has not been tested.)
