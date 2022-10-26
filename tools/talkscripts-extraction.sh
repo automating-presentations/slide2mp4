@@ -33,7 +33,7 @@ print_usage ()
 
 
 # Random String
-RS=$(cat /dev/urandom |base64 |tr -cd "a-z0-9" |fold -w 32 |head -n 1)
+RS=$(cat /dev/urandom |base64 2> /dev/null |tr -cd "a-z0-9" |fold -w 32 |head -n 1)
 
 
 if [ $# -ne 0 ]; then

@@ -25,8 +25,8 @@ STYLE="$6"
 
 
 # Random String
-RS=$(cat /dev/urandom |base64 |tr -cd "a-z0-9" |fold -w 16 |head -n 1)
-SPLIT="sentence-split-$(cat /dev/urandom |base64 |tr -cd "a-z0-9" |fold -w 16 |head -n 1)"
+RS=$(cat /dev/urandom |base64 2> /dev/null |tr -cd "a-z0-9" |fold -w 16 |head -n 1)
+SPLIT="sentence-split-$(cat /dev/urandom |base64 2> /dev/null |tr -cd "a-z0-9" |fold -w 16 |head -n 1)"
 
 
 XML_VER="<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
