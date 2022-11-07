@@ -444,6 +444,7 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 				mseconds=`echo "scale=4; $seconds * 1000" |bc`
 				python3 "$SLIDE2MP4_DIR"/lib/repr.py azure-txt/$i-$j.txt tmp-$RS.txt
 				awk '{print substr($0, 2, length($0)-2)}' tmp-$RS.txt |grep -v "<break time=\"" > value-$RS.txt
+				sed -i -e 's|\"|\\"|g' value-$RS.txt; rm -f value-$RS.txt-e
 				awk '{print "{\"time\":'$time_info',\"value\":\"" $0}' value-$RS.txt |sed '$s/$/\"}/' >> json/$i.json
 				time_value=`echo "scale=4; $time_value + $mseconds" |bc`
 				time_info=${time_value%.*}
