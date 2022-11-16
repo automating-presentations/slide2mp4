@@ -1,4 +1,4 @@
-FROM fedora:36
+FROM fedora:37
 LABEL maintainer="Hirofumi Kojima"
 # podman build -t slide2mp4:latest <PATH_OF_DOCKERFILE>
 
