@@ -377,7 +377,7 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 		AWS_S3_REGION=""; BUCKET_NAME=tmp-lexicon-$RS
 		if [ "$LEXICON_URL" == "" ]; then
 			AWS_S3_REGION="ap-northeast-1"
-			aws s3api create-bucket --bucket "$BUCKET_NAME" --region "$AWS_S3_REGION" --create-bucket-configuration LocationConstraint="$AWS_S3_REGION" 2> tmp-$RS.txt
+			aws s3api create-bucket --bucket "$BUCKET_NAME" --region "$AWS_S3_REGION" --create-bucket-configuration LocationConstraint="$AWS_S3_REGION" --object-ownership BucketOwnerPreferred 2> tmp-$RS.txt
 
 			if [ -s tmp-$RS.txt ]; then
 				cat tmp-$RS.txt
@@ -385,6 +385,7 @@ elif [ $AZURE_FLAG -eq 1 ]; then
 				exit
 			fi
 
+			aws s3api put-public-access-block --bucket "$BUCKET_NAME" --public-access-block-configuration "BlockPublicAcls=false"
 			aws s3 cp "$LEXICON_FILE" s3://"$BUCKET_NAME"/ --acl public-read
 			LEXICON_URL="https://"$BUCKET_NAME".s3."$AWS_S3_REGION".amazonaws.com/$LEXICON_FILE"
 			rm -f tmp-$RS.txt
