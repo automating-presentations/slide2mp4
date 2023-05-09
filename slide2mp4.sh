@@ -483,7 +483,7 @@ PAGES_LIST=$(echo $PAGES |xargs -n1)
 if [ $NS_FLAG -eq 0 ]; then
 
 	VF_OPTIONS="\"subtitles=srt/{}.srt:force_style='FontName=$FONT_NAME,FontSize=$FONT_SIZE'\""
-	COMMAND_LIST="ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/image-{}.png -i mp3/{}.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf $VF_OPTIONS mp4/{}.mp4; echo \"mp4/{}.mp4 has been created.\""
+	COMMAND_LIST="ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/image-{}.png -i mp3/{}.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -vf $VF_OPTIONS -c:a copy mp4/{}.mp4; echo \"mp4/{}.mp4 has been created.\""
 
 	if [ ! $PARALLEL_JOBS_OPTION == "" ]; then
 		parallel --no-notice --jobs "$PARALLEL_JOBS_OPTION" $COMMAND_LIST ::: $PAGES_LIST
@@ -493,7 +493,7 @@ if [ $NS_FLAG -eq 0 ]; then
 
 else
 
-	COMMAND_LIST="ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/image-{}.png -i mp3/{}.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest mp4/{}.mp4; echo \"mp4/{}.mp4 has been created.\""
+	COMMAND_LIST="ffmpeg $FFMPEG_LOG_LEVEL -y -loop 1 -i png/image-{}.png -i mp3/{}.mp3 -r $FPS -vcodec libx264 -tune stillimage -pix_fmt yuv420p -shortest -c:a copy mp4/{}.mp4; echo \"mp4/{}.mp4 has been created.\""
 
 	if [ ! $PARALLEL_JOBS_OPTION == "" ]; then
 		parallel --no-notice --jobs "$PARALLEL_JOBS_OPTION" $COMMAND_LIST ::: $PAGES_LIST
