@@ -31,6 +31,7 @@ json_file = sys.argv[1]
 srt_file = sys.argv[2]
 
 i = 0
+num = 0
 with open(json_file, 'r') as f:
 	line = f.readline()
 	while line:
@@ -43,16 +44,20 @@ with open(json_file, 'r') as f:
 timecode = []
 message = []
 i = 0
-while i <= num:
-	with open('tmp' + str(i) + '.json', 'r') as f:
-		json_load = json.load(f)
-		time_seconds1 = float(json_load['time'] / 1000)
-		time_seconds2 = time_seconds1 + SUBTITLES_INTERVAL_SECONDS
-		timecode.append(getTimeCode(time_seconds1))
-		timecode.append(getTimeCode(time_seconds2))
-		message.append(json_load['value'])
-	os.remove('tmp' + str(i) + '.json')
-	i+=1
+if os.path.getsize(json_file) != 0:
+	while i <= num:
+		with open('tmp' + str(i) + '.json', 'r') as f:
+			json_load = json.load(f)
+			time_seconds1 = float(json_load['time'] / 1000)
+			time_seconds2 = time_seconds1 + SUBTITLES_INTERVAL_SECONDS
+			timecode.append(getTimeCode(time_seconds1))
+			timecode.append(getTimeCode(time_seconds2))
+			message.append(json_load['value'])
+		os.remove('tmp' + str(i) + '.json')
+		i+=1
+else:
+	timecode.append(getTimeCode(float(0/1000)))
+	message.append('')
 
 i = 0
 with open(srt_file, 'w') as f:
