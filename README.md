@@ -97,7 +97,7 @@ cd slide2mp4/test
 ../slide2mp4.sh -npc -ns -lexicon test-lexicon.pls test-slides.pdf test-slides.txt test-output.mp4 "1 3"
 ```
 
-The following command specifies the geometry of output mp4 files (1080p), the Azure Region where to put your subscription key, voice name/pitch, subscription keyfile path to use Azure Speech. Please refer to [this web page](https://learn.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support?tabs=tts#supported-languages) to see what kind of voice ID is available.
+The following command specifies the geometry of output mp4 files (1080p), the Azure Region where to put your subscription key, voice ID/pitch, subscription keyfile path to use Azure Speech. Please refer to [this web page](https://learn.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support?tabs=tts#supported-languages) to see what kind of voice ID is available.
 ```
 cd slide2mp4/test
 ../slide2mp4.sh -azure -geo 1920x1080 -azure-region centralus -azure-vid en-US-JennyNeural -azure-pitch -6 -azure-tts-key test-azure-keyfile test.pdf test.txt output.mp4
