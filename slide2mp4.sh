@@ -61,7 +61,7 @@ print_usage ()
 	echo "	-azure-region			specify Azure Region for using Azure Speech. (default Region is \"japaneast\")"
 	echo "	-azure-vid, --azure-voice-id	specify Azure Speech voice name. (default voice name is \"ja-JP-NanamiNeural\")"
 	echo "	-azure-style			specify Azure Speech voice style. (default voice style is \"general\")"
-	echo "	-azure-pitch			specify Azure Speech voice pitch. (default voice pitch is \"0\", meaning 0%)"
+	echo "	-azure-pitch			specify Azure Speech voice pitch. (default voice pitch is \"0\", meaning 0%. The min value is -50, and the max value is 150.)"
 	echo "	-azure-tts-key			specify subscription key file path for Azure Speech. (default file path is \"~/.azure/tts-subs-keyfile\")"
 	echo ""
 	echo "	-aws				use Amazon Polly."
