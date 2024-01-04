@@ -4,7 +4,7 @@ LABEL maintainer="Hirofumi Kojima"
 
 
 RUN dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-39.noarch.rpm \
-                   awscli bc ffmpeg file git google-noto-sans*-cjk-jp-fonts parallel \
+                   awscli bc ffmpeg-free file git google-noto-sans*-cjk-jp-fonts parallel \
                    poppler python3 libxml2 wget zip && \
     dnf -y update && \
     dnf clean all
