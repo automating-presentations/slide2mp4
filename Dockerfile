@@ -3,8 +3,8 @@ LABEL maintainer="Hirofumi Kojima"
 # podman build -t slide2mp4:latest <PATH_OF_DOCKERFILE>
 
 
-RUN dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-39.noarch.rpm \
-                   awscli bc ffmpeg-free file git google-noto-sans*-cjk-jp-fonts parallel \
+RUN dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-39.noarch.rpm && \
+    dnf -y install awscli bc ffmpeg-free file git google-noto-sans*-cjk-jp-fonts parallel \
                    poppler python3 libxml2 wget zip && \
     dnf -y update && \
     dnf clean all
